@@ -13,7 +13,7 @@ function Login() {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Left side - Login form */}
+      {/* Left side */}
       <div
         className="w-full md:w-[40%] flex flex-col justify-center items-center px-6 py-12 bg-white z-10"
         data-aos="fade-right"
@@ -70,7 +70,7 @@ function Login() {
         </div>
       </div>
 
-      {/* Right side - Background + Info */}
+      {/* Right side */}
       <div
         className="hidden md:flex w-[60%] relative items-center justify-center text-white"
         style={{

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useNavigate } from "react-router-dom";
@@ -9,11 +9,12 @@ import CertificateDiagram from "../assets/vc.svg";
 import Certificate from "../assets/certificate.svg";
 import Employee from "../assets/employee.svg";
 import Protect from "../assets/protect.svg";
+import HomeHeader from "../components/HomeHeader.js";
 
 function Home() {
   const navigate = useNavigate();
 
-  const [introduction, setIntroduction] = useState([
+  const introduction = [
     {
       title: "Welcome to Zuni!",
       text: "A Blockchain-Enabled Platform for Privacy-Preserving Electronic Certification. Zuni leverages cutting-edge blockchain technology to revolutionize the way credentials are issued, verified, and shared.",
@@ -36,13 +37,7 @@ function Home() {
       text: "Zero-Knowledge Proofs ensure that sensitive information is never disclosed unnecessarily, preserving privacy and security of students' personal data. Zuni empowers users with full control over their information.",
       image: Protect,
     },
-  ]);
-
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State to track if the menu is open
-
-  const toggleMenu = () => {
-    setIsMenuOpen((prev) => !prev); // Toggle the menu state
-  };
+  ];
 
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
@@ -51,7 +46,7 @@ function Home() {
   return (
     <div className="min-h-screen bg-white text-white font-sans pt-16">
       {/* Header */}
-      <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-20 py-4 bg-[#00040c] shadow">
+      {/* <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-20 py-4 bg-[#00040c] shadow">
         <div className="flex items-center gap-2">
           <img
             src={ZuniLogo}
@@ -61,7 +56,7 @@ function Home() {
           <span className="text-white text-xl md:text-2xl font-bold">Zuni</span>
         </div>
 
-        {/* Navigation links */}
+      
         <nav className="hidden md:flex gap-8 text-white text-lg font-medium">
           <a href="features" className="hover:text-[#0178c6] transition">
             Features
@@ -74,7 +69,6 @@ function Home() {
           </a>
         </nav>
 
-        {/* Buttons */}
         <div className="hidden md:flex items-center gap-4">
           <button
             className="px-4 py-1 text-white rounded-full border border-white hover:bg-white hover:text-[#014AC6] transition"
@@ -84,7 +78,7 @@ function Home() {
           </button>
         </div>
 
-        {/* Mobile menu icon */}
+    
         <div className="md:hidden">
           <button
             onClick={toggleMenu} // Toggle menu visibility on click
@@ -106,7 +100,7 @@ function Home() {
           </button>
         </div>
 
-        {/* Mobile menu */}
+     
         {isMenuOpen && (
           <div className="md:hidden bg-[#1A1C22] text-white mt-16 p-6 absolute top-0 left-0 w-full z-40">
             <nav className="flex flex-col gap-4">
@@ -125,9 +119,9 @@ function Home() {
             </nav>
           </div>
         )}
-      </header>
+      </header> */}
+      <HomeHeader />
 
-      {/* Hero Section */}
       <section className="relative px-4 md:px-28 py-24 md:flex items-center justify-between overflow-hidden min-h-[80vh]">
         <img
           src={BackgroundImage}
@@ -170,7 +164,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Intro Sections */}
       <section
         id="features"
         className="bg-gradient-to-b from-[#F9FAFB] to-[#e5ecf4] text-gray-800 py-20 px-4 md:px-28 space-y-28"
