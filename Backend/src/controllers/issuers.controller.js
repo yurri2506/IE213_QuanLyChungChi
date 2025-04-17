@@ -76,7 +76,21 @@ const createDegree = async (req, res) => {
   }
 };
 
+const registerDIDController = async (req, res) => {
+  try {
+    const result = await issuerService.registerDID(req.body);
+    res.status(result.success ? 200 : 400).json(result);
+  } catch (error) {
+    console.error("Error in registerDIDController:", error);
+    res.status(500).json({
+      message: error.message || "Internal server error",
+      status: "ERROR",
+    });
+  }
+};
+
 module.exports = {
   getIssuerProfileController,
   createDegree,
+  registerDIDController,
 };
