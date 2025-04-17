@@ -8,12 +8,12 @@ const {
 
 const registerIssuerController = async (req, res) => {
   try {
-    const { issuer_id, password, name } = req.body;
+    const { issuer_id, password, name, sympol } = req.body;
     if (!issuer_id || !password || !name) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const result = await registerIssuer({ issuer_id, password, name });
+    const result = await registerIssuer({ issuer_id, password, name, sympol });
     res.status(201).json({
       message: "Issuer registered successfully",
       data: result,
@@ -38,7 +38,6 @@ const registerHolderController = async (req, res) => {
       time_of_training,
       mode_of_study,
     } = req.body;
-
 
     if (
       !holder_id ||
@@ -86,7 +85,12 @@ const registerVerifierController = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const result = await registerVerifier({ verifier_id, password, name, symbol });
+    const result = await registerVerifier({
+      verifier_id,
+      password,
+      name,
+      symbol,
+    });
     res.status(201).json({
       message: "Verifier registered successfully",
       data: result,

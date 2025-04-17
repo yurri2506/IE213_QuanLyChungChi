@@ -3,6 +3,13 @@ const Issuer = require("../models/issuers.model");
 const Holder = require("../models/holders.model");
 const Verifier = require("../models/verifiers.model");
 const jwt = require("jsonwebtoken");
+const generateKey = require("../utils/generateKey");
+const { BN } = require("bn.js");
+const {
+  generateRandomString,
+  encryptPrivateKey,
+  decryptPrivateKey,
+} = require("../utils/utils");
 
 const login = async (user_id, password) => {
   // Tìm user trong các bảng
@@ -62,40 +69,44 @@ const refreshToken = async (refresh_token) => {
   }
 };
 
-// Giả lập hàm tạo DID (thay bằng logic blockchain thực tế của bạn)
-const createDID = async () => {
-  // TODO: Tích hợp với hợp đồng DIDRegistry trên Polygon
-  return {
-    did: `did:ethr:${Date.now()}`, // Giả lập DID
-    privateKey: `private_key_${Date.now()}`, // Giả lập khóa riêng
-  };
-};
-
-// Mã hóa khóa riêng (giả lập, thay bằng thư viện thực tế như ethers.js)
-const encryptPrivateKey = (privateKey, password) => {
-  // TODO: Dùng thuật toán mã hóa thực tế
-  return `encrypted_${privateKey}_${password}`; 
-};
-
 const registerIssuer = async (data) => {
-  const { issuer_id, password, name } = data;
+  const { issuer_id, password, name, sympol } = data;
   const existingIssuer = await Issuer.findOne({ issuer_id });
   if (existingIssuer) throw new Error("Issuer ID already exists");
 
-  const { did, privateKey } = await createDID();
+  const { privateKey, publicKey } = await generateKey();
+
+  const did = generateRandomString(64);
+
   const hashedPassword = await bcrypt.hash(password, 10);
-  const encryptedPrivateKey = encryptPrivateKey(privateKey, password);
+  const { encryptedData, salt, iv } = encryptPrivateKey(
+    privateKey.toString("hex"),
+    password
+  );
+  // const decryptedData = decryptPrivateKey(encryptedData, password, salt, iv);
 
   const issuer = new Issuer({
     issuer_id,
     hashed_password: hashedPassword,
     DID: did,
-    encrypted_private_key: encryptedPrivateKey,
-    name,
+    encrypted_private_key: encryptedData,
+    name: name,
+    sympol: sympol,
+    salt,
+    iv,
   });
 
   await issuer.save();
-  return { did, issuer_id };
+  return {
+    did,
+    issuer_id,
+    publicKey: publicKey.toString("hex"),
+    privateKey: privateKey.toString("hex"),
+    encrypted_private_key: encryptedData,
+    name: name,
+    sympol: sympol,
+    // decryptPrivateKey: decryptedData,
+  };
 };
 
 const registerHolder = async (data) => {
@@ -118,15 +129,21 @@ const registerHolder = async (data) => {
   });
   if (existingHolder) throw new Error("Holder ID or Citizen ID already exists");
 
-  const { did, privateKey } = await createDID();
+  const { privateKey, publicKey } = await generateKey();
+  const did = generateRandomString(64);
   const hashedPassword = await bcrypt.hash(password, 10);
-  const encryptedPrivateKey = encryptPrivateKey(privateKey, password);
+  const { encryptedData, salt, iv } = encryptPrivateKey(
+    privateKey.toString("hex"),
+    password
+  );
 
   const holder = new Holder({
     holder_id,
     hashed_password: hashedPassword,
     DID: did,
-    encrypted_private_key: encryptedPrivateKey,
+    encrypted_private_key: encryptedData,
+    salt,
+    iv,
     name,
     citizen_id,
     gender,
@@ -147,15 +164,22 @@ const registerVerifier = async (data) => {
   const existingVerifier = await Verifier.findOne({ verifier_id });
   if (existingVerifier) throw new Error("Verifier ID already exists");
 
-  const { did, privateKey } = await createDID();
+  const { privateKey, publicKey } = await generateKey();
+  const did = generateRandomString(64);
+
   const hashedPassword = await bcrypt.hash(password, 10);
-  const encryptedPrivateKey = encryptPrivateKey(privateKey, password);
+  const { encryptedData, salt, iv } = encryptPrivateKey(
+    privateKey.toString("hex"),
+    password
+  );
 
   const verifier = new Verifier({
     verifier_id,
     hashed_password: hashedPassword,
     DID: did,
-    encrypted_private_key: encryptedPrivateKey,
+    encrypted_private_key: encryptedData,
+    salt,
+    iv,
     name,
     symbol,
   });

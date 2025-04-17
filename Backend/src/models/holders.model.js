@@ -5,9 +5,11 @@ const holderSchema = new mongoose.Schema({
   hashed_password: { type: String, required: true },
   DID: { type: String, required: true, unique: true },
   encrypted_private_key: { type: String, required: true },
+  salt: { type: String, required: true },
+  iv: { type: String, required: true },
   name: { type: String, required: true },
   citizen_id: { type: String, required: true, unique: true },
-  gender: { type: Number, required: true, enum: [0, 1, 2] }, // 0: Nam, 1: Nữ, 2: Khác
+  gender: { type: String, required: true, enum: [0, 1, 2] }, // 0: Nam, 1: Nữ, 2: Khác
   date_of_birth: { type: Date, required: true },
   place_of_birth: { type: String, required: true },
   major: { type: String, required: true },
