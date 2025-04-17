@@ -11,4 +11,6 @@ router.get(
 );
 router.post("/degree", issuerMiddleware, issuerController.createDegree);
 
+router.post("/register-did", issuerController.registerDIDController);
+
 module.exports = router;
