@@ -70,7 +70,7 @@ const refreshToken = async (refresh_token) => {
 };
 
 const registerIssuer = async (data) => {
-  const { issuer_id, password, name, sympol } = data;
+  const { issuer_id, password, name, school_code, sympol } = data;
   const existingIssuer = await Issuer.findOne({ issuer_id });
   if (existingIssuer) throw new Error("Issuer ID already exists");
 
@@ -90,7 +90,9 @@ const registerIssuer = async (data) => {
     hashed_password: hashedPassword,
     DID: did,
     encrypted_private_key: encryptedData,
+    public_key: "0x" + publicKey.toString("hex"),
     name: name,
+    school_code: school_code,
     sympol: sympol,
     salt,
     iv,
@@ -100,10 +102,11 @@ const registerIssuer = async (data) => {
   return {
     did,
     issuer_id,
-    publicKey: publicKey.toString("hex"),
-    privateKey: privateKey.toString("hex"),
+    publicKey: "0x" + publicKey.toString("hex"),
+    privateKey: "0x" + privateKey.toString("hex"),
     encrypted_private_key: encryptedData,
     name: name,
+    school_code: school_code,
     sympol: sympol,
     // decryptPrivateKey: decryptedData,
   };

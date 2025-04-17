@@ -42,11 +42,6 @@ const createDegree = async (data) => {
     date_of_issue,
     signature,
   } = data;
-  const existDegree = await Degree.findOne({
-    holder_did: holder_did,
-    issuer_did: issuer_did,
-  });
-  if (existDegree) throw new Error("Degree already exists!");
 
   const degree = new Degree({
     holder_did,
