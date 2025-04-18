@@ -2,6 +2,7 @@ import React from "react";
 import NavigationHolder from "../../components/Holder/NavigationHolder.js";
 import { FaAward, FaCheckCircle } from 'react-icons/fa';
 import ZuniLogo from "../../assets/ZUNI.svg";
+import { Helmet } from "react-helmet";
 
 const studentInfo = {
   id: "19110004",
@@ -19,6 +20,9 @@ const studentInfo = {
 const DegreeDetail = () => {
   return (
     <NavigationHolder>
+      <Helmet>
+          <title>Chi tiết văn bằng</title>
+      </Helmet>
       <div className="flex justify-center items-center w-full h-full bg-gray-100">
         <div className="bg-white border-2 border-blue-600 p-3 shadow-lg">
           <div className="bg-white border-2 border-blue-500 py-12 px-16 shadow-lg">

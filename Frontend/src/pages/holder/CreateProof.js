@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import NavigationHolder from "../../components/Holder/NavigationHolder.js";
+import { Helmet } from "react-helmet";
+
 
 const CreateProof = () => {
   const [did, setDid] = useState("");
@@ -31,6 +33,9 @@ const CreateProof = () => {
 
   return (
     <NavigationHolder>
+      <Helmet>
+          <title>Tạo proof</title>
+      </Helmet>
         <h1 className="font-bold text-2xl mt-10 ml-10 ">Create Proof</h1>
         <div className=" m-10 p-10 rounded-xl shadow-lg space-y-6">
             {/* Nhập DID + nút kiểm tra */}

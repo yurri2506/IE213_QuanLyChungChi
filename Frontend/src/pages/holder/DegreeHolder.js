@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import NavigationHolder from "../../components/Holder/NavigationHolder.js";
 import { FaAward } from 'react-icons/fa';
 import { HiChevronRight } from "react-icons/hi";
+import { Helmet } from "react-helmet";
 
 const DegreeCard = ({ name }) => {
     const navigate = useNavigate();
@@ -28,6 +29,9 @@ const DegreeHolder = () => {
     
     return (
         <NavigationHolder>
+          <Helmet>
+              <title>Danh sách văn bằng</title>
+          </Helmet>
             <h1 className="font-bold text-2xl mt-10 ml-10 ">Your degrees</h1>
             <div className="holder-degree m-10 px-10 grid grid-cols-1 md:grid-cols-4 gap-10 ">
                 <DegreeCard name="Bachelor of degree" />
