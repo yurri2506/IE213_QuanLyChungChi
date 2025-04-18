@@ -29,7 +29,7 @@ const DegreeHolder = () => {
     return (
         <NavigationHolder>
             <h1 className="font-bold text-2xl mt-10 ml-10 ">Your degrees</h1>
-            <div className="holder-degree m-10 px-10 grid grid-cols-1 md:grid-cols-4 gap-10">
+            <div className="holder-degree m-10 px-10 grid grid-cols-1 md:grid-cols-4 gap-10 ">
                 <DegreeCard name="Bachelor of degree" />
                 <DegreeCard name="Master of degree" />
                 <DegreeCard name="Doctor of degree" />

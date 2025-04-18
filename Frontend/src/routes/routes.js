@@ -8,6 +8,8 @@ import Contact from "../pages/contact.js";
 import Info from "../pages/holder/InfoHolder.js";
 import DegreeHolder from "../pages/holder/DegreeHolder.js";
 import DetailDegree from "../pages/holder/DetailDegree.js";
+import CreateProof from "../pages/holder/CreateProof.js";
+import ChangePassword from "../pages/holder/ChangePassword.js";
 
 const Router = () => {
   return (
@@ -21,6 +23,8 @@ const Router = () => {
       <Route path="/info-holder" element={<Info />} />
       <Route path="/degree-holder" element={<DegreeHolder />} />
       <Route path="/degree-holder/detail" element={<DetailDegree />} />
+      <Route path="/create-proof" element={<CreateProof />} />
+      <Route path="/change-password" element={<ChangePassword />} /> 
     </Routes>
   );
 };
