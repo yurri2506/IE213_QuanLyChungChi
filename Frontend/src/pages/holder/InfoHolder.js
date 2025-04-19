@@ -1,5 +1,6 @@
 import React from "react";  
 import NavigationHolder from "../../components/Holder/NavigationHolder.js";
+import { Helmet } from "react-helmet";
 
 const InfoCard = ({ label, value }) => (
     <div className="">
@@ -34,7 +35,10 @@ const Info = () => {
     ];
 
     return (
-        <NavigationHolder>            
+        <NavigationHolder> 
+            <Helmet>
+                <title>Thông tin chủ sở hữu</title>
+            </Helmet>           
             <h1 className="font-bold text-2xl mt-10 ml-10 ">Your Infomation</h1>
             <div className="holder-info shadow-lg rounded-b-lg m-10 px-10 pb-10">
                 <h2 className="text-xl font-bold mb-6">General Information</h2>
