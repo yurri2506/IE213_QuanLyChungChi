@@ -14,7 +14,7 @@ async function main() {
   const msg = getMsgFromDegree();
 
   const prvKey = Buffer.from(
-    "0001020304050607080900010203040506070809000102030405060708090002",
+    "5af375b5bc5785fe1cec48d8636d8eaf0bff8e24aa6a8c64766d9ebd97308b88",
     "hex"
   );
 

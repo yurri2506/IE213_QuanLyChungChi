@@ -14,6 +14,9 @@ async function generateKey() {
 
   const pPubKey = babyJub.packPoint(pubKey);
 
+  console.log("Private Key: ", prvKey.toString("hex"));
+  console.log("Public Key: ", pPubKey.toString("hex"));
+
   return { privateKey: prvKey, publicKey: new BN(pPubKey) };
 }
 
