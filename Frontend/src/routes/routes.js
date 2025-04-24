@@ -13,6 +13,7 @@ import ChangePassword from "../pages/holder/ChangePassword.js";
 import InfoVerifier from "../pages/verifier/InfoVerifier.js";
 import Verified from "../pages/verifier/Verified.js";
 import InfoIssuer from "../pages/issuer/InfoIssuer.js";
+import SignIn from "../pages/signIn/index.js";
 export const routes = [
   {
     path: "/",
@@ -69,6 +70,10 @@ export const routes = [
   {
     path: "/submited-proofs",
     page: Verified,
+  },
+  {
+    path: "/signin",
+    page: SignIn,
   },
   // Redirect to Home for any other route
   {
