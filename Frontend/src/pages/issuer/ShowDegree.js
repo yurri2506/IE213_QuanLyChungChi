@@ -11,6 +11,8 @@ export default function HomeIssuer() {
   };
 
   const [uploadedDegrees, setUploadedDegrees] = useState([]);
+  const [showPasswordPopup, setShowPasswordPopup] = useState(false);
+  const [password, setPassword] = useState("");
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -35,8 +37,14 @@ export default function HomeIssuer() {
   };
 
   const handleSubmit = () => {
-    console.log("Submitting degrees:", uploadedDegrees);
-    // TODO: Gửi API ở đây
+    setShowPasswordPopup(true); // hiển thị popup
+  };
+
+  const handlePasswordConfirm = () => {
+    console.log("Submitting degrees with password:", password);
+    console.log("Degrees:", uploadedDegrees);
+    setShowPasswordPopup(false);
+    setPassword(""); // reset
   };
 
   return (
@@ -340,6 +348,34 @@ export default function HomeIssuer() {
           </div>
         )}
       </div>
+      {showPasswordPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-xl shadow-md w-96">
+            <h2 className="text-lg font-semibold mb-4">Input Your Password</h2>
+            <input
+              type="password"
+              className="w-full border px-3 py-2 mb-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+            />
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={() => setShowPasswordPopup(false)}
+                className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handlePasswordConfirm}
+                className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </NavigationIssuer>
   );
 }
