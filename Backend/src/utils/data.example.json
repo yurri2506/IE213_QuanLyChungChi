@@ -1,20 +1,20 @@
 {
-  "name": "Đỗ Nguyên Phương",
+  "name": "Thạch Minh Luân",
   "dateOfBirth": {
-    "day": "12",
-    "month": "11",
-    "year": "2003"
+    "day": "24",
+    "month": "08",
+    "year": "2004"
   },
-  "schoolCode": "QCS",
+  "schoolCode": "QSC",
   "yearGraduation": "2026",
-  "major": "Information technology",
+  "major": "Information Technology",
   "classification": "Very good",
   "modeOfStudy": "Full-time",
   "serialNumber": "00324431",
   "referenceNumber": "178/QĐ_ĐHCNTT",
   "dateOfIssue": {
-    "day": "10",
-    "month": "11",
-    "year": "2027"
+    "day": "24",
+    "month": "08",
+    "year": "2026"
   }
 }

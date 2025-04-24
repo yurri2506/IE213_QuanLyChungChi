@@ -13,6 +13,12 @@ router.get(
 // Lấy các bằng cấp đã nhận
 router.get("/degrees", holderMiddleware, holderController.getDegreesController);
 
+router.post(
+  "/proofs",
+  holderMiddleware,
+  holderController.createProofController
+);
+
 // Gửi ZKP và tuyên bố đến verifier
 // router.post(
 //   "/verifiers/proofs/:verifierDID",

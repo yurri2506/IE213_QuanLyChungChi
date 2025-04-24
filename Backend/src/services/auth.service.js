@@ -28,6 +28,8 @@ const login = async (user_id, password) => {
     throw new Error("User not found");
   }
 
+  const name = user.name;
+
   // So sánh mật khẩu
   const isValid = await bcrypt.compare(password, user.hashed_password);
   if (!isValid) {
@@ -48,7 +50,7 @@ const login = async (user_id, password) => {
     { expiresIn: "7d" } // Hết hạn sau 7 ngày
   );
 
-  return { access_token, refresh_token, role, did: user.DID };
+  return { access_token, refresh_token, role, did: user.DID, name };
 };
 
 const refreshToken = async (refresh_token) => {

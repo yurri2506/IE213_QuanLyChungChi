@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQrcode, faShieldHeart } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faQrcode, faShieldHeart } from "@fortawesome/free-solid-svg-icons";
 
 const VerifierSidebar = () => {
   const location = useLocation();
@@ -9,15 +9,15 @@ const VerifierSidebar = () => {
 
   const menuItems = [
     {
-      label: 'QR',
+      label: "QR",
       icon: faQrcode,
-      to: '/qr'
+      to: "/info-verifier",
     },
     {
-      label: 'Verified',
+      label: "Verified",
       icon: faShieldHeart,
-      to: '/xac-minh'
-    }
+      to: "/submited-proofs",
+    },
   ];
 
   return (
@@ -30,8 +30,8 @@ const VerifierSidebar = () => {
               className={`text-xl p-2 block rounded font-bold no-underline mx-3 items-center transition-all duration-200
                 ${
                   currentPath === item.to
-                    ? 'bg-blue-600 text-white scale-[1.03]'
-                    : 'text-black hover:bg-blue-700 hover:text-white active:bg-[#9AC8CD]'
+                    ? "bg-blue-600 text-white scale-[1.03]"
+                    : "text-black hover:bg-blue-700 hover:text-white active:bg-[#9AC8CD]"
                 }
                 active:scale-[0.98]`}
             >
