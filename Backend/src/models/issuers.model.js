@@ -8,7 +8,7 @@ const issuerSchema = new mongoose.Schema({
   public_key: { type: String, required: true },
   name: { type: String, required: true },
   school_code: { type: String, required: true },
-  sympol: { type: String, required: true },
+  symbol: { type: String, required: true },
   salt: { type: String, required: true },
   iv: { type: String, required: true },
   created_at: { type: Date, default: Date.now },

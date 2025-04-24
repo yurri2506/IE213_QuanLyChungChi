@@ -19,7 +19,7 @@ const getHolderProfileController = async (req, res) => {
 
 const getDegreesController = async (req, res) => {
   try {
-    const { sub } = req.user; // holder_id từ JWT
+    const { sub } = req.user;
     const holder = await holderService.getHolderProfile(sub);
     const degrees = await holderService.getDegreesByHolder(holder.DID);
     res.status(200).json({
@@ -60,19 +60,21 @@ const createProofController = async (req, res) => {
 const sendProofToVerifierController = async (req, res) => {
   try {
     const { verifierDID } = req.params;
-    const { proof, statement } = req.body;
+    const { issuer_did, proof, major } = req.body;
     const { sub } = req.user;
 
-    if (!proof || !statement) {
+    if (!proof || !major) {
       return res.status(400).json({ message: "Missing proof or statement" });
     }
 
     const holder = await holderService.getHolderProfile(sub);
 
-    const result = await holderService.sendProofToVerifier(verifierDID, {
+    const result = await holderService.sendProofToVerifier({
+      verifierDID: verifierDID,
+      issuer_did,
+      holder_did: holder.DID,
       proof,
-      statement,
-      holder_did: holder.holder_did,
+      major,
     });
 
     res.status(200).json(result);
@@ -88,5 +90,5 @@ module.exports = {
   getHolderProfileController,
   getDegreesController,
   createProofController,
-  //sendProofToVerifierController,
+  sendProofToVerifierController,
 };

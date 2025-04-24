@@ -14,6 +14,14 @@ const generateRandomString = (length = 64) => {
   return result;
 };
 
+const generateZuniDID = (publicKeyHex) => {
+  const hash = crypto
+    .createHash("sha256")
+    .update(publicKeyHex, "hex")
+    .digest("hex");
+  return hash;
+};
+
 // Mã hóa khóa riêng (giả lập, thay bằng thư viện thực tế như ethers.js)
 const encryptPrivateKey = (privateKey, password) => {
   // TODO: Dùng thuật toán mã hóa thực tế
@@ -279,4 +287,5 @@ module.exports = {
   convertFromLePartials,
   hexToString,
   parseDate,
+  generateZuniDID,
 };

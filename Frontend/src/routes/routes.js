@@ -12,6 +12,7 @@ import CreateProof from "../pages/holder/CreateProof.js";
 import ChangePassword from "../pages/holder/ChangePassword.js";
 import InfoVerifier from "../pages/verifier/InfoVerifier.js";
 import Verified from "../pages/verifier/Verified.js";
+import InfoIssuer from "../pages/issuer/InfoIssuer.js";
 const Router = () => {
   return (
     <Routes>
@@ -22,6 +23,7 @@ const Router = () => {
       <Route path="/issuer" element={<HomeIssuer />} />
       <Route path="/login" element={<Login />} />
       <Route path="/info-holder" element={<Info />} />
+      <Route path="/info-issuer" element={<InfoIssuer />} />
       <Route path="/degree-holder" element={<DegreeHolder />} />
       <Route path="/degree-holder/detail" element={<DetailDegree />} />
       <Route path="/create-proof" element={<CreateProof />} />

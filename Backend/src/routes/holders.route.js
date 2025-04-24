@@ -20,10 +20,10 @@ router.post(
 );
 
 // Gửi ZKP và tuyên bố đến verifier
-// router.post(
-//   "/verifiers/proofs/:verifierDID",
-//   holderMiddleware,
-//   holderController.sendProofToVerifierController
-// );
+router.post(
+  "/verifiers/proofs/:verifierDID",
+  holderMiddleware,
+  holderController.sendProofToVerifierController
+);
 
 module.exports = router;

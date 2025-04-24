@@ -9,6 +9,7 @@ const {
   generateRandomString,
   encryptPrivateKey,
   decryptPrivateKey,
+  generateZuniDID,
 } = require("../utils/utils");
 
 const login = async (user_id, password) => {
@@ -72,13 +73,13 @@ const refreshToken = async (refresh_token) => {
 };
 
 const registerIssuer = async (data) => {
-  const { issuer_id, password, name, school_code, sympol } = data;
+  const { issuer_id, password, name, school_code, symbol } = data;
   const existingIssuer = await Issuer.findOne({ issuer_id });
   if (existingIssuer) throw new Error("Issuer ID already exists");
 
   const { privateKey, publicKey } = await generateKey();
 
-  const did = generateRandomString(64);
+  const did = generateZuniDID(publicKey);
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const { encryptedData, salt, iv } = encryptPrivateKey(
@@ -95,7 +96,7 @@ const registerIssuer = async (data) => {
     public_key: "0x" + publicKey.toString("hex"),
     name: name,
     school_code: school_code,
-    sympol: sympol,
+    symbol: symbol,
     salt,
     iv,
   });
@@ -135,7 +136,7 @@ const registerHolder = async (data) => {
   if (existingHolder) throw new Error("Holder ID or Citizen ID already exists");
 
   const { privateKey, publicKey } = await generateKey();
-  const did = generateRandomString(64);
+  const did = generateZuniDID(publicKey);
   const hashedPassword = await bcrypt.hash(password, 10);
   const { encryptedData, salt, iv } = encryptPrivateKey(
     privateKey.toString("hex"),
@@ -170,7 +171,7 @@ const registerVerifier = async (data) => {
   if (existingVerifier) throw new Error("Verifier ID already exists");
 
   const { privateKey, publicKey } = await generateKey();
-  const did = generateRandomString(64);
+  const did = generateZuniDID(publicKey);
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const { encryptedData, salt, iv } = encryptPrivateKey(

@@ -11,6 +11,7 @@ const {
 } = require("../utils/utils");
 const { ObjectId } = require("mongodb");
 const { generateProofFromInput } = require("../utils/generateProof");
+const submitted_proof = require("../models/submitted_proof");
 
 // Lấy thông tin Holder
 const getHolderProfile = async (holder_id) => {
@@ -109,25 +110,35 @@ const createProof = async (holder_did, issuer_did, degree_id) => {
   };
 };
 
-/**
- * Gửi ZKP + tuyên bố đến verifier
- */
-const sendProofToVerifier = async (
+const sendProofToVerifier = async ({
   verifier_did,
-  { proof, statement, holder_did }
-) => {
-  const verifier = await Verifier.findOne({ verifier_did });
-  if (!verifier) throw new Error("Verifier not found");
+  issuer_did,
+  holder_did,
+  proof,
+  major,
+}) => {
+  console.log(verifier_did);
+  const verifier = await Verifier.findOne({ DID: verifier_did });
+  if (!verifier) throw new Error(`Verifier not found: ${verifier_did}`);
 
-  // Giả định lưu dữ liệu proof gửi đi vào database (tuỳ mục đích thực tế có thể khác)
-  verifier.received_proofs = verifier.received_proofs || [];
-  verifier.received_proofs.push({
+  const issuer = await Issuer.findOne({ DID: issuer_did });
+  if (!issuer) throw new Error("Issuer not found");
+
+  const holder = await Holder.findOne({ DID: holder_did });
+  if (!holder) throw new Error("Holder not found");
+
+  const Submitted_Proof = new submitted_proof({
+    verifier_did,
     holder_did,
-    statement,
+    issuer_did,
+    issuer_name: issuer.name,
+    issuer_symbol: issuer.sympol,
+    is_verified: false,
     proof,
-    received_at: new Date(),
+    major,
   });
-  await verifier.save();
+
+  await Submitted_Proof.save();
 
   return {
     success: true,
@@ -138,6 +149,6 @@ const sendProofToVerifier = async (
 module.exports = {
   getHolderProfile,
   getDegreesByHolder,
-  //sendProofToVerifier,
+  sendProofToVerifier,
   createProof,
 };
