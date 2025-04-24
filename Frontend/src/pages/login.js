@@ -26,7 +26,7 @@ function Login() {
         localStorage.setItem("access_token", token);
         localStorage.setItem("refresh_token", response.data.refresh_token);
         localStorage.setItem("name", response.data.name);
-        if (response.data.role === "issuer") {
+        if (response.data.role === "ISSUER") {
           window.location.href = "/info-issuer";
         }
         if (response.data.role === "HOLDER") {
