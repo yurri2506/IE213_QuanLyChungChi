@@ -73,46 +73,89 @@ export default function HomeIssuer() {
       </div>
       <div className="m-10 rounded-xl shadow-lg space-y-6 ">
         {activeTab === "tab1" ? (
-          <div>
-            <table className="min-w-full table-auto border border-gray-300">
-              <thead className="bg-gray-100">
+          // <div>
+          //   <table className="min-w-full table-auto border border-gray-300">
+          //     <thead className="bg-gray-100">
+          //       <tr>
+          //         <th className="border px-1 py-2">No.</th>
+          //         <th className="border px-1 py-2">Student ID</th>
+          //         <th className="border px-1 py-2">Name</th>
+          //         <th className="border px-1 py-2">Date of birth</th>
+          //         <th className="border px-1 py-2">Faculty</th>
+          //         <th className="border px-1 py-2">Major</th>
+          //         <th className="border px-1 py-2">Degree classification</th>
+          //         <th className="border px-1 py-2">Mode of study</th>
+          //         <th className="border px-1 py-2">Year graduation</th>
+          //         <th className="border px-1 py-2">Date of issue</th>
+          //         <th className="border px-1 py-2">Serial number</th>
+          //         <th className="border px-1 py-2">Reference number</th>
+          //       </tr>
+          //     </thead>
+          //     <tbody>
+          //       {students.map((s, index) => (
+          //         <tr
+          //           key={s.studentId}
+          //           className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+          //         >
+          //           <td className="border px-2 py-1 text-center">{s.no}</td>
+          //           <td className="border px-2 py-1">{s.studentId}</td>
+          //           <td className="border px-2 py-1">{s.name}</td>
+          //           <td className="border px-2 py-1">{s.dob}</td>
+          //           <td className="border px-2 py-1">{s.faculty}</td>
+          //           <td className="border px-2 py-1">{s.major}</td>
+          //           <td className="border px-2 py-1">
+          //             {s.degreeClassification}
+          //           </td>
+          //           <td className="border px-2 py-1">{s.modeOfStudy}</td>
+          //           <td className="border px-2 py-1 text-center">
+          //             {s.yearGraduation}
+          //           </td>
+          //           <td className="border px-2 py-1">{s.dateOfIssue}</td>
+          //           <td className="border px-2 py-1">{s.serialNumber}</td>
+          //           <td className="border px-2 py-1">{s.referenceNumber}</td>
+          //         </tr>
+          //       ))}
+          //     </tbody>
+          //   </table>
+          // </div>
+          <div className="overflow-x-auto bg-gray-100 p-4 rounded-lg">
+            <table className="min-w-full text-sm text-center border-separate border-spacing-y-3">
+              <thead className="bg-white shadow-sm rounded-md">
                 <tr>
-                  <th className="border px-1 py-2">No.</th>
-                  <th className="border px-1 py-2">Student ID</th>
-                  <th className="border px-1 py-2">Name</th>
-                  <th className="border px-1 py-2">Date of birth</th>
-                  <th className="border px-1 py-2">Faculty</th>
-                  <th className="border px-1 py-2">Major</th>
-                  <th className="border px-1 py-2">Degree classification</th>
-                  <th className="border px-1 py-2">Mode of study</th>
-                  <th className="border px-1 py-2">Year graduation</th>
-                  <th className="border px-1 py-2">Date of issue</th>
-                  <th className="border px-1 py-2">Serial number</th>
-                  <th className="border px-1 py-2">Reference number</th>
+                  <th className="px-3 py-2">No.</th>
+                  <th className="px-3 py-2">Student ID</th>
+                  <th className="px-3 py-2">Name</th>
+                  <th className="px-3 py-2">Date of birth</th>
+                  <th className="px-3 py-2">Faculty</th>
+                  <th className="px-3 py-2">Major</th>
+                  <th className="px-3 py-2">Degree classification</th>
+                  <th className="px-3 py-2">Mode of study</th>
+                  <th className="px-3 py-2">Year graduation</th>
+                  <th className="px-3 py-2">Date of issue</th>
+                  <th className="px-3 py-2">Serial number</th>
+                  <th className="px-3 py-2">Reference number</th>
                 </tr>
               </thead>
               <tbody>
                 {students.map((s, index) => (
                   <tr
                     key={s.studentId}
-                    className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                    className="bg-white rounded-xl shadow-sm"
                   >
-                    <td className="border px-2 py-1 text-center">{s.no}</td>
-                    <td className="border px-2 py-1">{s.studentId}</td>
-                    <td className="border px-2 py-1">{s.name}</td>
-                    <td className="border px-2 py-1">{s.dob}</td>
-                    <td className="border px-2 py-1">{s.faculty}</td>
-                    <td className="border px-2 py-1">{s.major}</td>
-                    <td className="border px-2 py-1">
-                      {s.degreeClassification}
+                    <td className="px-3 py-2 rounded-l-xl">{index + 1}</td>
+                    <td className="px-3 py-2">{s.studentId}</td>
+                    <td className="px-3 py-2">{s.name}</td>
+                    <td className="px-3 py-2">{s.dob}</td>
+                    <td className="px-3 py-2">{s.faculty}</td>
+                    <td className="px-3 py-2">{s.major}</td>
+                    <td className="px-3 py-2">{s.degreeClassification}</td>
+                    <td className="px-3 py-2">{s.modeOfStudy}</td>
+                    <td className="px-3 py-2">{s.yearGraduation}</td>
+                    <td className="px-3 py-2">{s.dateOfIssue}</td>
+                    <td className="px-3 py-2">{s.serialNumber}</td>
+                    <td className="px-3 py-2 rounded-r-xl">
+                      {s.referenceNumber}
                     </td>
-                    <td className="border px-2 py-1">{s.modeOfStudy}</td>
-                    <td className="border px-2 py-1 text-center">
-                      {s.yearGraduation}
-                    </td>
-                    <td className="border px-2 py-1">{s.dateOfIssue}</td>
-                    <td className="border px-2 py-1">{s.serialNumber}</td>
-                    <td className="border px-2 py-1">{s.referenceNumber}</td>
                   </tr>
                 ))}
               </tbody>
