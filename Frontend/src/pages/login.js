@@ -1,12 +1,48 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-
+import { login } from "../services/apiAuth.js";
 import ZuniLogo from "../assets/ZUNI.svg";
 import UIT from "../assets/UIT.svg";
 import BackgroundImage from "../assets/bgImage.jpg";
 
 function Login() {
+  const [userId, setUserId] = useState("22520827");
+  const [password, setPassword] = useState("SecureP@ssw0rd");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      const response = await login(userId, password);
+      if (response) {
+        // Handle successful login (e.g., redirect to dashboard)
+        console.log("Login response:", response);
+        const token = response.data.access_token;
+        localStorage.setItem("access_token", token);
+        localStorage.setItem("refresh_token", response.data.refresh_token);
+        localStorage.setItem("name", response.data.name);
+        if (response.data.role === "issuer") {
+          window.location.href = "/info-issuer";
+        }
+        if (response.data.role === "HOLDER") {
+          window.location.href = "/info-holder";
+        }
+        if (response.data.role === "VERIFIER") {
+          window.location.href = "/info-verifier";
+        }
+      } else {
+        setError(response.message);
+      }
+    } catch (err) {
+      setError("An error occurred during login. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
   }, []);
@@ -35,18 +71,23 @@ function Login() {
           <form className="space-y-4">
             <input
               type="text"
-              placeholder="Account Id"
+              placeholder="User id"
               className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#014AC6]"
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
             />
             <input
               type="password"
               placeholder="Password"
               className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#014AC6]"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <div className="flex flex-col items-center mt-4 border-t border-gray-300 pt-4 space-y-3">
               <button
                 type="submit"
                 className="w-full bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-all duration-300"
+                onClick={handleLogin}
               >
                 Log in
               </button>

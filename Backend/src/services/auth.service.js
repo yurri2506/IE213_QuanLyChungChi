@@ -9,6 +9,7 @@ const {
   generateRandomString,
   encryptPrivateKey,
   decryptPrivateKey,
+  generateZuniDID,
 } = require("../utils/utils");
 
 const login = async (user_id, password) => {
@@ -27,6 +28,8 @@ const login = async (user_id, password) => {
   if (!user) {
     throw new Error("User not found");
   }
+
+  const name = user.name;
 
   // So sánh mật khẩu
   const isValid = await bcrypt.compare(password, user.hashed_password);
@@ -48,7 +51,7 @@ const login = async (user_id, password) => {
     { expiresIn: "7d" } // Hết hạn sau 7 ngày
   );
 
-  return { access_token, refresh_token, role, did: user.DID };
+  return { access_token, refresh_token, role, did: user.DID, name };
 };
 
 const refreshToken = async (refresh_token) => {
@@ -70,13 +73,13 @@ const refreshToken = async (refresh_token) => {
 };
 
 const registerIssuer = async (data) => {
-  const { issuer_id, password, name, sympol } = data;
+  const { issuer_id, password, name, school_code, symbol } = data;
   const existingIssuer = await Issuer.findOne({ issuer_id });
   if (existingIssuer) throw new Error("Issuer ID already exists");
 
   const { privateKey, publicKey } = await generateKey();
 
-  const did = generateRandomString(64);
+  const did = generateZuniDID(publicKey);
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const { encryptedData, salt, iv } = encryptPrivateKey(
@@ -90,8 +93,10 @@ const registerIssuer = async (data) => {
     hashed_password: hashedPassword,
     DID: did,
     encrypted_private_key: encryptedData,
+    public_key: "0x" + publicKey.toString("hex"),
     name: name,
-    sympol: sympol,
+    school_code: school_code,
+    symbol: symbol,
     salt,
     iv,
   });
@@ -100,10 +105,11 @@ const registerIssuer = async (data) => {
   return {
     did,
     issuer_id,
-    publicKey: publicKey.toString("hex"),
-    privateKey: privateKey.toString("hex"),
+    publicKey: "0x" + publicKey.toString("hex"),
+    privateKey: "0x" + privateKey.toString("hex"),
     encrypted_private_key: encryptedData,
     name: name,
+    school_code: school_code,
     sympol: sympol,
     // decryptPrivateKey: decryptedData,
   };
@@ -130,7 +136,7 @@ const registerHolder = async (data) => {
   if (existingHolder) throw new Error("Holder ID or Citizen ID already exists");
 
   const { privateKey, publicKey } = await generateKey();
-  const did = generateRandomString(64);
+  const did = generateZuniDID(publicKey);
   const hashedPassword = await bcrypt.hash(password, 10);
   const { encryptedData, salt, iv } = encryptPrivateKey(
     privateKey.toString("hex"),
@@ -165,7 +171,7 @@ const registerVerifier = async (data) => {
   if (existingVerifier) throw new Error("Verifier ID already exists");
 
   const { privateKey, publicKey } = await generateKey();
-  const did = generateRandomString(64);
+  const did = generateZuniDID(publicKey);
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const { encryptedData, salt, iv } = encryptPrivateKey(

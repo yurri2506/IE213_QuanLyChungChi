@@ -14,6 +14,14 @@ const generateRandomString = (length = 64) => {
   return result;
 };
 
+const generateZuniDID = (publicKeyHex) => {
+  const hash = crypto
+    .createHash("sha256")
+    .update(publicKeyHex, "hex")
+    .digest("hex");
+  return hash;
+};
+
 // Mã hóa khóa riêng (giả lập, thay bằng thư viện thực tế như ethers.js)
 const encryptPrivateKey = (privateKey, password) => {
   // TODO: Dùng thuật toán mã hóa thực tế
@@ -136,8 +144,8 @@ const getPedersenHashFromDegree = async () => {
 → nếu là object (như ngày/tháng/năm), lặp qua từng phần tử
 → trả về một object JSON với các giá trị hex, để dùng làm input cho Circom
 */
-const getInputFromDegree = () => {
-  const dataStringify = fs.readFileSync("./data.example.json");
+const getInputFromDegree = (dataStringify) => {
+  // const dataStringify = fs.readFileSync("./data.example.json");
   const data = JSON.parse(dataStringify);
 
   const input = {};
@@ -230,6 +238,40 @@ const hexToString = (inputJson) => {
   return output;
 };
 
+const bufferFromLe = (hexStr) => {
+  // Kiểm tra hexStr có phải là chuỗi không
+  if (typeof hexStr !== "string") {
+    throw new Error("Input must be a string.");
+  }
+
+  // Chắc chắn hexStr bắt đầu bằng "0x" và loại bỏ nó nếu có
+  if (hexStr.startsWith("0x")) {
+    hexStr = hexStr.slice(2); // bỏ "0x"
+  }
+
+  // Chuyển đổi chuỗi hex thành Buffer và đảo ngược
+  return Buffer.from(hexStr, "hex").reverse();
+};
+
+const convertFromLePartials = (partials) => {
+  if (partials.length !== 2) throw new Error("Must have exactly 2 partials");
+
+  // Xử lý hai phần của signature và chuyển đổi sang định dạng Buffer
+  const buf1 = bufferFromLe(partials[0]); // first 16 bytes
+  const buf2 = bufferFromLe(partials[1]); // last 16 bytes
+
+  return Buffer.concat([buf1, buf2]); // 32-byte buffer
+};
+
+const parseDate = (dateString) => {
+  const date = new Date(dateString);
+  return {
+    day: date.getDate().toString().padStart(2, "0"), // Đảm bảo có 2 chữ số
+    month: (date.getMonth() + 1).toString().padStart(2, "0"), // Lấy tháng, cộng 1 vì tháng bắt đầu từ 0
+    year: date.getFullYear().toString(),
+  };
+};
+
 module.exports = {
   generateRandomString,
   encryptPrivateKey,
@@ -242,5 +284,8 @@ module.exports = {
   getMsgFromDegree,
   bufferLe,
   convertToLePartials,
+  convertFromLePartials,
   hexToString,
+  parseDate,
+  generateZuniDID,
 };

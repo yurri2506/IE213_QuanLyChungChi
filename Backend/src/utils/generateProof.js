@@ -4,10 +4,10 @@ const fs = require("fs");
 const { AbiCoder } = require("ethers");
 
 //Tạo proof để  gửi cho verifier
-async function main() {
-  const degreeInput = JSON.parse(
-    fs.readFileSync(__dirname + "/./input.example.json", "utf8")
-  );
+async function generateProofFromInput(degreeInput) {
+  // const degreeInput = JSON.parse(
+  //   fs.readFileSync(__dirname + "/./input.example.json", "utf8")
+  // );
 
   // build witness calculator with webassembly
   const buffer = fs.readFileSync(__dirname + "/./zk_calculator/zuni.wasm");
@@ -32,12 +32,18 @@ async function main() {
   console.log("Solidity Calldata");
   console.log("proof: " + bytes);
   console.log("major: 0x" + degreeInput.major.slice(2).padStart(64, "0"));
+  return {
+    proof: bytes,
+    major: "0x" + degreeInput.major.slice(2).padStart(64, "0"),
+  };
 
-  const verifyKey = JSON.parse(
-    fs.readFileSync(__dirname + "/./zk_calculator/verification_key.json")
-  );
-  const isVerify = await groth16.verify(verifyKey, publicSignals, proof);
-  console.log("Verify:", isVerify);
+  //   const verifyKey = JSON.parse(
+  //     fs.readFileSync(__dirname + "/./zk_calculator/verification_key.json")
+  //   );
+  //   const isVerify = await groth16.verify(verifyKey, publicSignals, proof);
+  //   console.log("Verify:", isVerify);
 }
 
-main().catch((e) => console.log(e.message));
+module.exports = {
+  generateProofFromInput,
+};

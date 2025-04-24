@@ -1,1 +1,24 @@
-{"pubKeyPartials":["0x8a96732c11327a0c2f6aa4fe3780ada5","0x13c9964b2a3b3de60af440f7dd401770"],"r8Partials":["0xa3cac556c7762b101d4361d10f9f41ed","0x94cff987e91a62d1f27be1cb12845f63"],"sPartials":["0x1d0c7219d474184845f8d3b53333568a","0x05993e7afa7785c64c364094217e99f9"],"name":"0xc490e1bb97204e677579c3aa6e205068c6b0c6a16e67","dateOfBirth":["0x3132","0x3131","0x32303033"],"schoolCode":"0x554954","yearGraduation":"0x32303236","major":"0x496e666f726d6174696f6e20746563686e6f6c6f6779","classification":"0x5665727920676f6f64","modeOfStudy":"0x46756c6c2d74696d65","serialNumber":"0x3030333234343331","referenceNumber":"0x3137382f51c4905fc49048434e5454","dateOfIssue":["0x3130","0x3131","0x32303237"]}
+{
+  "pubKeyPartials": [
+    "0x268b5a7659ed7d71388d4b855256ba7f",
+    "0x937ac7b3318e0d1683622c08f363f001"
+  ],
+  "r8Partials": [
+    "0x163a7defdc7abfe298bba2d7bbd412d3",
+    "0x04a7c0f3c603caf4a201e16824de2e77"
+  ],
+  "sPartials": [
+    "0x05f468a0f4f554f587cf1e4c28f6c655",
+    "0x014e9562dc5bb3e5c22a47dec7acaf90"
+  ],
+  "name": "0x5468e1baa16368204d696e68204c75c3a26e",
+  "dateOfBirth": ["0x3234", "0x3038", "0x32303034"],
+  "schoolCode": "0x515343",
+  "yearGraduation": "0x32303236",
+  "major": "0x496e666f726d6174696f6e20546563686e6f6c6f6779",
+  "classification": "0x5665727920676f6f64",
+  "modeOfStudy": "0x46756c6c2d74696d65",
+  "serialNumber": "0x3030333234343331",
+  "referenceNumber": "0x3137382f51c4905fc49048434e5454",
+  "dateOfIssue": ["0x3234", "0x3038", "0x32303236"]
+}

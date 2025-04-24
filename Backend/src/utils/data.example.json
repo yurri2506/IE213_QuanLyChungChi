@@ -1,20 +1,20 @@
 {
-    "name": "Đỗ Nguyên Phương",
-    "dateOfBirth": {
-      "day": "12",
-      "month": "11",
-      "year": "2003"
-    },
-    "schoolCode": "UIT",
-    "yearGraduation": "2026",
-    "major": "Information technology",
-    "classification": "Very good",
-    "modeOfStudy": "Full-time",
-    "serialNumber": "00324431",
-    "referenceNumber": "178/QĐ_ĐHCNTT",
-    "dateOfIssue": {
-      "day": "10",
-      "month": "11",
-      "year": "2027"
-    }
+  "name": "Thạch Minh Luân",
+  "dateOfBirth": {
+    "day": "24",
+    "month": "08",
+    "year": "2004"
+  },
+  "schoolCode": "QSC",
+  "yearGraduation": "2026",
+  "major": "Information Technology",
+  "classification": "Very good",
+  "modeOfStudy": "Full-time",
+  "serialNumber": "00324431",
+  "referenceNumber": "178/QĐ_ĐHCNTT",
+  "dateOfIssue": {
+    "day": "24",
+    "month": "08",
+    "year": "2026"
   }
+}
