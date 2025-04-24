@@ -107,7 +107,7 @@ const registerIssuer = async (data) => {
     issuer_id,
     publicKey: "0x" + publicKey.toString("hex"),
     privateKey: "0x" + privateKey.toString("hex"),
-    encrypted_private_key: encryptedData,
+encrypted_private_key: encryptedData,
     name: name,
     school_code: school_code,
     sympol: symbol,
