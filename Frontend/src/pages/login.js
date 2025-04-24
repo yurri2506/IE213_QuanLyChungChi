@@ -5,12 +5,14 @@ import { login } from "../services/apiAuth.js";
 import ZuniLogo from "../assets/ZUNI.svg";
 import UIT from "../assets/UIT.svg";
 import BackgroundImage from "../assets/bgImage.jpg";
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [userId, setUserId] = useState("22520827");
   const [password, setPassword] = useState("SecureP@ssw0rd");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+
 
   const handleLogin = async (e) => {
     try {
@@ -41,6 +43,12 @@ function Login() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/signin'); // Chuyển đến trang signin
   };
 
   useEffect(() => {
@@ -96,6 +104,13 @@ function Login() {
                 className="text-sm text-[#014AC6] hover:underline transition duration-300"
               >
                 Forgot password?
+              </button>
+              <button
+                type="button"
+                className="text-sm text-[#014AC6] hover:underline transition duration-300"
+                onClick={handleClick}
+              >
+                Register for an account
               </button>
             </div>
           </form>

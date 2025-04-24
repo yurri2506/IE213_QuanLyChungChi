@@ -347,45 +347,53 @@ export default function HomeIssuer() {
                     SUBMIT DEGREES
                   </button>
                 </div>
-                <table className="min-w-full table-auto border border-gray-300">
-                  <thead className="bg-gray-100">
-                    <tr>
-                      <th className="border px-2 py-1">No</th>
-                      <th className="border px-2 py-1">Holder DID</th>
-                      <th className="border px-2 py-1">
-                        Degree classification
-                      </th>
-                      <th className="border px-2 py-1">Year graduation</th>
-                      <th className="border px-2 py-1">Serial number</th>
-                      <th className="border px-2 py-1">Reference number</th>
-                      <th className="border px-2 py-1">Date of issue</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {uploadedDegrees.map((deg, index) => (
-                      <tr
-                        key={index}
-                        className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                      >
-                        <td className="border px-2 py-1 text-center">
-                          {index + 1}
-                        </td>
-                        <td className="border px-2 py-1">{deg.holderDid}</td>
-                        <td className="border px-2 py-1">
-                          {deg.degreeClassification}
-                        </td>
-                        <td className="border px-2 py-1 text-center">
-                          {deg.yearGraduation}
-                        </td>
-                        <td className="border px-2 py-1">{deg.serialNumber}</td>
-                        <td className="border px-2 py-1">
-                          {deg.referenceNumber}
-                        </td>
-                        <td className="border px-2 py-1">{deg.dateOfIssue}</td>
+                <div className="flex justify-center bg-gray-100 p-4 rounded-lg">
+                  <table className="min-w-full table-auto border border-gray-300">
+                    <thead className="bg-gray-100">
+                      <tr>
+                        <th className="border px-2 py-1">No</th>
+                        <th className="border px-2 py-1">Holder DID</th>
+                        <th className="border px-2 py-1">
+                          Degree classification
+                        </th>
+                        <th className="border px-2 py-1">Year graduation</th>
+                        <th className="border px-2 py-1">Serial number</th>
+                        <th className="border px-2 py-1">Reference number</th>
+                        <th className="border px-2 py-1">Date of issue</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {uploadedDegrees.map((deg, index) => (
+                        <tr
+                          key={index}
+                          className={
+                            index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                          }
+                        >
+                          <td className="border px-2 py-1 text-center">
+                            {index + 1}
+                          </td>
+                          <td className="border px-2 py-1">{deg.holderDid}</td>
+                          <td className="border px-2 py-1">
+                            {deg.degreeClassification}
+                          </td>
+                          <td className="border px-2 py-1 text-center">
+                            {deg.yearGraduation}
+                          </td>
+                          <td className="border px-2 py-1">
+                            {deg.serialNumber}
+                          </td>
+                          <td className="border px-2 py-1">
+                            {deg.referenceNumber}
+                          </td>
+                          <td className="border px-2 py-1">
+                            {deg.dateOfIssue}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </div>

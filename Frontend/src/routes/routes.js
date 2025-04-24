@@ -13,26 +13,71 @@ import ChangePassword from "../pages/holder/ChangePassword.js";
 import InfoVerifier from "../pages/verifier/InfoVerifier.js";
 import Verified from "../pages/verifier/Verified.js";
 import InfoIssuer from "../pages/issuer/InfoIssuer.js";
-const Router = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/features" element={<Features />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/issuer" element={<HomeIssuer />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/info-holder" element={<Info />} />
-      <Route path="/info-issuer" element={<InfoIssuer />} />
-      <Route path="/degree-holder" element={<DegreeHolder />} />
-      <Route path="/degree-holder/detail" element={<DetailDegree />} />
-      <Route path="/create-proof" element={<CreateProof />} />
-      <Route path="/change-password" element={<ChangePassword />} />
-      <Route path="/info-verifier" element={<InfoVerifier />} />
-      <Route path="/submited-proofs" element={<Verified />} />{" "}
-      {/* Redirect to Home for any other route */}
-    </Routes>
-  );
-};
-
-export default Router;
+import SignIn from "../pages/signIn/index.js";
+export const routes = [
+  {
+    path: "/",
+    page: Home,
+  },
+  {
+    path: "/features",
+    page: Features,
+  },
+  {
+    path: "/about",
+    page: About,
+  },
+  {
+    path: "/contact",
+    page: Contact,
+  },
+  {
+    path: "/issuer",
+    page: HomeIssuer,
+  },
+  {
+    path: "/login",
+    page: Login,
+  },
+  {
+    path: "/info-holder",
+    page: Info,
+  },
+  {
+    path: "/info-issuer",
+    page: InfoIssuer,
+  },
+  {
+    path: "/degree-holder",
+    page: DegreeHolder,
+  },
+  {
+    path: "/degree-holder/detail",
+    page: DetailDegree,
+  },
+  {
+    path: "/create-proof",
+    page: CreateProof,
+  },
+  {
+    path: "/change-password",
+    page: ChangePassword,
+  },
+  {
+    path: "/info-verifier",
+    page: InfoVerifier,
+  },
+  {
+    path: "/submited-proofs",
+    page: Verified,
+  },
+  {
+    path: "/signin",
+    page: SignIn,
+  },
+  // Redirect to Home for any other route
+  {
+    path: "*",
+    page: Home,  // Redirect to Home
+  }
+];
