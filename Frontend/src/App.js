@@ -16,7 +16,7 @@ function App() {
 
           {/* Các route cần xác thực */}
           {routes
-            .filter((route) => route.path !== "/login" || route.path !== "/") // 👈 tránh lặp login
+            .filter((route) => route.path !== "/login" || route.path !== "/") 
             .map((route) => {
               const Page = route.page;
               return (
