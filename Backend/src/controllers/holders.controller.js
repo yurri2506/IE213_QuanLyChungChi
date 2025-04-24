@@ -36,7 +36,11 @@ const getDegreesController = async (req, res) => {
 
 const createProofController = async (req, res) => {
   try {
-    const { holder_did, issuer_did, degree_id } = req.body;
+    const { sub } = req.user;
+    const holder = await holderService.getHolderProfile(sub);
+    const holder_did = holder.DID;
+
+    const { issuer_did, degree_id } = req.body;
     const proof = await holderService.createProof(
       holder_did,
       issuer_did,

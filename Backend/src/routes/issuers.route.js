@@ -9,8 +9,22 @@ router.get(
   issuerMiddleware,
   issuerController.getIssuerProfileController
 );
-router.post("/degree", issuerMiddleware, issuerController.createDegree);
+router.post(
+  "/degree",
+  issuerMiddleware,
+  issuerController.createDegreeController
+);
 
-router.post("/register-did", issuerController.registerDIDController);
+router.get(
+  "/degrees",
+  issuerMiddleware,
+  issuerController.getAllDegreesController
+);
+
+router.post(
+  "/register-did",
+  issuerMiddleware,
+  issuerController.registerDIDController
+);
 
 module.exports = router;

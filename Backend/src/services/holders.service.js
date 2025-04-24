@@ -71,12 +71,12 @@ const createProof = async (holder_did, issuer_did, degree_id) => {
   const public_key = issuer.public_key;
   // console.log("public_key: ", public_key);
   const pPubKey = new Uint8Array(Buffer.from(public_key.slice(2), "hex")); // Bỏ "0x" trước khi chuyển
-  console.log("pPubKey: ", pPubKey);
+  // console.log("pPubKey: ", pPubKey);
 
   // Lấy signature từ degree (signature đã lưu dưới dạng chuỗi hex)
   const signature = degree.signature;
   const pSignature = new Uint8Array(Buffer.from(signature, "hex"));
-  console.log("pSignature: ", pSignature);
+  // console.log("pSignature: ", pSignature);
   const r8 = pSignature.slice(0, 32);
   const s = pSignature.slice(32, 64);
 
