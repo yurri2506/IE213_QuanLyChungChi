@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const submitted_ProofsSchema = new mongoose.Schema({
-  verifyr_did: { type: String, required: true },
+  verifier_did: { type: String, required: true },
   holder_did: { type: String, required: true },
   issuer_did: { type: String, requrired: true },
   issuer_name: { type: String, required: true },

@@ -79,7 +79,7 @@ const registerIssuer = async (data) => {
 
   const { privateKey, publicKey } = await generateKey();
 
-  const did = generateZuniDID(publicKey);
+  const did = generateZuniDID(publicKey.toString("hex"));
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const { encryptedData, salt, iv } = encryptPrivateKey(
@@ -110,7 +110,7 @@ const registerIssuer = async (data) => {
     encrypted_private_key: encryptedData,
     name: name,
     school_code: school_code,
-    sympol: sympol,
+    sympol: symbol,
     // decryptPrivateKey: decryptedData,
   };
 };
@@ -136,7 +136,7 @@ const registerHolder = async (data) => {
   if (existingHolder) throw new Error("Holder ID or Citizen ID already exists");
 
   const { privateKey, publicKey } = await generateKey();
-  const did = generateZuniDID(publicKey);
+  const did = generateZuniDID(publicKey.toString("hex"));
   const hashedPassword = await bcrypt.hash(password, 10);
   const { encryptedData, salt, iv } = encryptPrivateKey(
     privateKey.toString("hex"),
@@ -171,7 +171,7 @@ const registerVerifier = async (data) => {
   if (existingVerifier) throw new Error("Verifier ID already exists");
 
   const { privateKey, publicKey } = await generateKey();
-  const did = generateZuniDID(publicKey);
+  const did = generateZuniDID(publicKey.toString("hex"));
 
   const hashedPassword = await bcrypt.hash(password, 10);
   const { encryptedData, salt, iv } = encryptPrivateKey(

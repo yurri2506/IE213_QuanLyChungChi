@@ -70,7 +70,7 @@ const sendProofToVerifierController = async (req, res) => {
     const holder = await holderService.getHolderProfile(sub);
 
     const result = await holderService.sendProofToVerifier({
-      verifierDID: verifierDID,
+      verifier_did: verifierDID,
       issuer_did,
       holder_did: holder.DID,
       proof,

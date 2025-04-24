@@ -182,8 +182,8 @@ const getInputFromDegree = (dataStringify) => {
 Tương tự như `getPedersenHashFromDegree` nhưng chỉ trả về Buffer (không hash)
 → để dùng như thông điệp đầu vào (msg) cho ký số hoặc băm ngoài
 */
-const getMsgFromDegree = () => {
-  const dataStringify = fs.readFileSync("./data.example.json");
+const getMsgFromDegree = (dataStringify) => {
+  // const dataStringify = fs.readFileSync("./data.example.json");
   const data = JSON.parse(dataStringify);
   let totalData = "";
 

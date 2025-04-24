@@ -132,7 +132,7 @@ const sendProofToVerifier = async ({
     holder_did,
     issuer_did,
     issuer_name: issuer.name,
-    issuer_symbol: issuer.sympol,
+    issuer_symbol: issuer.symbol,
     is_verified: false,
     proof,
     major,
