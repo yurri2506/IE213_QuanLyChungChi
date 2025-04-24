@@ -33,6 +33,7 @@ function Login() {
           localStorage.setItem("salt", response.data.salt);
           localStorage.setItem("iv", response.data.iv);
           localStorage.setItem("registed_DID", response.data.registed_DID);
+
           window.location.href = "/info-issuer";
         }
         if (response.data.role === "HOLDER") {
