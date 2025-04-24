@@ -16,9 +16,10 @@ const PageHeader = () => {
     setIsDropdownOpen(false);
     try {
       e.preventDefault();
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("refresh_token");
-      localStorage.removeItem("name");
+      // localStorage.removeItem("access_token");
+      // localStorage.removeItem("refresh_token");
+      // localStorage.removeItem("name");
+      localStorage.clear();
       window.location.href = "/login";
     } catch (error) {
       console.error("Error during logout:", error);

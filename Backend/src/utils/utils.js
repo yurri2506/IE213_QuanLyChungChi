@@ -1,4 +1,5 @@
 const crypto = require("crypto");
+const CryptoJS = require("crypto-js");
 const { byteLengthOfData } = require("./constant");
 const { BN } = require("bn.js");
 const fs = require("fs");
@@ -23,36 +24,88 @@ const generateZuniDID = (publicKeyHex) => {
 };
 
 // Mã hóa khóa riêng (giả lập, thay bằng thư viện thực tế như ethers.js)
+// const encryptPrivateKey = (privateKey, password) => {
+//   // TODO: Dùng thuật toán mã hóa thực tế
+//   const salt = crypto.randomBytes(16); // tạo salt ngẫu nhiên
+//   const iv = crypto.randomBytes(16); // vector khởi tạo ngẫu nhiên
+
+//   // Derive key từ password và salt
+//   const key = crypto.scryptSync(password, salt, 32);
+
+//   const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+//   let encrypted = cipher.update(privateKey, "utf8", "hex");
+//   encrypted += cipher.final("hex");
+
+//   // Trả về salt, iv và ciphertext để có thể giải mã sau này
+//   return {
+//     encryptedData: encrypted,
+//     salt: salt.toString("hex"),
+//     iv: iv.toString("hex"),
+//   };
+// };
+
 const encryptPrivateKey = (privateKey, password) => {
-  // TODO: Dùng thuật toán mã hóa thực tế
-  const salt = crypto.randomBytes(16); // tạo salt ngẫu nhiên
-  const iv = crypto.randomBytes(16); // vector khởi tạo ngẫu nhiên
+  const salt = CryptoJS.lib.WordArray.random(16);
+  const iv = CryptoJS.lib.WordArray.random(16);
 
-  // Derive key từ password và salt
-  const key = crypto.scryptSync(password, salt, 32);
+  const key = CryptoJS.PBKDF2(password, salt, {
+    keySize: 256 / 32,
+    iterations: 10000,
+  });
 
-  const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
-  let encrypted = cipher.update(privateKey, "utf8", "hex");
-  encrypted += cipher.final("hex");
+  const encrypted = CryptoJS.AES.encrypt(privateKey, key, {
+    iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  });
 
-  // Trả về salt, iv và ciphertext để có thể giải mã sau này
   return {
-    encryptedData: encrypted,
-    salt: salt.toString("hex"),
-    iv: iv.toString("hex"),
+    encryptedData: encrypted.ciphertext.toString(CryptoJS.enc.Hex),
+    salt: salt.toString(CryptoJS.enc.Hex),
+    iv: iv.toString(CryptoJS.enc.Hex),
   };
 };
 
+// const decryptPrivateKey = (encryptedData, password, saltHex, ivHex) => {
+
+//   const salt = Buffer.from(saltHex, "hex");
+//   const iv = Buffer.from(ivHex, "hex");
+//   const key = crypto.scryptSync(password, salt, 32);
+
+//   const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
+//   let decrypted = decipher.update(encryptedData, "hex", "utf8");
+//   decrypted += decipher.final("utf8");
+
+//   return decrypted;
+// };
+
 const decryptPrivateKey = (encryptedData, password, saltHex, ivHex) => {
-  const salt = Buffer.from(saltHex, "hex");
-  const iv = Buffer.from(ivHex, "hex");
-  const key = crypto.scryptSync(password, salt, 32);
+  try {
+    const salt = CryptoJS.enc.Hex.parse(saltHex);
+    const iv = CryptoJS.enc.Hex.parse(ivHex);
+    const ciphertext = CryptoJS.enc.Hex.parse(encryptedData);
 
-  const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
-  let decrypted = decipher.update(encryptedData, "hex", "utf8");
-  decrypted += decipher.final("utf8");
+    const key = CryptoJS.PBKDF2(password, salt, {
+      keySize: 256 / 32,
+      iterations: 10000,
+    });
 
-  return decrypted;
+    const decrypted = CryptoJS.AES.decrypt({ ciphertext }, key, {
+      iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const decryptedText = decrypted.toString(CryptoJS.enc.Utf8);
+    if (!decryptedText) {
+      throw new Error("Failed to decrypt. Possibly wrong password or format.");
+    }
+
+    return decryptedText;
+  } catch (err) {
+    console.error("Decryption error:", err);
+    return null;
+  }
 };
 
 // Chuyển một chuỗi thành dạng hex little-endian có độ dài cố định (mặc định 32 byte)
@@ -182,37 +235,33 @@ const getInputFromDegree = (dataStringify) => {
 Tương tự như `getPedersenHashFromDegree` nhưng chỉ trả về Buffer (không hash)
 → để dùng như thông điệp đầu vào (msg) cho ký số hoặc băm ngoài
 */
-const getMsgFromDegree = () => {
-  const dataStringify = fs.readFileSync("./data.example.json");
-  const data = JSON.parse(dataStringify);
-  let totalData = "";
+function getMsgFromDegrees(degrees) {
+  return degrees.map((degreeObj) => {
+    let totalData = "";
 
-  for (let key in data) {
-    if (typeof data[key] === "object") {
-      const parentValue = data[key];
+    for (let key in degreeObj) {
+      if (typeof degreeObj[key] === "object") {
+        const parentValue = degreeObj[key];
 
-      for (let childKey in parentValue) {
-        const value = parentValue[childKey];
-        const length = byteLengthOfData[key][childKey];
+        for (let childKey in parentValue) {
+          const value = parentValue[childKey];
+          const length = byteLengthOfData[key][childKey];
+
+          const itemLeHex = stringToLeHex(value, length);
+          totalData += itemLeHex.slice(2);
+        }
+      } else {
+        const value = degreeObj[key];
+        const length = byteLengthOfData[key];
 
         const itemLeHex = stringToLeHex(value, length);
-
         totalData += itemLeHex.slice(2);
       }
-    } else {
-      const value = data[key];
-      const length = byteLengthOfData[key];
-
-      const itemLeHex = stringToLeHex(value, length);
-
-      totalData += itemLeHex.slice(2);
     }
-  }
 
-  const buff = new BN(totalData, "hex").toBuffer();
-
-  return buff;
-};
+    return new BN(totalData, "hex").toBuffer();
+  });
+}
 
 const hexToString = (inputJson) => {
   const output = {};
@@ -281,7 +330,7 @@ module.exports = {
   pedersenHash,
   getPedersenHashFromDegree,
   getInputFromDegree,
-  getMsgFromDegree,
+  getMsgFromDegrees,
   bufferLe,
   convertToLePartials,
   convertFromLePartials,

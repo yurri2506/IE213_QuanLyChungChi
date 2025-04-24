@@ -50,7 +50,18 @@ const login = async (user_id, password) => {
     process.env.REFRESH_TOKEN_SECRET,
     { expiresIn: "7d" } // Hết hạn sau 7 ngày
   );
-
+  if (role === "ISSUER")
+    return {
+      access_token,
+      refresh_token,
+      role,
+      did: user.DID,
+      name,
+      encrypted_private_key: user.encrypted_private_key,
+      salt: user.salt,
+      iv: user.iv,
+      registed_DID: user.registed_DID,
+    };
   return { access_token, refresh_token, role, did: user.DID, name };
 };
 
@@ -86,7 +97,7 @@ const registerIssuer = async (data) => {
     privateKey.toString("hex"),
     password
   );
-  // const decryptedData = decryptPrivateKey(encryptedData, password, salt, iv);
+  const decryptedData = decryptPrivateKey(encryptedData, password, salt, iv);
 
   const issuer = new Issuer({
     issuer_id,
@@ -99,6 +110,7 @@ const registerIssuer = async (data) => {
     symbol: symbol,
     salt,
     iv,
+    registed_DID: "false",
   });
 
   await issuer.save();
@@ -107,11 +119,11 @@ const registerIssuer = async (data) => {
     issuer_id,
     publicKey: "0x" + publicKey.toString("hex"),
     privateKey: "0x" + privateKey.toString("hex"),
-encrypted_private_key: encryptedData,
+    encrypted_private_key: encryptedData,
     name: name,
     school_code: school_code,
-    sympol: sympol,
-    // decryptPrivateKey: decryptedData,
+    sympol: symbol,
+    decryptPrivateKey: decryptedData,
   };
 };
 

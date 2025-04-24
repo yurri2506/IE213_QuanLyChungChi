@@ -5,14 +5,13 @@ import { login } from "../services/apiAuth.js";
 import ZuniLogo from "../assets/ZUNI.svg";
 import UIT from "../assets/UIT.svg";
 import BackgroundImage from "../assets/bgImage.jpg";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const [userId, setUserId] = useState("22520827");
-  const [password, setPassword] = useState("SecureP@ssw0rd");
+  const [userId, setUserId] = useState("UIT");
+  const [password, setPassword] = useState("123456");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-
 
   const handleLogin = async (e) => {
     try {
@@ -27,6 +26,14 @@ function Login() {
         localStorage.setItem("refresh_token", response.data.refresh_token);
         localStorage.setItem("name", response.data.name);
         if (response.data.role === "ISSUER") {
+          localStorage.setItem(
+            "encrypted_private_key",
+            response.data.encrypted_private_key
+          );
+          localStorage.setItem("salt", response.data.salt);
+          localStorage.setItem("iv", response.data.iv);
+          localStorage.setItem("registed_DID", response.data.registed_DID);
+
           window.location.href = "/info-issuer";
         }
         if (response.data.role === "HOLDER") {
@@ -48,7 +55,7 @@ function Login() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/signin'); // Chuyển đến trang signin
+    navigate("/signin"); // Chuyển đến trang signin
   };
 
   useEffect(() => {

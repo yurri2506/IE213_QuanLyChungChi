@@ -11,6 +11,7 @@ const issuerSchema = new mongoose.Schema({
   symbol: { type: String, required: true },
   salt: { type: String, required: true },
   iv: { type: String, required: true },
+  registed_DID: { type: String, require: true, default: "false" }, // Đăng ký DID trên blockchain false, pending, true
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
   role: { type: String, default: "ISSUER", enum: ["ISSUER"] },
