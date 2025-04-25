@@ -32,3 +32,40 @@ export const getDegreeInfo = async () => {
     };
   }
 };
+
+export const generateProof = async (data) => {
+  try {
+    const response = await axios.post(`${URL}/holders/proofs`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return {
+      message: error.response.data.message,
+      status: "ERROR",
+    };
+  }
+};
+
+export const sendProof2Verifier = async (verifer_did, data) => {
+  try {
+    console.log(data);
+    const response = await axios.post(
+      `${URL}/holders/verifiers/proofs/${verifer_did}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return {
+      message: error.response.data.message,
+      status: "ERROR",
+    };
+  }
+};

@@ -1,4 +1,4 @@
-const verifierService = require("../services/verifiers.service")
+const verifierService = require("../services/verifiers.service");
 
 // Controller lấy thông tin Verifier
 const getVerifierProfileController = async (req, res) => {
@@ -17,6 +17,25 @@ const getVerifierProfileController = async (req, res) => {
   }
 };
 
+const checkVerifierController = async (req, res) => {
+  try {
+    const { verifier_did } = req.params; // Lấy verifier_did từ URL
+    const verifier = await verifierService.checkVerifier(verifier_did); // Gọi service để kiểm tra Verifier
+
+    res.status(200).json({
+      status: "SUCCESS",
+      data: verifier,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+      status: "ERROR",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   getVerifierProfileController,
+  checkVerifierController,
 };

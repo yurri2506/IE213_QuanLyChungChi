@@ -11,6 +11,7 @@ import {
   getIssuerInfo,
   registryDID,
 } from "../../services/apiIssuer.js";
+import degreeTemplate from "../../assets/data.example.json";
 
 function formatDateToDDMMYYYY(dateString) {
   const date = new Date(dateString);
@@ -24,6 +25,11 @@ function formatDateToDDMMYYYY(dateString) {
 const formatDate = (dateObj) => {
   const { day, month, year } = dateObj;
   return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+};
+
+const shortenDID = (did) => {
+  if (!did) return "";
+  return `${did.slice(0, 22)}...${did.slice(-22)}`;
 };
 
 export default function HomeIssuer() {
@@ -109,6 +115,21 @@ export default function HomeIssuer() {
 
   const handleRegisterDID = () => {
     setShowRegisterDIDPopup(true);
+  };
+
+  const handleDownloadTemplate = () => {
+    const json = JSON.stringify(degreeTemplate, null, 2); // nếu muốn export dạng mảng
+    const blob = new Blob([json], { type: "application/json" });
+
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = "degree_template.json";
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    URL.revokeObjectURL(href);
   };
 
   const handlePasswordConfirm = async () => {
@@ -293,6 +314,33 @@ export default function HomeIssuer() {
           </div>
         ) : (
           <div>
+            {registedDIDStatus === "false" ||
+            registedDIDStatus === "pending" ||
+            uploadedDegrees.length !== 0 ? null : (
+              <div className=" justify-end flex">
+                <button
+                  onClick={handleDownloadTemplate}
+                  className=" self-end flex text-blue-600 px-4 py-2 rounded hover:text-blue-800 hover:underline transition"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-5 h-5 mr-1"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 3v12m0 0l-3-3m3 3l3-3m-6 6h6"
+                    />
+                  </svg>
+                  Download JSON Template
+                </button>
+              </div>
+            )}
+
             {registedDIDStatus === "false" ? (
               <div className="flex flex-col items-center justify-center h-96 m-4 bg-gray-100 border-2 border-dashed border-gray-400 rounded-lg">
                 <p className="text-gray-700 mb-2 text-center">
@@ -319,6 +367,7 @@ export default function HomeIssuer() {
                 </div>
               </div>
             ) : uploadedDegrees.length === 0 ? (
+              // Tạo một nút download file json mẫu ở đây
               <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg h-96 m-4 bg-gray-50">
                 <label
                   htmlFor="file-upload"
@@ -394,20 +443,22 @@ export default function HomeIssuer() {
                           <td className="border px-2 py-1 text-center">
                             {index + 1}
                           </td>
-                          <td className="border px-2 py-1">{deg.holder_did}</td>
                           <td className="border px-2 py-1">
+                            {shortenDID(deg.holder_did)}
+                          </td>
+                          <td className="border px-2 py-1 text-center">
                             {deg.classification}
                           </td>
                           <td className="border px-2 py-1 text-center">
                             {deg.yearGraduation}
                           </td>
-                          <td className="border px-2 py-1">
+                          <td className="border px-2 py-1 text-center">
                             {deg.serialNumber}
                           </td>
-                          <td className="border px-2 py-1">
+                          <td className="border px-2 py-1 text-center">
                             {deg.referenceNumber}
                           </td>
-                          <td className="border px-2 py-1">
+                          <td className="border px-2 py-1 text-center">
                             {deg.dateOfIssue.day}/{deg.dateOfIssue.month}/
                             {deg.dateOfIssue.year}
                           </td>

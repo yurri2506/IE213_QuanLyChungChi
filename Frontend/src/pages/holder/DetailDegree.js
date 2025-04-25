@@ -2,6 +2,8 @@ import React, { use, useEffect } from "react";
 import NavigationHolder from "../../components/Holder/NavigationHolder.js";
 import { FaAward, FaCheckCircle } from "react-icons/fa";
 import ZuniLogo from "../../assets/ZUNI.svg";
+import LogoVNU from "../../assets/LogoVNU.png";
+import LogoUIT from "../../assets/LogoUIT.png";
 import { Helmet } from "react-helmet";
 import { useLocation } from "react-router-dom";
 import { getUserInfo } from "../../services/apiHolder.js";
@@ -234,16 +236,8 @@ const DegreeDetail = () => {
               </div>
             </div>
             <div className="flex flex-row mt-2 text-xs items-center ml-8">
-              <img
-                src="https://static.vnuhcm.edu.vn/images/0%20Phong%204T/Logo/2018.10.19%20-%20Co%20vien-05.png"
-                alt="LogoVNU"
-                className="w-20 h-20 mx-3"
-              />
-              <img
-                src="https://cdn.haitrieu.com/wp-content/uploads/2021/10/Logo-DH-Cong-Nghe-Thong-Tin-UIT-1024x828.png"
-                alt="LogoUIT"
-                className="w-20 p-3"
-              />
+              <img src={LogoVNU} alt="LogoVNU" className="w-20 h-20 mx-3" />
+              <img src={LogoUIT} alt="LogoUIT" className="w-20 p-3" />
               <div className="text-xs text-left ml-4">
                 <p>Mã số SV ID: {studentInfo.id}</p>
                 <p>Số hiệu No: {studentInfo.number}</p>
@@ -284,7 +278,7 @@ const DegreeDetail = () => {
           <div className="mt-6 flex justify-center items-center w-full max-w-full">
             <div className="flex gap-4 items-center">
               <img
-                src="https://cdn.haitrieu.com/wp-content/uploads/2021/10/Logo-DH-Cong-Nghe-Thong-Tin-UIT-1024x828.png"
+                src={LogoUIT}
                 alt="Logo UIT"
                 className="w-24 h-auto object-contain"
               />
@@ -294,12 +288,6 @@ const DegreeDetail = () => {
                 className="w-24 h-24 object-contain"
               />
             </div>
-
-            {/* <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${studentInfo.id}`}
-              alt="QR"
-              className="w-28 h-28 ml-5 border-2 border-green-300 rounded p-1 object-contain"
-            /> */}
           </div>
           {/* Nút tải PDF */}
           <div className="mt-1 flex justify-center items-center w-full max-w-full">

@@ -141,7 +141,7 @@ const sendProofToVerifier = async ({
   await Submitted_Proof.save();
 
   return {
-    success: true,
+    status: "SUCCESS",
     message: "Proof sent to verifier successfully",
   };
 };
