@@ -1,37 +1,61 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import NavigationIssuer from "../../components/Issuer/NavigationIssuer.js";
+import { getIssuerInfo } from "../../services/apiIssuer.js";
 
-const InfoCard = ({ label, value }) => (
-  <div className="">
-    <p className="text-xs font-bold uppercase mb-1">{label}</p>
-    <div className="bg-gray-50 shadow-md rounded-md p-2 text-base truncate overflow-hidden whitespace-nowrap text-ellipsis">
-      {value}
-    </div>
-  </div>
-);
-
-export default function InfoIssuer() {
-  const user = {
-    studentId: "19110004",
-    citizenId: "35790808174",
-    name: "Trịnh Gia Bảo",
-    gender: "Male",
-    did: "0701fb8cbdef7b23f8d9703ad2b5eaf09de741db5c4f6370d0b872d0de95f9a",
-    dateOfBirth: "7/19/2001",
-    placeOfBirth: "Cần Thơ",
-    address: "Bld Mihail Kogălniceanu, nr. 8 Bl 1, Sc 1, Ap 09",
+const InfoCard = ({ label, value, isDID }) => {
+  const handleCopy = () => {
+    navigator.clipboard.writeText(value);
+    alert("Copied to clipboard!");
   };
 
+  const shortenDID = (did) => {
+    if (!did) return "";
+    return `${did.slice(0, 26)}...${did.slice(-26)}`; // Hiển thị 6 ký tự đầu và 6 ký tự cuối
+  };
+
+  return (
+    <div className="">
+      <p className="text-xs font-bold uppercase mb-1">{label}</p>
+      <div className="bg-gray-50 shadow-md rounded-md p-2 text-base truncate overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between">
+        <span>{isDID ? shortenDID(value) : value}</span>
+        {isDID && (
+          <button
+            onClick={handleCopy}
+            className="text-blue-500 text-sm ml-2 hover:underline"
+          >
+            Copy
+          </button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default function InfoIssuer() {
+  const [issuer, setIssuer] = useState({});
+
+  const fetchIssuerInfo = async () => {
+    const response = await getIssuerInfo();
+    if (response) {
+      setIssuer(response.data);
+      console.log("Issuer info:", response.data);
+    } else {
+      console.error("Error fetching issuer info:", response.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchIssuerInfo();
+  }, []);
+
   const infoFields = [
-    { label: "Student ID", value: user.studentId },
-    { label: "Decentralized Identifier (DID)", value: user.did },
-    { label: "Name", value: user.name },
-    { label: "Date of Birth", value: user.dateOfBirth },
-    { label: "Citizen ID", value: user.citizenId },
-    { label: "Place of Birth", value: user.placeOfBirth },
-    { label: "Gender", value: user.gender },
-    { label: "Address", value: user.address },
+    { label: "Issuer ID", value: issuer.issuer_id },
+    { label: "Name", value: issuer.name },
+    { label: "Symbol", value: issuer.symbol },
+    { label: "School code", value: issuer.school_code },
+    { label: "Public key", value: issuer.public_key, isDID: true },
+    { label: "Decentralized Identifier (DID)", value: issuer.DID, isDID: true },
   ];
 
   return (
@@ -44,7 +68,12 @@ export default function InfoIssuer() {
         <h2 className="text-xl font-bold mb-6">General Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {infoFields.map((item, index) => (
-            <InfoCard key={index} label={item.label} value={item.value} />
+            <InfoCard
+              key={index}
+              label={item.label}
+              value={item.value}
+              isDID={item.isDID || false}
+            />
           ))}
         </div>
       </div>

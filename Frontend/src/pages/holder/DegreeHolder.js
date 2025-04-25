@@ -20,7 +20,9 @@ const DegreeCard = ({ name, degree }) => {
     >
       <div className="flex items-center gap-3">
         <FaAward className="text-blue-700 text-xl" />
+
         <span className="text-sm font-medium text-gray-800">{name}</span>
+
         <HiChevronRight className="text-blue-700 text-xl" />
       </div>
     </div>

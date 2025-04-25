@@ -1,0 +1,48 @@
+[
+  {
+    "holder_did": "0981231adshahsdhahsdhahsdahshdhasda",
+    "name": "Nguyen Van A",
+    "dateOfBirth": {
+      "day": "24",
+      "month": "08",
+      "year": "2004"
+    },
+    "schoolCode": "QSC",
+    "yearGraduation": "2026",
+    "major": "Information Technology",
+    "classification": "Very good",
+    "modeOfStudy": "Full-time",
+    "serialNumber": "00324431",
+    "referenceNumber": "178/QĐ_ĐHCNTT",
+    "dateOfIssue": {
+      "day": "24",
+      "month": "08",
+      "year": "2026"
+    },
+    "timeOfTraining": "4",
+    "faculty": "FIT"
+  },
+  {
+    "holder_did": "4343fsdsfdf83434kascm373nfms73nfse7m37c",
+    "name": "tung tung tung sahur",
+    "dateOfBirth": {
+      "day": "24",
+      "month": "08",
+      "year": "2004"
+    },
+    "schoolCode": "QSC",
+    "yearGraduation": "2026",
+    "major": "KTPM",
+    "classification": "Very good",
+    "modeOfStudy": "Full-time",
+    "serialNumber": "00324434",
+    "referenceNumber": "178/QĐ_ĐHCNTT",
+    "dateOfIssue": {
+      "day": "24",
+      "month": "07",
+      "year": "2026"
+    },
+    "timeOfTraining": "4",
+    "faculty": "HEHE"
+  }
+]

@@ -47,6 +47,7 @@ const createProofController = async (req, res) => {
       degree_id
     );
     res.status(200).json({
+      status: "SUCCESS",
       message: "Proof created successfully",
       data: proof,
     });
