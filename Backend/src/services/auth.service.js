@@ -203,7 +203,7 @@ const registerVerifier = async (data) => {
   });
 
   await verifier.save();
-  return { did, verifier_id };
+  return { did, verifier_id, name, symbol };
 };
 
 module.exports = {

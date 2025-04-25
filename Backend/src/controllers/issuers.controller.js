@@ -120,6 +120,7 @@ const registerDIDController = async (req, res) => {
       name,
       symbol,
     });
+
     res.status(result.success ? 200 : 400).json(result);
   } catch (error) {
     console.error("Error in registerDIDController:", error);

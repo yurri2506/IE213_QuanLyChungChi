@@ -143,6 +143,8 @@ const registerDID = async ({ issuer_did, public_key, name, symbol }) => {
     const tx = await contract.registerIssuer(issuer_did, issuerInfo);
     await tx.wait();
 
+    await Issuer.updateOne({ DID: issuer_did }, { registed_DID: "pending" });
+
     return {
       success: true,
       txHash: tx.hash,

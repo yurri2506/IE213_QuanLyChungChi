@@ -12,4 +12,16 @@ router.get(
 
 router.get("/check/:verifier_did", verifierController.checkVerifierController);
 
+router.get(
+  "/proofs",
+  verifierMiddleware,
+  verifierController.getAllSummittedProofsController
+);
+
+router.post(
+  "/verify",
+  verifierMiddleware,
+  verifierController.verifyProofController
+);
+
 module.exports = router;

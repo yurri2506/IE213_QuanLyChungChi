@@ -63,7 +63,7 @@ const PageHeader = () => {
         className={`
                         top-14 right-0
                         absolute bg-white shadow-md list-none w-44 rounded-2xl border-2
-                        transition-all duration-300 ease-in-out transform
+                        transition-all duration-300 ease-in-out transform z-50
                         ${
                           isDropdownOpen
                             ? "opacity-100 scale-100"

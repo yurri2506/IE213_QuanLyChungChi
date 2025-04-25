@@ -1,146 +1,230 @@
-import React, { useState } from "react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState, useEffect } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSearch,
   faCopy,
   faSyncAlt,
   faCheckCircle,
-  faExclamationTriangle
-} from '@fortawesome/free-solid-svg-icons';
+  faExclamationTriangle,
+} from "@fortawesome/free-solid-svg-icons";
 import NavigationVerifier from "../../components/Verified/NavigationVerifier.js";
+import {
+  getAllSummittedPoofs,
+  verifyProof,
+} from "../../services/apiVerifier.js";
+import Swal from "sweetalert2";
 
-const data = [
-  {
-    id: 1,
-    holderDID: "96b717df...95cd0e85",
-    holderName: "Tran Huy Duc",
-    major: "Telecommunications",
-    issuerDID: "9e5a7451...327e1128",
-    issuerName: "HCMUT",
-    status: "Valid",
-    verifiedTime: "11:59:29 AM 6/1/2023"
-  },
-  {
-    id: 2,
-    holderDID: "0701b8c...0de95f9a",
-    holderName: "Trịnh Gia Bảo",
-    major: "Information Technology",
-    issuerDID: "9e5a7451...327e1128",
-    issuerName: "NA",
-    status: "Valid",
-    verifiedTime: "7:46:01 AM 6/1/2023"
-  },
-  {
-    id: 3,
-    holderDID: "23fff4e0...1ec21f99",
-    holderName: "Huy Duc",
-    major: "Computer Science",
-    issuerDID: "9e5a7451...327e1128",
-    issuerName: "NA",
-    status: "Valid",
-    verifiedTime: "9:39:34 PM 5/30/2023"
-  },
-  {
-    id: 4,
-    holderDID: "45410f02...b8a9f886",
-    holderName: "Nguyễn Bình An",
-    major: "",
-    issuerDID: "",
-    issuerName: "NA",
-    status: "Pending",
-    verifiedTime: "2:10:54 PM 5/30/2023"
-  },
-];
+function hexToString(hex) {
+  // Bỏ tiền tố '0x' nếu có
+  if (hex.startsWith("0x")) {
+    hex = hex.slice(2);
+  }
+
+  // Bỏ các padding '00' đầu nếu có
+  hex = hex.replace(/^0+/, "");
+
+  // Chuyển từng cặp hex thành ký tự
+  let str = "";
+  for (let i = 0; i < hex.length; i += 2) {
+    const code = parseInt(hex.substr(i, 2), 16);
+    str += String.fromCharCode(code);
+  }
+
+  return str;
+}
+
+const shortenDID = (did) => {
+  if (!did) return "";
+  return `${did.slice(0, 5)}...${did.slice(-5)}`; // Hiển thị 6 ký tự đầu và 6 ký tự cuối
+};
+
+function formatUTCToVNTime(utcString) {
+  const date = new Date(utcString);
+
+  // Lấy thời gian tại Việt Nam (UTC+7)
+  const vnDate = new Date(
+    date.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" })
+  );
+
+  // Lấy giờ và phút
+  let hours = vnDate.getHours();
+  const minutes = vnDate.getMinutes().toString().padStart(2, "0");
+
+  // Lấy AM/PM
+  const isPM = hours >= 12;
+  const period = isPM ? "PM" : "AM";
+
+  // Chuyển giờ sang định dạng 12 giờ
+  hours = hours % 12;
+  if (hours === 0) hours = 12; // Sửa để giờ 0 trở thành 12 (12 AM hoặc 12 PM)
+
+  const hourStr = hours.toString().padStart(2, "0");
+
+  // Lấy ngày/tháng/năm
+  const day = vnDate.getDate().toString().padStart(2, "0");
+  const month = (vnDate.getMonth() + 1).toString().padStart(2, "0");
+  const year = vnDate.getFullYear();
+
+  return `${hourStr}:${minutes} ${period} ${day}/${month}/${year}`;
+}
 
 const Verified = () => {
+  const [proofs, setProofs] = useState([]);
   const [search, setSearch] = useState("");
+
+  const fetchProofs = async () => {
+    const response = await getAllSummittedPoofs();
+    if (response) {
+      setProofs(response.data);
+      console.log("Proofs:", response.data);
+    } else {
+      console.error("Error fetching proofs:", response.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchProofs();
+  }, []);
+
+  const handleVerifyProof = async (row) => {
+    const payload = {
+      id: row._id,
+      issuerDID: row.issuer_did,
+      proofs: row.proof,
+      major: row.major,
+    };
+
+    const result = await verifyProof(payload);
+    console.log(result);
+
+    if (result.verified === true) {
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Verification successful!",
+      });
+      fetchProofs();
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Verification failed",
+      });
+    }
+  };
 
   return (
     <NavigationVerifier>
-        <div className="mx-10 mt-10">
-            <div className="flex flex-row justify-between mb-4">
-                <h1 className="font-bold text-2xl">Verified Degrees</h1>
-                <div className="flex flex-row items-center gap-2">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            placeholder="Input DID to search"
-                            className="rounded-lg px-4 py-1 w-80 border-2 focus:outline-none focus:border-blue-700 border-blue-600 text-sm"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                        <button className="absolute right-3 top-1 text-gray-500">
-                            <FontAwesomeIcon icon={faSearch} />
-                        </button>
-                    </div>
-                    <button className="text-gray-600 hover:text-gray-900 text-lg">
-                    <FontAwesomeIcon icon={faSyncAlt} />
-                    </button>
-                </div>
+      <div className="mx-10 mt-10">
+        <div className="flex flex-row justify-between mb-4">
+          <h1 className="font-bold text-2xl">Verified Degrees</h1>
+          <div className="flex flex-row items-center gap-2">
+            <div className="flex rounded-lg px-4 py-1 w-80 border-2  focus:border-blue-700 border-blue-600 text-sm">
+              <input
+                type="text"
+                placeholder="Input DID to search"
+                className="px-2 py-1 w-80 text-sm focus:outline-none"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <button className="ml-1 text-gray-500">
+                <FontAwesomeIcon icon={faSearch} />
+              </button>
             </div>
-
-
-            <table className="w-full text-sm table-auto border-collapse shadow rounded bg-gray-200">
-                <thead className=" text-gray-700 font-semibold text-sm">
-                    <tr>
-                    <th className="px-3 py-2 my-1">No</th>
-                    <th className="px-3 py-2 my-1">Holder DID</th>
-                    <th className="px-3 py-2 my-1">Holder Name</th>
-                    <th className="px-3 py-2 my-1">Major</th>
-                    <th className="px-3 py-2 my-1">Issuer DID</th>
-                    <th className="px-3 py-2 my-1">Issuer Name</th>
-                    <th className="px-3 py-2 my-1">Status</th>
-                    <th className="px-3 py-2 my-1">Verified Time</th>
-                    </tr>
-                </thead>
-                <tbody >
-                    {data
-                        .filter((row) => row.holderDID.includes(search))
-                        .map((row, index) => (
-                        <tr key={row.id} className="text-center bg-white rounded-3xl  ">
-                            <td className="p-2">{index + 1}</td>
-                            <td className="p-2 flex items-center justify-center gap-3 rounded shadow my-2">
-                                <span>{row.holderDID}</span>
-                                <FontAwesomeIcon icon={faCopy} className="text-gray-500 hover:text-gray-700 cursor-pointer" />
-                            </td>
-                            <td className="px-2 py-3">{row.holderName}</td>
-                            <td className="px-2 py-3">
-                            {row.major || (
-                                <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">NOT YET VERIFIED</span>
-                            )}
-                            </td>
-                            
-                            {row.issuerDID ? (
-                                <td className="p-2 flex items-center justify-center gap-2 rounded shadow my-2">
-                                <>
-                                {row.issuerDID}
-                                <FontAwesomeIcon icon={faCopy} className="text-gray-500 hover:text-gray-700 cursor-pointer " />
-                                </>
-                                </td>
-                            ) : (
-                                <span className="px-2 py-1 bg-green-100 text-blue-800 rounded text-xs shadow-none m-0">NOT YET VERIFIED</span>
-                            )}
-                           
-                            <td className="px-2 py-3">{row.issuerName}</td>
-                            <td className="px-2 py-3">
-                            {row.status === "Valid" ? (
-                                <span className="text-blue-600 font-medium flex items-center justify-center gap-1 text-sm">
-                                <FontAwesomeIcon icon={faCheckCircle} /> Valid
-                                </span>
-                            ) : (
-                                <span className="text-yellow-500 font-medium flex items-center justify-center gap-2 text-sm">
-                                <FontAwesomeIcon icon={faExclamationTriangle} /> Pending
-                                <button className="px-2 py-1 rounded border border-purple-500 text-purple-600 hover:bg-purple-100 text-xs">VERIFY</button>
-                                </span>
-                            )}
-                            </td>
-                            <td className="px-2 py-3">{row.verifiedTime}</td>
-                        </tr>
-                        ))}
-                    </tbody>
-
-            </table>
+            <button className="text-gray-600 hover:text-gray-900 text-lg">
+              <FontAwesomeIcon icon={faSyncAlt} />
+            </button>
+          </div>
         </div>
+
+        <table className="w-full text-sm table-auto border-collapse shadow rounded bg-gray-200">
+          <thead className=" text-gray-700 font-semibold text-sm">
+            <tr>
+              <th className="px-3 py-2 my-1">No</th>
+              <th className="px-3 py-2 my-1">Holder DID</th>
+              <th className="px-3 py-2 my-1">Holder Name</th>
+              <th className="px-3 py-2 my-1">Major</th>
+              <th className="px-3 py-2 my-1">Issuer DID</th>
+              <th className="px-3 py-2 my-1">Issuer Name</th>
+              <th className="px-3 py-2 my-1">Status</th>
+              <th className="px-3 py-2 my-1">Verified Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {proofs
+              .filter((row) => row.holder_did.includes(search))
+              .map((row, index) => (
+                <tr key={row.id} className="text-center bg-white rounded-3xl  ">
+                  <td className="p-2">{index + 1}</td>
+                  <td className="p-2 flex items-center justify-center gap-3 rounded shadow my-2">
+                    <span>{shortenDID(row.holder_did)}</span>
+                    <FontAwesomeIcon
+                      icon={faCopy}
+                      className="text-gray-500 hover:text-gray-700 cursor-pointer"
+                    />
+                  </td>
+                  <td className="px-2 py-3">{row.holder_name}</td>
+                  <td className="px-2 py-3">
+                    {hexToString(row.major) || (
+                      <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
+                        NOT YET VERIFIED
+                      </span>
+                    )}
+                  </td>
+
+                  {row.is_verified == true ? (
+                    <td className="p-2 flex items-center justify-center gap-2 rounded shadow my-2">
+                      <>
+                        {shortenDID(row.issuer_did)}
+                        <FontAwesomeIcon
+                          icon={faCopy}
+                          className="text-gray-500 hover:text-gray-700 cursor-pointer "
+                        />
+                      </>
+                    </td>
+                  ) : (
+                    <span className="px-2 py-1 bg-green-100 text-blue-800 rounded text-xs shadow-none m-0">
+                      NOT YET VERIFIED
+                    </span>
+                  )}
+
+                  <td className="px-2 py-3">
+                    {row.is_verified === false ? (
+                      <span className="px-2 py-1 bg-green-100 text-blue-800 rounded text-xs shadow-none m-0">
+                        NOT YET VERIFIED
+                      </span>
+                    ) : (
+                      row.issuer_name
+                    )}
+                  </td>
+
+                  <td className="px-2 py-3">
+                    {row.is_verified === true ? (
+                      <span className="text-blue-600 font-medium flex items-center justify-center gap-1 text-sm">
+                        <FontAwesomeIcon icon={faCheckCircle} /> Valid
+                      </span>
+                    ) : (
+                      <span className="text-yellow-500 font-medium flex items-center justify-center gap-2 text-sm">
+                        <FontAwesomeIcon icon={faExclamationTriangle} /> Pending
+                        <button
+                          onClick={() => handleVerifyProof(row)}
+                          className="px-2 py-1 rounded border border-purple-500 text-purple-600 hover:bg-purple-100 text-xs"
+                        >
+                          VERIFY
+                        </button>
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-2 py-3">
+                    {row.is_verified == true
+                      ? formatUTCToVNTime(row.updated_at)
+                      : "N/A"}
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
     </NavigationVerifier>
   );
 };

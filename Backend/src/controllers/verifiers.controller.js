@@ -35,7 +35,56 @@ const checkVerifierController = async (req, res) => {
   }
 };
 
+const getAllSummittedProofsController = async (req, res) => {
+  try {
+    const { sub } = req.user;
+    const verifier = await verifierService.getVerifierProfile(sub);
+    const verifier_did = verifier.DID;
+
+    if (!verifier_did) {
+      return res.status(400).json({ message: "issuer_did là bắt buộc" });
+    }
+    const submitted_proofs = await verifierService.getAllSummittedProofs(
+      verifier_did
+    );
+
+    res.status(200).json({
+      status: "SUCCESS",
+      data: submitted_proofs,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "ERROR",
+      message: error.message,
+    });
+  }
+};
+
+const verifyProofController = async (req, res) => {
+  try {
+    const { id, issuerDID, proofs, major } = req.body;
+
+    if (!id || !issuerDID || !proofs || !major) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const result = await verifierService.verifyProof(
+      id,
+      issuerDID,
+      proofs,
+      major
+    );
+
+    res.status(200).json({ verified: result });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "Verification failed", message: err.message });
+  }
+};
 module.exports = {
   getVerifierProfileController,
   checkVerifierController,
+  getAllSummittedProofsController,
+  verifyProofController,
 };

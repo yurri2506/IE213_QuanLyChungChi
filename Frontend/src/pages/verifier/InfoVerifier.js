@@ -1,22 +1,38 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import NavigationVerifier from "../../components/Verified/NavigationVerifier.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
+import { getVerifierInfo } from "../../services/apiVerifier.js";
 
-const businessData = {
-  id: "fpt",
-  name: "FPT Software",
-  did: "65ae6f829470b47dcaf5cf2d9625c3eb19998864af571366733b8fa1",
-  symbol: "FPT",
-};
+// const businessData = {
+//   id: "fpt",
+//   name: "FPT Software",
+//   did: "65ae6f829470b47dcaf5cf2d9625c3eb19998864af571366733b8fa1",
+//   symbol: "FPT",
+// };
 
 const InfoVerifier = () => {
+  const [verifier, setVerifier] = useState({});
   const [typeDegree, setTypeDegree] = useState("Bachelor of degree");
   const [showQR, setShowQR] = useState(false);
 
+  const fetchVerifierInfo = async () => {
+    const response = await getVerifierInfo();
+    if (response) {
+      setVerifier(response.data);
+      console.log("Verifier info:", response.data);
+    } else {
+      console.error("Error fetching verifier info:", response.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchVerifierInfo();
+  }, []);
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(businessData.did);
+    navigator.clipboard.writeText(verifier.DID);
     alert("Copied DID to clipboard!");
   };
 
@@ -38,7 +54,7 @@ const InfoVerifier = () => {
                 BUSINESS ID
               </label>
               <p className="w-full border rounded-md px-3 py-2 bg-white shadow-sm">
-                {businessData.id}
+                {verifier.verifier_id}
               </p>
             </div>
             <div>
@@ -46,13 +62,13 @@ const InfoVerifier = () => {
                 BUSINESS NAME
               </label>
               <p className="w-full border rounded-md px-3 py-2 bg-white shadow-sm">
-                {businessData.name}
+                {verifier.name}
               </p>
             </div>
             <label className="block text-sm font-semibold mb-1">DID</label>
             <div className="relative">
               <p className="w-full border rounded-md px-3 py-2 bg-white shadow-sm">
-                {businessData.did}
+                {verifier.DID}
               </p>
               <button
                 onClick={handleCopy}
@@ -65,7 +81,7 @@ const InfoVerifier = () => {
               <label className="block text-sm font-semibold mb-1">SYMBOL</label>
               <input
                 type="text"
-                value={businessData.symbol}
+                value={verifier.symbol}
                 className="w-full border rounded-md px-3 py-2 bg-white shadow-sm"
                 readOnly
               />

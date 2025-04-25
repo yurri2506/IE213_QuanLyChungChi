@@ -87,7 +87,7 @@ const registerHolderController = async (req, res) => {
 const registerVerifierController = async (req, res) => {
   try {
     const { verifier_id, password, name, symbol } = req.body;
-    if (!verifier_id || !password || !name) {
+    if (!verifier_id || !password || !name || !symbol) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
