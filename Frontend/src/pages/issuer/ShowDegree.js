@@ -96,12 +96,20 @@ export default function HomeIssuer() {
           const data = JSON.parse(event.target.result);
           setUploadedDegrees(data); // Cập nhật dữ liệu bằng cấp
         } catch (err) {
-          alert("Invalid JSON file.");
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Invalid JSON file.",
+          });
         }
       };
       reader.readAsText(file);
     } else {
-      alert("Please upload a valid .json file.");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Please upload a valid .json file.",
+      });
     }
   };
 
@@ -182,6 +190,7 @@ export default function HomeIssuer() {
           icon: "error",
           title: "Error",
           text: response.message,
+          confirmButtonColor: "#FF5733",
         });
       } else if (response.status === "success") {
         Swal.fire({
@@ -213,7 +222,7 @@ export default function HomeIssuer() {
       setIsLoading(true);
       const response = await registryDID();
       console.log(response);
-      if (response.status === "ERROR") {
+      if (response.success !== true) {
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -221,7 +230,7 @@ export default function HomeIssuer() {
         }).then(() => {
           window.location.reload();
         });
-      } else if (response.status === "success") {
+      } else if (response.success === true) {
         Swal.fire({
           icon: "success",
           title: "Success",
