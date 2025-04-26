@@ -1,14 +1,15 @@
-import { Route, Routes } from "react-router-dom";
+// import { Route, Routes } from "react-router-dom";
 import Login from "../pages/login.js";
 import Home from "../pages/home.js";
-import HomeIssuer from "../pages/issuer/ShowDegree.js";
+import ShowDegrees from "../pages/issuer/ShowDegree.js";
+import Students from "../pages/issuer/Students.js";
 import Features from "../pages/features.js";
 import About from "../pages/about.js";
 import Contact from "../pages/contact.js";
 import Info from "../pages/holder/InfoHolder.js";
 import DegreeHolder from "../pages/holder/DegreeHolder.js";
 import DetailDegree from "../pages/holder/DetailDegree.js";
-import CreateProof from "../pages/holder/CreateProof.js";
+import SendProof from "../pages/holder/SendProof.js";
 import ChangePassword from "../pages/holder/ChangePassword.js";
 import InfoVerifier from "../pages/verifier/InfoVerifier.js";
 import Verified from "../pages/verifier/Verified.js";
@@ -32,8 +33,12 @@ export const routes = [
     page: Contact,
   },
   {
-    path: "/issuer",
-    page: HomeIssuer,
+    path: "/degrees-issuer",
+    page: ShowDegrees,
+  },
+  {
+    path: "/students",
+    page: Students,
   },
   {
     path: "/login",
@@ -56,8 +61,8 @@ export const routes = [
     page: DetailDegree,
   },
   {
-    path: "/create-proof",
-    page: CreateProof,
+    path: "/send-proof",
+    page: SendProof,
   },
   {
     path: "/change-password",
@@ -78,6 +83,6 @@ export const routes = [
   // Redirect to Home for any other route
   {
     path: "*",
-    page: Home,  // Redirect to Home
-  }
+    page: Home, // Redirect to Home
+  },
 ];

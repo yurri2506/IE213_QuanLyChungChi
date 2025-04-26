@@ -49,6 +49,25 @@ export const getAllDegrees = async () => {
   }
 };
 
+export const getAllHolder = async (page) => {
+  try {
+    const response = await axios.get(
+      `${URL}/issuers/get-all-holder?page=${page}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return {
+      message: error.response?.data?.message || "An error occurred",
+      status: "ERROR",
+    };
+  }
+};
+
 export const registryDID = async () => {
   try {
     const response = await axios.post(

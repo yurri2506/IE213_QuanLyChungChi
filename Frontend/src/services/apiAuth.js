@@ -15,3 +15,19 @@ export const login = async (user_id, password) => {
     };
   }
 };
+
+export const signupStudents = async (data) => {
+  try {
+    const response = await axios.post(`${URL}/auth/holders`, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return {
+      message: error.response.data.message,
+      status: "ERROR",
+    };
+  }
+};

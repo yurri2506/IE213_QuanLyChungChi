@@ -12,6 +12,7 @@ const holderSchema = new mongoose.Schema({
   gender: { type: String, required: true, enum: [0, 1, 2] }, // 0: Nam, 1: Nữ, 2: Khác
   date_of_birth: { type: Date, required: true },
   place_of_birth: { type: String, required: true },
+  address: { type: String, default: "N/A" },
   major: { type: String, required: true },
   faculty: { type: String, required: true },
   time_of_training: { type: Number, required: true },

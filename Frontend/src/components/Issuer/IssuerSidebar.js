@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGraduationCap,
   faCircleUser,
+  faUsersLine,
 } from "@fortawesome/free-solid-svg-icons";
 
 const IssuerSidebar = () => {
@@ -19,7 +20,12 @@ const IssuerSidebar = () => {
     {
       label: "Degree",
       icon: faGraduationCap,
-      to: "/issuer",
+      to: "/degrees-issuer",
+    },
+    {
+      label: "Students",
+      icon: faUsersLine,
+      to: "/students",
     },
   ];
 

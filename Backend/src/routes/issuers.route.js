@@ -21,6 +21,12 @@ router.get(
   issuerController.getAllDegreesController
 );
 
+router.get(
+  "/get-all-holder",
+  issuerMiddleware,
+  issuerController.getAllHolderController
+);
+
 router.post(
   "/register-did",
   issuerMiddleware,

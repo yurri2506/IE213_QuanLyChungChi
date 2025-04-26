@@ -1,0 +1,28 @@
+[
+  {
+    "holder_id": "22520714",
+    "password": "123456",
+    "name": "Cao Quốc Kiệt",
+    "citizen_id": "08627398374",
+    "gender": "0",
+    "date_of_birth": "2004-08-24",
+    "place_of_birth": "Cà Mau",
+    "major": "Information Technology",
+    "faculty": "KH&KTTT",
+    "time_of_training": 4,
+    "mode_of_study": "Full-time"
+  },
+  {
+    "holder_id": "22521159",
+    "password": "123456",
+    "name": "Đỗ Nguyên Phương",
+    "citizen_id": "08354829343",
+    "gender": "0",
+    "date_of_birth": "2004-08-24",
+    "place_of_birth": "Lâm Đồng",
+    "major": "Information Technology",
+    "faculty": "KH&KTTT",
+    "time_of_training": 4,
+    "mode_of_study": "Full-time"
+  }
+]

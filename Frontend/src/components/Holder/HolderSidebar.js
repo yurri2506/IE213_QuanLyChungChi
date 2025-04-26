@@ -1,7 +1,11 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGraduationCap, faGear, faCircleUser } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faGraduationCap,
+  faCircleUser,
+  faPaperPlane,
+} from "@fortawesome/free-solid-svg-icons";
 
 const HolderSidebar = () => {
   const location = useLocation();
@@ -9,20 +13,20 @@ const HolderSidebar = () => {
 
   const menuItems = [
     {
-      label: 'Info',
+      label: "Info",
       icon: faCircleUser,
-      to: '/info-holder'
+      to: "/info-holder",
     },
     {
-      label: 'Degree',
+      label: "Degree",
       icon: faGraduationCap,
-      to: '/degree-holder'
+      to: "/degree-holder",
     },
     {
-      label: 'Create Proof',
-      icon: faGear,
-      to: '/create-proof'
-    }
+      label: "Send proof",
+      icon: faPaperPlane,
+      to: "/send-proof",
+    },
   ];
 
   return (
@@ -35,8 +39,8 @@ const HolderSidebar = () => {
               className={`text-xl p-2 block rounded font-bold no-underline mx-3 items-center transition-all duration-200
                 ${
                   currentPath === item.to
-                    ? 'bg-blue-600 text-white scale-[1.03]'
-                    : 'text-black hover:bg-blue-700 hover:text-white active:bg-[#9AC8CD]'
+                    ? "bg-blue-600 text-white scale-[1.03]"
+                    : "text-black hover:bg-blue-700 hover:text-white active:bg-[#9AC8CD]"
                 }
                 active:scale-[0.98]`}
             >
