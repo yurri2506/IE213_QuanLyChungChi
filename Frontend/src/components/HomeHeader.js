@@ -23,13 +23,22 @@ const HomeHeader = () => {
       </div>
 
       <nav className="hidden md:flex gap-8 text-white text-lg font-medium">
-        <a href="features" className="hover:text-[#0178c6] transition">
+        <a
+          onClick={() => navigate("/features")}
+          className="hover:text-[#0178c6] transition cursor-pointer"
+        >
           Features
         </a>
-        <a href="about" className="hover:text-[#0178c6] transition">
+        <a
+          onClick={() => navigate("/about")}
+          className="hover:text-[#0178c6] transition cursor-pointer"
+        >
           About
         </a>
-        <a href="contact" className="hover:text-[#0178c6] transition">
+        <a
+          onClick={() => navigate("/contact")}
+          className="hover:text-[#0178c6] transition cursor-pointer"
+        >
           Contact
         </a>
       </nav>

@@ -23,7 +23,7 @@ const generateZuniDID = (publicKeyHex) => {
   return hash;
 };
 
-// Mã hóa khóa riêng (giả lập, thay bằng thư viện thực tế như ethers.js)
+// Mã hóa khóa riêng
 // const encryptPrivateKey = (privateKey, password) => {
 //   // TODO: Dùng thuật toán mã hóa thực tế
 //   const salt = crypto.randomBytes(16); // tạo salt ngẫu nhiên
