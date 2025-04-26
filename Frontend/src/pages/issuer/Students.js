@@ -2,16 +2,19 @@ import React, { useEffect, useState } from "react";
 import NavigationIssuer from "../../components/Issuer/NavigationIssuer.js";
 import { Helmet } from "react-helmet";
 import Swal from "sweetalert2";
-// import { students } from "./student.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { decryptPrivateKey } from "../../utils/utils.js";
-import { getSignature } from "../../services/apiUtils.js";
-import {
-  createDegrees,
-  getAllDegrees,
-  getIssuerInfo,
-  registryDID,
-} from "../../services/apiIssuer.js";
-import degreeTemplate from "../../assets/data.example.json";
+import { getAllHolder } from "../../services/apiIssuer.js";
+import { signupStudents } from "../../services/apiAuth.js";
+import studentTemplate from "../../assets/dataStudent.example.json";
+import AOS from "aos";
+import "aos/dist/aos.css";
+
+function formatGender(string) {
+  if (string === "0") return "Nam";
+  if (string === "1") return "Nữ";
+}
 
 function formatDateToDDMMYYYY(dateString) {
   const date = new Date(dateString);
@@ -22,70 +25,63 @@ function formatDateToDDMMYYYY(dateString) {
   return `${day}/${month}/${year}`;
 }
 
-const formatDate = (dateObj) => {
-  const { day, month, year } = dateObj;
-  return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
-};
+// const formatDate = (dateObj) => {
+//   const { day, month, year } = dateObj;
+//   return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+// };
 
 const shortenDID = (did) => {
   if (!did) return "";
-  return `${did.slice(0, 22)}...${did.slice(-22)}`;
+  return `${did.slice(0, 20)}...${did.slice(-20)}`;
 };
 
-export default function ShowDegrees() {
+const handleCopy = (value) => {
+  navigator.clipboard.writeText(value);
+  alert("Copied to clipboard!");
+};
+
+export default function Students() {
   const [activeTab, setActiveTab] = useState("tab1");
   const encryptedData = localStorage.getItem("encrypted_private_key");
   const saltHex = localStorage.getItem("salt");
   const ivHex = localStorage.getItem("iv");
   const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const changeTab = (e) => {
     setActiveTab(e);
+    if (e === "tab1") setPage(1); // reset về trang 1 khi quay lại
   };
 
   const [students, setStudents] = useState([]);
-  const [uploadedDegrees, setUploadedDegrees] = useState([]);
+  const [uploadedStudents, setuploadedStudents] = useState([]);
   const [showPasswordPopup, setShowPasswordPopup] = useState(false);
-  const [showRegisterDIDPopup, setShowRegisterDIDPopup] = useState(false);
   const [password, setPassword] = useState("");
-
-  const [registedDIDStatus, setRegistedDIDStatus] = useState("false");
-  const [DID, setDID] = useState("");
-  const [publicKey, setPublicKey] = useState("");
-  const [name, setName] = useState("");
-  const [symbol, setSymbol] = useState("");
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [showStudentModal, setShowStudentModal] = useState(false);
 
   useEffect(() => {
-    const registed = localStorage.getItem("registed_DID");
-    setRegistedDIDStatus(registed);
+    AOS.init({
+      duration: 1000, // Thời gian hiệu ứng (ms)
+      once: true, // Chỉ chạy hiệu ứng một lần
+    });
   }, []);
 
-  const fetchIssuerInfo = async () => {
+  const fetchAllHolder = async () => {
     try {
-      const response = await getIssuerInfo();
-      console.log(response);
-      setDID(response.data.DID);
-      setPublicKey(response.data.public_key);
-      setSymbol(response.data.symbol);
-      setName(response.data.name);
-    } catch (error) {
-      return error;
-    }
-  };
-
-  const fetchAllDegrees = async () => {
-    try {
-      const response = await getAllDegrees();
+      const response = await getAllHolder(page);
       setStudents(response.data);
+      setTotalPages(response.pagination.totalPages);
+      console.log(response);
     } catch (error) {
       return error;
     }
   };
 
   useEffect(() => {
-    fetchAllDegrees();
-    fetchIssuerInfo();
-  }, []);
+    fetchAllHolder();
+  }, [activeTab, page]);
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -94,7 +90,7 @@ export default function ShowDegrees() {
       reader.onload = (event) => {
         try {
           const data = JSON.parse(event.target.result);
-          setUploadedDegrees(data); // Cập nhật dữ liệu bằng cấp
+          setuploadedStudents(data); // Cập nhật dữ liệu bằng cấp
         } catch (err) {
           Swal.fire({
             icon: "error",
@@ -114,25 +110,21 @@ export default function ShowDegrees() {
   };
 
   const handleClear = () => {
-    setUploadedDegrees([]);
+    setuploadedStudents([]);
   };
 
   const handleSubmit = () => {
     setShowPasswordPopup(true); // hiển thị popup
   };
 
-  const handleRegisterDID = () => {
-    setShowRegisterDIDPopup(true);
-  };
-
   const handleDownloadTemplate = () => {
-    const json = JSON.stringify(degreeTemplate, null, 2); // nếu muốn export dạng mảng
+    const json = JSON.stringify(studentTemplate, null, 2); // nếu muốn export dạng mảng
     const blob = new Blob([json], { type: "application/json" });
 
     const href = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = href;
-    link.download = "degree_template.json";
+    link.download = "students_template.json";
     document.body.appendChild(link);
     link.click();
 
@@ -157,50 +149,58 @@ export default function ShowDegrees() {
         return;
       }
 
-      const sanitizedDegrees = uploadedDegrees.map(
-        ({ holder_did, faculty, timeOfTraining, ...rest }) => rest
-      );
+      const response = await signupStudents(uploadedStudents);
 
-      const signatures = await getSignature(privateKey, sanitizedDegrees);
+      const total = uploadedStudents.length;
+      const successCount = response.success.length;
+      const failCount = response.failed.length;
 
-      const signedDegrees = uploadedDegrees.map((degree, index) => ({
-        ...degree,
-        dateOfIssue: formatDate(degree.dateOfIssue),
-        signature: signatures.data[index],
-      }));
-
-      const normalizedDegrees = signedDegrees.map((degree) => ({
-        holder_did: degree.holder_did,
-        major: degree.major,
-        faculty: degree.faculty,
-        time_of_training: degree.timeOfTraining,
-        mode_of_study: degree.modeOfStudy,
-        year_graduation: degree.yearGraduation,
-        classification: degree.classification,
-        serial_number: degree.serialNumber,
-        reference_number: degree.referenceNumber,
-        date_of_issue: degree.dateOfIssue,
-        signature: degree.signature,
-      }));
-
-      const response = await createDegrees(normalizedDegrees);
-
-      if (response.status === "ERROR") {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: response.message,
-          confirmButtonColor: "#FF5733",
-        });
-      } else if (response.status === "success") {
+      if (successCount === total) {
+        //Tất cả đều thành công
         Swal.fire({
           icon: "success",
-          title: "Success",
-          text: response.message,
+          title: "Registration Successful",
+          text: "All students have been registered successfully!",
         }).then(() => {
           window.location.reload();
         });
-        setUploadedDegrees([]);
+        setuploadedStudents([]);
+      } else if (failCount === total) {
+        // Tất cả đều thất bại
+        Swal.fire({
+          icon: "error",
+          title: "Registration Failed",
+          html: `
+            <p>No students were registered.</p>
+            <ul style="text-align: left;">
+              ${response.failed
+                .map(
+                  (f) => `<li><strong>${f.holder_id}</strong>: ${f.error}</li>`
+                )
+                .join("")}
+            </ul>
+          `,
+          confirmButtonColor: "#FF5733",
+          width: "600px",
+        });
+      } else {
+        //Một phần thành công, một phần thất bại
+        Swal.fire({
+          icon: "warning",
+          title: "Partial Registration",
+          html: `
+            <p>${successCount} succeeded, ${failCount} failed.</p>
+            <ul style="text-align: left;">
+              ${response.failed
+                .map(
+                  (f) => `<li><strong>${f.holder_id}</strong>: ${f.error}</li>`
+                )
+                .join("")}
+            </ul>
+          `,
+          confirmButtonColor: "#FFC107",
+          width: "600px",
+        });
       }
 
       setShowPasswordPopup(false);
@@ -209,49 +209,18 @@ export default function ShowDegrees() {
       console.error("An unexpected error occurred:", error);
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: "Something went wrong. Please try again.",
+        title: "Lỗi",
+        text: "Đã xảy ra lỗi. Vui lòng thử lại sau.",
       });
     } finally {
-      setIsLoading(false); // Dừng loading
-    }
-  };
-
-  const handleRegistryDID = async () => {
-    try {
-      setIsLoading(true);
-      const response = await registryDID();
-      console.log(response);
-      if (response.success !== true) {
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: response.message,
-        }).then(() => {
-          window.location.reload();
-        });
-      } else if (response.success === true) {
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: response.message,
-        }).then(() => {
-          localStorage.setItem("registed_DID", "pending");
-          window.location.reload();
-        });
-      }
-
       setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      return error;
     }
   };
 
   return (
     <NavigationIssuer>
       <Helmet>
-        <title>Degree Management</title>
+        <title>Student Management</title>
       </Helmet>
       {/* Navigation tab */}
       <div className="bg-gray-200 w-1/4 m-10 p-1 rounded-xl grid grid-cols-2 gap-1">
@@ -261,7 +230,7 @@ export default function ShowDegrees() {
           }`}
           onClick={() => changeTab("tab1")}
         >
-          <p>Show degree</p>
+          <p>Show students</p>
         </div>
         <div
           className={`flex justify-center rounded-xl cursor-pointer transition-colors duration-500 ${
@@ -269,7 +238,7 @@ export default function ShowDegrees() {
           }`}
           onClick={() => changeTab("tab2")}
         >
-          <p>Update degree</p>
+          <p>Student registration</p>
         </div>
       </div>
       <div className="m-10 rounded-xl shadow-lg space-y-6 ">
@@ -284,48 +253,71 @@ export default function ShowDegrees() {
                   <th className="px-3 py-2">Date of birth</th>
                   <th className="px-3 py-2">Faculty</th>
                   <th className="px-3 py-2">Major</th>
-                  <th className="px-3 py-2">Degree classification</th>
+                  <th className="px-3 py-2">Place of birth</th>
                   <th className="px-3 py-2">Mode of study</th>
-                  <th className="px-3 py-2">Year graduation</th>
-                  <th className="px-3 py-2">Date of issue</th>
+                  <th className="px-3 py-2">Time of training</th>
+                  {/* <th className="px-3 py-2">Date of issue</th>
                   <th className="px-3 py-2">Serial number</th>
-                  <th className="px-3 py-2">Reference number</th>
+                  <th className="px-3 py-2">Reference number</th> */}
                 </tr>
               </thead>
               <tbody>
                 {students.map((s, index) => (
                   <tr
-                    key={s.holder_info.holder_id}
-                    className="bg-white rounded-xl shadow-sm"
+                    key={s.holder_id}
+                    className="bg-white rounded-xl shadow-sm cursor-pointer hover:bg-blue-50"
+                    onClick={() => {
+                      setSelectedStudent(s);
+                      setShowStudentModal(true);
+                    }}
                   >
                     <td className="px-3 py-2 rounded-l-xl">{index + 1}</td>
-                    <td className="px-3 py-2">{s.holder_info.holder_id}</td>
-                    <td className="px-3 py-2">{s.holder_info.name}</td>
+                    <td className="px-3 py-2">{s.holder_id}</td>
+                    <td className="px-3 py-2">{s.name}</td>
                     <td className="px-3 py-2">
-                      {formatDateToDDMMYYYY(s.holder_info.date_of_birth)}
+                      {formatDateToDDMMYYYY(s.date_of_birth)}
                     </td>
                     <td className="px-3 py-2">{s.faculty}</td>
                     <td className="px-3 py-2">{s.major}</td>
-                    <td className="px-3 py-2">{s.classification}</td>
+                    <td className="px-3 py-2">{s.place_of_birth}</td>
                     <td className="px-3 py-2">{s.mode_of_study}</td>
-                    <td className="px-3 py-2">{s.year_graduation}</td>
-                    <td className="px-3 py-2">
+                    <td className="px-3 py-2">{s.time_of_training}</td>
+                    {/* <td className="px-3 py-2">
                       {formatDateToDDMMYYYY(s.date_of_issue)}
                     </td>
                     <td className="px-3 py-2">{s.serial_number}</td>
                     <td className="px-3 py-2 rounded-r-xl">
                       {s.reference_number}
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>
             </table>
+            <div className="flex justify-end gap-4 items-center mt-4">
+              <button
+                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                disabled={page === 1}
+                className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="text-sm text-gray-600">
+                Page {page} of {totalPages}
+              </span>
+              <button
+                onClick={() =>
+                  setPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={page === totalPages}
+                className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
           </div>
         ) : (
           <div>
-            {registedDIDStatus === "false" ||
-            registedDIDStatus === "pending" ||
-            uploadedDegrees.length !== 0 ? null : (
+            {uploadedStudents.length !== 0 ? null : (
               <div className=" justify-end flex">
                 <button
                   onClick={handleDownloadTemplate}
@@ -334,7 +326,7 @@ export default function ShowDegrees() {
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
-                    viewBox="0 0"
+                    viewBox="0 0 20 20"
                     strokeWidth={1.5}
                     stroke="currentColor"
                     className="w-5 h-5 mr-1"
@@ -350,32 +342,7 @@ export default function ShowDegrees() {
               </div>
             )}
 
-            {registedDIDStatus === "false" ? (
-              <div className="flex flex-col items-center justify-center h-96 m-4 bg-gray-100 border-2 border-dashed border-gray-400 rounded-lg">
-                <p className="text-gray-700 mb-2 text-center">
-                  You don't have permission to issue degrees yet. Please
-                  register a DID before uploading
-                </p>
-                <button
-                  onClick={() => {
-                    handleRegisterDID();
-                  }}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Register DID now
-                </button>
-              </div>
-            ) : registedDIDStatus === "pending" ? (
-              <div className="flex flex-col items-center justify-center h-96 m-4 bg-gray-100 border-2 border-dashed border-gray-400 rounded-lg">
-                <p className="text-gray-700 mb-2 text-center">
-                  You have registered a DID. Please wait for approval before
-                  uploading.
-                </p>
-                <div className="bg-blue-600 text-white px-4 py-2 rounded">
-                  DID is pending approval...
-                </div>
-              </div>
-            ) : uploadedDegrees.length === 0 ? (
+            {uploadedStudents.length === 0 ? (
               // Tạo một nút download file json mẫu ở đây
               <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg h-96 m-4 bg-gray-50">
                 <label
@@ -417,13 +384,13 @@ export default function ShowDegrees() {
                     onClick={handleClear}
                     className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                   >
-                    CLEAR DEGREES
+                    CLEAR
                   </button>
                   <button
                     onClick={handleSubmit}
                     className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
                   >
-                    SUBMIT DEGREES
+                    SUBMIT
                   </button>
                 </div>
                 <div className="flex justify-center bg-gray-100 p-4 rounded-lg">
@@ -431,18 +398,16 @@ export default function ShowDegrees() {
                     <thead className="bg-gray-100">
                       <tr>
                         <th className="border px-2 py-1">No</th>
-                        <th className="border px-2 py-1">Holder DID</th>
-                        <th className="border px-2 py-1">
-                          Degree classification
-                        </th>
-                        <th className="border px-2 py-1">Year graduation</th>
-                        <th className="border px-2 py-1">Serial number</th>
-                        <th className="border px-2 py-1">Reference number</th>
-                        <th className="border px-2 py-1">Date of issue</th>
+                        <th className="border px-2 py-1">Holder ID</th>
+                        <th className="border px-2 py-1">Name</th>
+                        <th className="border px-2 py-1">Citizen ID</th>
+                        <th className="border px-2 py-1">Gender</th>
+                        <th className="border px-2 py-1">Date of birth</th>
+                        <th className="border px-2 py-1">Place of birth</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {uploadedDegrees.map((deg, index) => (
+                      {uploadedStudents.map((student, index) => (
                         <tr
                           key={index}
                           className={
@@ -452,24 +417,23 @@ export default function ShowDegrees() {
                           <td className="border px-2 py-1 text-center">
                             {index + 1}
                           </td>
-                          <td className="border px-2 py-1">
-                            {shortenDID(deg.holder_did)}
+                          <td className="border px-2 py-1 text-center">
+                            {student.holder_id}
                           </td>
                           <td className="border px-2 py-1 text-center">
-                            {deg.classification}
+                            {student.name}
                           </td>
                           <td className="border px-2 py-1 text-center">
-                            {deg.yearGraduation}
+                            {student.citizen_id}
                           </td>
                           <td className="border px-2 py-1 text-center">
-                            {deg.serialNumber}
+                            {formatGender(student.gender)}
                           </td>
                           <td className="border px-2 py-1 text-center">
-                            {deg.referenceNumber}
+                            {formatDateToDDMMYYYY(student.date_of_birth)}
                           </td>
                           <td className="border px-2 py-1 text-center">
-                            {deg.dateOfIssue.day}/{deg.dateOfIssue.month}/
-                            {deg.dateOfIssue.year}
+                            {student.place_of_birth}
                           </td>
                         </tr>
                       ))}
@@ -511,86 +475,174 @@ export default function ShowDegrees() {
         </div>
       )}
 
-      {showRegisterDIDPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md animate-fade-in">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-              DID Registration Info
-            </h2>
+      {showStudentModal && selectedStudent && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div
+            className="bg-white w-[70%] relative max-w-5xl rounded-lg shadow-lg p-8 overflow-auto"
+            data-aos="zoom-in"
+          >
+            <button
+              className="absolute top-4 right-5 text-4xl font-bold text-gray-600 hover:text-gray-800"
+              onClick={() => setShowStudentModal(false)}
+            >
+              &times;
+            </button>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  DID
+            <h2 className="text-2xl font-bold mb-6">General Information</h2>
+
+            <div className="grid grid-cols-2 gap-6 text-sm">
+              <div className="flex flex-col">
+                <label className="text-gray-500 font-semibold mb-1">
+                  Student ID
                 </label>
                 <input
                   type="text"
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={DID}
+                  value={selectedStudent.holder_id}
                   readOnly
+                  className="bg-gray-100 p-3 rounded-lg border focus:outline-none"
                 />
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Public Key
+              <div className="flex flex-col">
+                <label className="text-gray-500 font-semibold mb-1">
+                  Password (default)
                 </label>
                 <input
                   type="text"
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={publicKey}
+                  value={"123456"}
                   readOnly
+                  className="bg-gray-100 p-3 rounded-lg border focus:outline-none"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-gray-500 font-semibold mb-1">
+                  Decentralized Identifier (DID)
+                </label>
+                <div className="flex items-center bg-gray-100 p-3 rounded-lg border">
+                  <span className="truncate">
+                    {shortenDID(selectedStudent.DID)}
+                  </span>
+                  <button
+                    className="ml-auto text-gray-600 hover:text-blue-600 active:scale-[0.98] text-sm"
+                    onClick={() => handleCopy(selectedStudent.DID)}
+                  >
+                    <FontAwesomeIcon icon={faCopy} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex flex-col">
+                <label className="text-gray-500 font-semibold mb-1">Name</label>
+                <input
+                  type="text"
+                  value={selectedStudent.name}
+                  readOnly
+                  className="bg-gray-100 p-3 rounded-lg border focus:outline-none"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  School Name
+              <div className="flex flex-col">
+                <label className="text-gray-500 font-semibold mb-1">
+                  Date of Birth
                 </label>
                 <input
                   type="text"
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={name}
+                  value={formatDateToDDMMYYYY(selectedStudent.date_of_birth)}
                   readOnly
+                  className="bg-gray-100 p-3 rounded-lg border focus:outline-none"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  School Symbol
+              <div className="flex flex-col">
+                <label className="text-gray-500 font-semibold mb-1">
+                  Citizen ID
                 </label>
                 <input
                   type="text"
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={symbol}
+                  value={selectedStudent.citizen_id}
                   readOnly
+                  className="bg-gray-100 p-3 rounded-lg border focus:outline-none"
                 />
               </div>
-            </div>
 
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                onClick={() => setShowRegisterDIDPopup(false)}
-                className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 transition"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleRegistryDID}
-                className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition"
-              >
-                Confirm
-              </button>
+              <div className="flex flex-col">
+                <label className="text-gray-500 font-semibold mb-1">
+                  Place of Birth
+                </label>
+                <input
+                  type="text"
+                  value={selectedStudent.place_of_birth}
+                  readOnly
+                  className="bg-gray-100 p-3 rounded-lg border focus:outline-none"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="text-gray-500 font-semibold mb-1">
+                  Gender
+                </label>
+                <input
+                  type="text"
+                  value={formatGender(selectedStudent.gender)}
+                  readOnly
+                  className="bg-gray-100 p-3 rounded-lg border focus:outline-none"
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="text-gray-500 font-semibold mb-1">
+                  Address
+                </label>
+                <input
+                  type="text"
+                  value={selectedStudent.address || "N/A"}
+                  readOnly
+                  className="bg-gray-100 p-3 rounded-lg border focus:outline-none"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-gray-500 font-semibold mb-1">
+                  Major
+                </label>
+                <input
+                  type="text"
+                  value={selectedStudent.major || "N/A"}
+                  readOnly
+                  className="bg-gray-100 p-3 rounded-lg border focus:outline-none"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-gray-500 font-semibold mb-1">
+                  Mode of study
+                </label>
+                <input
+                  type="text"
+                  value={selectedStudent.mode_of_study || "N/A"}
+                  readOnly
+                  className="bg-gray-100 p-3 rounded-lg border focus:outline-none"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-gray-500 font-semibold mb-1">
+                  Time of training
+                </label>
+                <input
+                  type="text"
+                  value={selectedStudent.time_of_training || "N/A"}
+                  readOnly
+                  className="bg-gray-100 p-3 rounded-lg border focus:outline-none"
+                />
+              </div>
             </div>
           </div>
         </div>
       )}
+
       {isLoading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="flex flex-col items-center space-y-4">
             <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin" />
             <span className="text-white text-lg font-medium">
-              Đang xử lý...
+              Processing...
             </span>
           </div>
         </div>

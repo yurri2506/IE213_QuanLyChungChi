@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import NavigationIssuer from "../../components/Issuer/NavigationIssuer.js";
 import { getIssuerInfo } from "../../services/apiIssuer.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 const InfoCard = ({ label, value, isDID }) => {
   const handleCopy = () => {
@@ -24,7 +26,7 @@ const InfoCard = ({ label, value, isDID }) => {
             onClick={handleCopy}
             className="text-blue-500 text-sm ml-2 hover:underline"
           >
-            Copy
+            <FontAwesomeIcon icon={faCopy} />
           </button>
         )}
       </div>
@@ -61,7 +63,7 @@ export default function InfoIssuer() {
   return (
     <NavigationIssuer>
       <Helmet>
-        <title>Thông tin chủ sở hữu</title>
+        <title>Issuer</title>
       </Helmet>
       <h1 className="font-bold text-2xl mt-10 ml-10 ">Your Infomation</h1>
       <div className="holder-info shadow-lg rounded-b-lg m-10 px-10 pb-10">

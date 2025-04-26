@@ -9,7 +9,7 @@ import {
   sendProof2Verifier,
 } from "../../services/apiHolder.js";
 
-const CreateProof = () => {
+const SendProof = () => {
   const [verifier_DID, setVeriferDID] = useState("");
   const [isVerified, setIsVerified] = useState(false);
   const [selectedCert, setSelectedCert] = useState(null);
@@ -149,7 +149,7 @@ const CreateProof = () => {
   return (
     <NavigationHolder>
       <Helmet>
-        <title>Tạo proof</title>
+        <title>Create proof</title>
       </Helmet>
       <h1 className="font-bold text-2xl mt-10 ml-10 ">Create Proof</h1>
       <div className=" m-10 p-10 rounded-xl shadow-lg space-y-6">
@@ -229,4 +229,4 @@ const CreateProof = () => {
   );
 };
 
-export default CreateProof;
+export default SendProof;

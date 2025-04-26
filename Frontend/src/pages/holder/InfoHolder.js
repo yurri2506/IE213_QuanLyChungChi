@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import NavigationHolder from "../../components/Holder/NavigationHolder.js";
 import { Helmet } from "react-helmet";
 import { getUserInfo } from "../../services/apiHolder.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopy } from "@fortawesome/free-solid-svg-icons";
 
 const InfoCard = ({ label, value, isDID }) => {
   const handleCopy = () => {
@@ -24,7 +26,7 @@ const InfoCard = ({ label, value, isDID }) => {
             onClick={handleCopy}
             className="text-blue-500 text-sm ml-2 hover:underline"
           >
-            Copy
+            <FontAwesomeIcon icon={faCopy} />
           </button>
         )}
       </div>
@@ -81,13 +83,13 @@ const Info = () => {
     { label: "Citizen ID", value: user.citizen_id },
     { label: "Place of Birth", value: user.place_of_birth },
     { label: "Gender", value: formatGender(user.gender) },
-    { label: "Address", value: user.major },
+    { label: "Address", value: user.address },
   ];
 
   return (
     <NavigationHolder>
       <Helmet>
-        <title>Thông tin chủ sở hữu</title>
+        <title>Holder</title>
       </Helmet>
       <h1 className="font-bold text-2xl mt-10 ml-10 ">Your Infomation</h1>
       <div className="holder-info shadow-lg rounded-b-lg m-10 px-10 pb-10">

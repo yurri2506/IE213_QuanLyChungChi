@@ -2,6 +2,7 @@ const Issuer = require("../models/issuers.model");
 const Degree = require("../models/degrees.model");
 const Holder = require("../models/holders.model");
 const { ethers } = require("ethers");
+const holdersModel = require("../models/holders.model");
 require("dotenv").config();
 
 const contractABI = [
@@ -126,6 +127,30 @@ const getAllDegrees = async ({ issuer_did }) => {
   }
 };
 
+const getAllHolder = async (page = 1) => {
+  try {
+    const limit = 20; // Số lượng holder mỗi trang
+    const skip = (page - 1) * limit; // Bỏ qua các holder của các trang trước
+
+    const holders = await holdersModel.find().skip(skip).limit(limit);
+
+    const totalHolders = await holdersModel.countDocuments(); // Tổng số holder
+    const totalPages = Math.ceil(totalHolders / limit); // Tổng số trang
+
+    return {
+      holders,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalHolders,
+      },
+    };
+  } catch (error) {
+    console.error("Lỗi khi lấy danh sách holder:", error);
+    throw new Error("Không thể lấy danh sách holder.");
+  }
+};
+
 const registerDID = async ({ issuer_did, public_key, name, symbol }) => {
   try {
     if (!issuer_did || !public_key || !name || !symbol) {
@@ -163,5 +188,6 @@ module.exports = {
   getIssuerProfile,
   createDegrees,
   getAllDegrees,
+  getAllHolder,
   registerDID,
 };

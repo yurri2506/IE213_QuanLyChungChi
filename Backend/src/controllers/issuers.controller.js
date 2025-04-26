@@ -105,6 +105,26 @@ const getAllDegreesController = async (req, res) => {
   }
 };
 
+const getAllHolderController = async (req, res) => {
+  try {
+    const { page = 1 } = req.query; // Lấy số trang từ query params, mặc định là 1
+
+    const result = await issuerService.getAllHolder(Number(page));
+
+    res.status(200).json({
+      status: "SUCCESS",
+      data: result.holders,
+      pagination: result.pagination,
+    });
+  } catch (error) {
+    console.error("Error in getAllHoldersController:", error);
+    res.status(500).json({
+      status: "ERROR",
+      message: error.message || "Internal server error",
+    });
+  }
+};
+
 const registerDIDController = async (req, res) => {
   try {
     const { sub } = req.user;
@@ -135,5 +155,6 @@ module.exports = {
   getIssuerProfileController,
   createDegreeController,
   getAllDegreesController,
+  getAllHolderController,
   registerDIDController,
 };

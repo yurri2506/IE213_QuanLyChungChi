@@ -7,6 +7,7 @@ import {
   faKey,
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
+import ZuniLogo from "../assets/ZUNI.svg";
 
 const PageHeader = () => {
   const name = localStorage.getItem("name");
@@ -40,7 +41,13 @@ const PageHeader = () => {
   }, []);
   return (
     <header className="header bg-white fixed top-0 w-full h-16 flex justify-between items-center p-5 border-b border-gray-300">
-      <h1 className="text-2xl text-left font-bold  z-50">ZUNI CLIENT</h1>
+      <div className="flex gap-2">
+        <img alt="logo" src={ZuniLogo} className="h-10 w-10 " />
+        <h1 className="text-2xl text-center align-middle  font-bold z-50">
+          ZUNI CLIENT
+        </h1>
+      </div>
+
       <div className="flex items-center space-x-1">
         <div>
           Hello, <span className="font-bold">{name}</span>{" "}

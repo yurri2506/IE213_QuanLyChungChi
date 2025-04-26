@@ -59,7 +59,7 @@ const DegreeHolder = () => {
   return (
     <NavigationHolder>
       <Helmet>
-        <title>Danh sách văn bằng</title>
+        <title>Degrees</title>
       </Helmet>
       <h1 className="font-bold text-2xl mt-10 ml-10 ">Your degrees</h1>
       <div className="holder-degree m-10 px-10 grid grid-cols-1 md:grid-cols-4 gap-10 ">

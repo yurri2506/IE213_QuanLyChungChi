@@ -172,7 +172,7 @@ const Verified = () => {
                     )}
                   </td>
 
-                  {row.is_verified == true ? (
+                  {row.is_verified === true ? (
                     <td className="p-2 flex items-center justify-center gap-2 rounded shadow my-2">
                       <>
                         {shortenDID(row.issuer_did)}
@@ -216,7 +216,7 @@ const Verified = () => {
                     )}
                   </td>
                   <td className="px-2 py-3">
-                    {row.is_verified == true
+                    {row.is_verified === true
                       ? formatUTCToVNTime(row.updated_at)
                       : "N/A"}
                   </td>
