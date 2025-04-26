@@ -21,18 +21,6 @@ export const routes = [
     page: Home,
   },
   {
-    path: "/features",
-    page: Features,
-  },
-  {
-    path: "/about",
-    page: About,
-  },
-  {
-    path: "/contact",
-    page: Contact,
-  },
-  {
     path: "/degrees-issuer",
     page: ShowDegrees,
   },

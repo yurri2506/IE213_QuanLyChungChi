@@ -590,7 +590,7 @@ export default function ShowDegrees() {
           <div className="flex flex-col items-center space-y-4">
             <div className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin" />
             <span className="text-white text-lg font-medium">
-              Đang xử lý...
+              Processing...
             </span>
           </div>
         </div>
