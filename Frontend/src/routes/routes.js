@@ -3,9 +3,7 @@ import Login from "../pages/login.js";
 import Home from "../pages/home.js";
 import ShowDegrees from "../pages/issuer/ShowDegree.js";
 import Students from "../pages/issuer/Students.js";
-import Features from "../pages/features.js";
-import About from "../pages/about.js";
-import Contact from "../pages/contact.js";
+
 import Info from "../pages/holder/InfoHolder.js";
 import DegreeHolder from "../pages/holder/DegreeHolder.js";
 import DetailDegree from "../pages/holder/DetailDegree.js";

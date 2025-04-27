@@ -151,10 +151,28 @@ const registerDIDController = async (req, res) => {
   }
 };
 
+const updateRegistrationStatusController = async (req, res) => {
+  try {
+    const { issuer_did, txHash, status } = req.body;
+
+    const result = await issuerService.updateRegistrationStatus(
+      issuer_did,
+      status,
+      txHash
+    );
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 module.exports = {
   getIssuerProfileController,
   createDegreeController,
   getAllDegreesController,
   getAllHolderController,
   registerDIDController,
+  updateRegistrationStatusController,
 };
