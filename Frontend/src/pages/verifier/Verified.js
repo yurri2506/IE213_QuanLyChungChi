@@ -112,7 +112,7 @@ const Verified = () => {
   //   }
   // };
 
-  const handleVerifyProof = async (issuer_did, proof, major) => {
+  const handleVerifyProof = async (proofId, issuer_did, proof, major) => {
     try {
       if (!window.ethereum) {
         return Swal.fire({
@@ -168,11 +168,26 @@ const Verified = () => {
       // }
 
       const response = await verifyProof({
+        proofId,
         issuer_did,
         proof,
         major,
       });
-      console.log(response);
+      if (response.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: response.message,
+        });
+        fetchProofs();
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: response.message,
+        });
+        fetchProofs();
+      }
     } catch (error) {
       console.error(error);
     }
@@ -277,6 +292,7 @@ const Verified = () => {
                         <button
                           onClick={() =>
                             handleVerifyProof(
+                              row._id,
                               row.issuer_did,
                               row.proof,
                               row.major

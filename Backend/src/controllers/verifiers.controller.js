@@ -82,9 +82,32 @@ const verifyProofController = async (req, res) => {
       .json({ error: "Verification failed", message: err.message });
   }
 };
+
+const updateProofVerificationStatusController = async (req, res) => {
+  try {
+    const { proofId, isVerified } = req.body;
+
+    const result = await verifierService.updateProofVerificationStatus(
+      proofId,
+      isVerified
+    );
+
+    res.status(200).json(result);
+  } catch (err) {
+    res
+      .status(500)
+      .json({
+        error: "Failed to update proof verification status",
+        message: err.message,
+      });
+  }
+}
+
+
 module.exports = {
   getVerifierProfileController,
   checkVerifierController,
   getAllSummittedProofsController,
   verifyProofController,
+  updateProofVerificationStatusController
 };

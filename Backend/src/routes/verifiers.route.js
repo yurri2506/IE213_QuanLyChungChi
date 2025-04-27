@@ -24,4 +24,10 @@ router.post(
   verifierController.verifyProofController
 );
 
+router.put(
+  "/update-proof-status",
+  verifierMiddleware,
+  verifierController.updateProofVerificationStatusController
+);
+
 module.exports = router;
