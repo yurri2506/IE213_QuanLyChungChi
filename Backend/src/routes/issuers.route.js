@@ -33,4 +33,9 @@ router.post(
   issuerController.registerDIDController
 );
 
+router.post(
+  "/update-registration-status",
+  issuerController.updateRegistrationStatusController
+);
+
 module.exports = router;

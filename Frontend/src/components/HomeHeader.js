@@ -82,7 +82,10 @@ const HomeHeader = () => {
             <a href="contact" className="hover:text-[#0178c6] transition">
               Contact
             </a>
-            <button className="px-4 py-1 text-white rounded-full border border-white hover:bg-white hover:text-[#014AC6] transition">
+            <button
+              onClick={() => navigate("/login")}
+              className="px-4 py-1 text-white rounded-full border border-white hover:bg-white hover:text-[#014AC6] transition"
+            >
               Login
             </button>
           </nav>

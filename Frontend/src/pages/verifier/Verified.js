@@ -8,11 +8,10 @@ import {
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import NavigationVerifier from "../../components/Verified/NavigationVerifier.js";
-import {
-  getAllSummittedPoofs,
-  verifyProof,
-} from "../../services/apiVerifier.js";
+import { getAllSummittedPoofs } from "../../services/apiVerifier.js";
 import Swal from "sweetalert2";
+import { ethers } from "ethers";
+import { verifyProof } from "../../services/blockchain.service.js";
 
 function hexToString(hex) {
   // Bỏ tiền tố '0x' nếu có
@@ -86,30 +85,96 @@ const Verified = () => {
     fetchProofs();
   }, []);
 
-  const handleVerifyProof = async (row) => {
-    const payload = {
-      id: row._id,
-      issuerDID: row.issuer_did,
-      proofs: row.proof,
-      major: row.major,
-    };
+  // const handleVerifyProof = async (row) => {
+  //   const payload = {
+  //     id: row._id,
+  //     issuerDID: row.issuer_did,
+  //     proofs: row.proof,
+  //     major: row.major,
+  //   };
 
-    const result = await verifyProof(payload);
-    console.log(result);
+  //   const result = await verifyProof(payload);
+  //   console.log(result);
 
-    if (result.verified === true) {
-      Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Verification successful!",
+  //   if (result.verified === true) {
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Success",
+  //       text: "Verification successful!",
+  //     });
+  //     fetchProofs();
+  //   } else {
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: "Verification failed",
+  //     });
+  //   }
+  // };
+
+  const handleVerifyProof = async (issuer_did, proof, major) => {
+    try {
+      if (!window.ethereum) {
+        return Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Vui lòng cài đặt MetaMask để tiếp tục",
+        });
+      }
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+
+      const chainId = await window.ethereum.request({ method: "eth_chainId" });
+      const targetChainId = "0x13882"; // Polygon Amoy Testnet
+
+      if (chainId !== targetChainId) {
+        try {
+          await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: targetChainId }],
+          });
+        } catch (switchError) {
+          if (switchError.code === 4902) {
+            await window.ethereum.request({
+              method: "wallet_addEthereumChain",
+              params: [
+                {
+                  chainId: targetChainId,
+                  chainName: "Polygon Amoy Testnet",
+                  nativeCurrency: { name: "POL", symbol: "POL", decimals: 18 },
+                  rpcUrls: ["https://rpc-amoy.polygon.technology"],
+                  blockExplorerUrls: ["https://amoy.polygonscan.com/"],
+                },
+              ],
+            });
+          } else {
+            return Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Vui lòng chuyển mạng MetaMask sang Polygon Amoy Testnet",
+            });
+          }
+        }
+      }
+
+      // const balance = await provider.getBalance(await signer.getAddress());
+      // if (balance >= 0n) {
+      //   return Swal.fire({
+      //     icon: "error",
+      //     title: "Error",
+      //     text: "Tài khoản không đủ token để thực hiện giao dịch",
+      //   });
+      // }
+
+      const response = await verifyProof({
+        issuer_did,
+        proof,
+        major,
       });
-      fetchProofs();
-    } else {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Verification failed",
-      });
+      console.log(response);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -154,7 +219,10 @@ const Verified = () => {
             {proofs
               .filter((row) => row.holder_did.includes(search))
               .map((row, index) => (
-                <tr key={row.id} className="text-center bg-white rounded-3xl  ">
+                <tr
+                  key={row.holder_did}
+                  className="text-center bg-white rounded-3xl  "
+                >
                   <td className="p-2">{index + 1}</td>
                   <td className="p-2 flex items-center justify-center gap-3 rounded shadow my-2">
                     <span>{shortenDID(row.holder_did)}</span>
@@ -207,7 +275,13 @@ const Verified = () => {
                       <span className="text-yellow-500 font-medium flex items-center justify-center gap-2 text-sm">
                         <FontAwesomeIcon icon={faExclamationTriangle} /> Pending
                         <button
-                          onClick={() => handleVerifyProof(row)}
+                          onClick={() =>
+                            handleVerifyProof(
+                              row.issuer_did,
+                              row.proof,
+                              row.major
+                            )
+                          }
                           className="px-2 py-1 rounded border border-purple-500 text-purple-600 hover:bg-purple-100 text-xs"
                         >
                           VERIFY

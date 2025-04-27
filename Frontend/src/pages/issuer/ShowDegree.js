@@ -9,9 +9,10 @@ import {
   createDegrees,
   getAllDegrees,
   getIssuerInfo,
-  registryDID,
 } from "../../services/apiIssuer.js";
 import degreeTemplate from "../../assets/data.example.json";
+import { registerDID } from "../../services/blockchain.service.js";
+import { ethers } from "ethers";
 
 function formatDateToDDMMYYYY(dateString) {
   const date = new Date(dateString);
@@ -55,11 +56,6 @@ export default function ShowDegrees() {
   const [name, setName] = useState("");
   const [symbol, setSymbol] = useState("");
 
-  useEffect(() => {
-    const registed = localStorage.getItem("registed_DID");
-    setRegistedDIDStatus(registed);
-  }, []);
-
   const fetchIssuerInfo = async () => {
     try {
       const response = await getIssuerInfo();
@@ -68,6 +64,8 @@ export default function ShowDegrees() {
       setPublicKey(response.data.public_key);
       setSymbol(response.data.symbol);
       setName(response.data.name);
+      setRegistedDIDStatus(response.data.registed_DID);
+      // localStorage.setItem("registed_DID", response.data.registed_DID)
     } catch (error) {
       return error;
     }
@@ -220,31 +218,103 @@ export default function ShowDegrees() {
   const handleRegistryDID = async () => {
     try {
       setIsLoading(true);
-      const response = await registryDID();
-      console.log(response);
-      if (response.success !== true) {
-        Swal.fire({
+
+      if (!window.ethereum) {
+        return Swal.fire({
           icon: "error",
           title: "Error",
-          text: response.message,
-        }).then(() => {
-          window.location.reload();
+          text: "Vui lòng cài đặt MetaMask để tiếp tục",
         });
-      } else if (response.success === true) {
+      }
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+
+      const chainId = await window.ethereum.request({ method: "eth_chainId" });
+      const targetChainId = "0x13882"; // Polygon Amoy Testnet
+
+      if (chainId !== targetChainId) {
+        try {
+          await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: targetChainId }],
+          });
+        } catch (switchError) {
+          if (switchError.code === 4902) {
+            await window.ethereum.request({
+              method: "wallet_addEthereumChain",
+              params: [
+                {
+                  chainId: targetChainId,
+                  chainName: "Polygon Amoy Testnet",
+                  nativeCurrency: { name: "POL", symbol: "POL", decimals: 18 },
+                  rpcUrls: ["https://rpc-amoy.polygon.technology"],
+                  blockExplorerUrls: ["https://amoy.polygonscan.com/"],
+                },
+              ],
+            });
+          } else {
+            return Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Vui lòng chuyển mạng MetaMask sang Polygon Amoy Testnet",
+            });
+          }
+        }
+      }
+
+      const balance = await provider.getBalance(await signer.getAddress());
+      if (balance === 0n) {
+        return Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Tài khoản không đủ token để thực hiện giao dịch",
+        });
+      }
+      console.log(DID, publicKey, name, symbol);
+      const response = await registerDID({
+        issuer_did: DID,
+        public_key: publicKey,
+        name,
+        symbol,
+      });
+
+      if (response.success) {
         Swal.fire({
           icon: "success",
           title: "Success",
           text: response.message,
+          showConfirmButton: false,
+          timer: 2000,
         }).then(() => {
-          localStorage.setItem("registed_DID", "pending");
           window.location.reload();
         });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: response.message || "Đăng ký DID thất bại",
+        });
+      }
+    } catch (error) {
+      console.error("Lỗi handleRegistryDID:", error);
+
+      let errorMessage = "Đã xảy ra lỗi khi đăng ký DID";
+
+      if (error.code === 4001) {
+        errorMessage = "Bạn đã từ chối giao dịch";
+      } else if (error.message.includes("insufficient funds")) {
+        errorMessage = "Không đủ token trong tài khoản để giao dịch";
       }
 
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMessage,
+      });
+    } finally {
       setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      return error;
+      setShowRegisterDIDPopup(false);
     }
   };
 
