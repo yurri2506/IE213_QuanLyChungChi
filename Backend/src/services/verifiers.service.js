@@ -1,6 +1,5 @@
 const Holder = require("../models/holders.model");
 const submitted_proof = require("../models/submitted_proof");
-const Submitted_proof = require("../models/submitted_proof");
 const Verifier = require("../models/verifiers.model");
 const { ethers } = require("ethers");
 const fs = require("fs");
@@ -84,7 +83,7 @@ const checkVerifier = async (verifier_did) => {
 };
 
 const getAllSummittedProofs = async (verifier_did) => {
-  const submitted_proofs = await Submitted_proof.find({
+  const submitted_proofs = await submitted_proof.find({
     verifier_did: verifier_did,
   });
 
@@ -118,9 +117,40 @@ const verifyProof = async (id, issuerDID, proof, major) => {
   }
 };
 
+const updateProofVerificationStatus = async (proofId, isVerified) => {
+  try {
+    const proof = await submitted_proof.findById(proofId);
+
+    if (!proof) {
+      throw new Error("Không tìm thấy proof với ID đã cung cấp");
+    }
+
+    proof.is_verified = isVerified;
+    proof.updated_at = new Date();
+
+    await proof.save();
+
+    return {
+      success: true,
+      message: `Cập nhật trạng thái xác minh thành ${
+        isVerified ? "đã xác minh" : "chưa xác minh"
+      }`,
+      data: proof,
+    };
+  } catch (error) {
+    console.error("Lỗi khi cập nhật trạng thái xác minh:", error);
+    return {
+      success: false,
+      message:
+        error.message || "Có lỗi xảy ra khi cập nhật trạng thái xác minh",
+    };
+  }
+};
+
 module.exports = {
   getVerifierProfile,
   checkVerifier,
   getAllSummittedProofs,
   verifyProof,
+  updateProofVerificationStatus,
 };

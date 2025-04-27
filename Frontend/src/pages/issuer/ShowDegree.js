@@ -13,6 +13,8 @@ import {
 import degreeTemplate from "../../assets/data.example.json";
 import { registerDID } from "../../services/blockchain.service.js";
 import { ethers } from "ethers";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 function formatDateToDDMMYYYY(dateString) {
   const date = new Date(dateString);
@@ -43,6 +45,13 @@ export default function ShowDegrees() {
   const changeTab = (e) => {
     setActiveTab(e);
   };
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000, // Thời gian hiệu ứng (ms)
+      once: true, // Chỉ chạy hiệu ứng một lần
+    });
+  }, []);
 
   const [students, setStudents] = useState([]);
   const [uploadedDegrees, setUploadedDegrees] = useState([]);
@@ -287,7 +296,8 @@ export default function ShowDegrees() {
           showConfirmButton: false,
           timer: 2000,
         }).then(() => {
-          window.location.reload();
+          fetchAllDegrees();
+          fetchIssuerInfo();
         });
       } else {
         Swal.fire({
@@ -583,7 +593,10 @@ export default function ShowDegrees() {
 
       {showRegisterDIDPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md animate-fade-in">
+          <div
+            className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-md animate-fade-in"
+            data-aos="zoom-in"
+          >
             <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
               DID Registration Info
             </h2>

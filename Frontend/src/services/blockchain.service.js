@@ -3,7 +3,334 @@ import axios from "axios";
 const URL = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 const contractABI = [
-  "function registerIssuer(string did, tuple(bool isRegistered, bytes pubKey, string signatureAlgorithm, string name, string symbol) issuerInfo) external",
+  {
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "string",
+        name: "did",
+        type: "string",
+      },
+    ],
+    name: "AcceptedIssuer",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "string",
+        name: "did",
+        type: "string",
+      },
+    ],
+    name: "DeclinedIssuer",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "string",
+        name: "did",
+        type: "string",
+      },
+      {
+        indexed: false,
+        internalType: "string",
+        name: "reason",
+        type: "string",
+      },
+    ],
+    name: "RemovedIssuer",
+    type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "did",
+        type: "string",
+      },
+    ],
+    name: "acceptIssuer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "did",
+        type: "string",
+      },
+    ],
+    name: "declineIssuer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "did",
+        type: "string",
+      },
+    ],
+    name: "getIssuer",
+    outputs: [
+      {
+        components: [
+          {
+            internalType: "bool",
+            name: "isRegistered",
+            type: "bool",
+          },
+          {
+            internalType: "bytes",
+            name: "pubKey",
+            type: "bytes",
+          },
+          {
+            internalType: "string",
+            name: "signatureAlgorithm",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "symbol",
+            type: "string",
+          },
+        ],
+        internalType: "struct IRegistryDID.IssuerInfo",
+        name: "",
+        type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getWaitingDIDs",
+    outputs: [
+      {
+        internalType: "string[]",
+        name: "",
+        type: "string[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    name: "issuers",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "isRegistered",
+        type: "bool",
+      },
+      {
+        internalType: "bytes",
+        name: "pubKey",
+        type: "bytes",
+      },
+      {
+        internalType: "string",
+        name: "signatureAlgorithm",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "symbol",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "owner",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "did",
+        type: "string",
+      },
+      {
+        components: [
+          {
+            internalType: "bool",
+            name: "isRegistered",
+            type: "bool",
+          },
+          {
+            internalType: "bytes",
+            name: "pubKey",
+            type: "bytes",
+          },
+          {
+            internalType: "string",
+            name: "signatureAlgorithm",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "name",
+            type: "string",
+          },
+          {
+            internalType: "string",
+            name: "symbol",
+            type: "string",
+          },
+        ],
+        internalType: "struct IRegistryDID.IssuerInfo",
+        name: "issuerInfo",
+        type: "tuple",
+      },
+    ],
+    name: "registerIssuer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "did",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "reason",
+        type: "string",
+      },
+    ],
+    name: "removeIssuer",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    name: "waitingAcceptIssuers",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "isRegistered",
+        type: "bool",
+      },
+      {
+        internalType: "bytes",
+        name: "pubKey",
+        type: "bytes",
+      },
+      {
+        internalType: "string",
+        name: "signatureAlgorithm",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "name",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "symbol",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
 ];
 
 const contractCenterABI = [
@@ -131,7 +458,7 @@ export const registerDID = async ({ issuer_did, public_key, name, symbol }) => {
   }
 };
 
-export const verifyProof = async ({ issuer_did, proof, major }) => {
+export const verifyProof = async ({ proofId, issuer_did, proof, major }) => {
   try {
     if (!window.ethereum) {
       throw new Error("MetaMask chưa được cài đặt");
@@ -139,6 +466,7 @@ export const verifyProof = async ({ issuer_did, proof, major }) => {
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const contractAddress = process.env.REACT_APP_VERIFYCATIONCENTER_ADDRESS;
+    console.log(contractAddress);
     if (!contractAddress) {
       throw new Error("Địa chỉ contract không hợp lệ");
     }
@@ -148,28 +476,40 @@ export const verifyProof = async ({ issuer_did, proof, major }) => {
       signer
     );
     console.log(contract);
+    console.log("HEHE");
 
     const tx = await contract.verifyOnEd25519(issuer_did, proof, major);
     console.log(tx);
-    // const receipt = await tx.wait();
-    // const response = await axios.post(
-    //   `${URL}/issuers/update-registration-status`,
-    //   {
-    //     issuer_did,
-    //     status: "pending",
-    //     txHash: receipt.hash,
-    //   }
-    // );
+    const response = await axios.put(
+      `${URL}/verifiers/update-proof-status`,
+      {
+        proofId: proofId,
+        isVerified: tx,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      }
+    );
+    console.log(response);
 
-    // if (!response.data.success) {
-    //   throw new Error("Không thể cập nhật trạng thái đăng ký lên server");
-    // }
+    if (!response.data.success) {
+      throw new Error("Không thể cập nhật trạng thái đăng ký lên server");
+    }
 
-    return {
-      success: true,
-      txHash: tx,
-      message: `Đăng ký DID thành công: ${issuer_did}`,
-    };
+    if (tx) {
+      return {
+        success: true,
+        message: `Xác minh chứng chỉ thành công`,
+      };
+    } else {
+      return {
+        success: false,
+        message: "Không thể xác minh chứng chỉ",
+      };
+    }
   } catch (error) {
     console.error("Lỗi khi xác minh!!");
   }

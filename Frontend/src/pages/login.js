@@ -8,8 +8,8 @@ import BackgroundImage from "../assets/bgImage.jpg";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const [userId, setUserId] = useState("UIT");
-  const [password, setPassword] = useState("123456");
+  const [userId, setUserId] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
