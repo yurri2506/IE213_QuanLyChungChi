@@ -13,6 +13,7 @@ const holderSchema = new mongoose.Schema({
   date_of_birth: { type: Date, required: true },
   place_of_birth: { type: String, required: true },
   address: { type: String, default: "N/A" },
+  school_code: { type: String, required: true },
   major: { type: String, required: true },
   faculty: { type: String, required: true },
   time_of_training: { type: Number, required: true },

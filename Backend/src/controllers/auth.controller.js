@@ -106,6 +106,7 @@ const registerHolderController = async (req, res) => {
         gender,
         date_of_birth,
         place_of_birth,
+        school_code,
         major,
         faculty,
         time_of_training,
@@ -120,6 +121,7 @@ const registerHolderController = async (req, res) => {
         !gender ||
         !date_of_birth ||
         !place_of_birth ||
+        !school_code ||
         !major ||
         !faculty ||
         !time_of_training ||

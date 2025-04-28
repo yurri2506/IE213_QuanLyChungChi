@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopy } from "@fortawesome/free-solid-svg-icons";
 import { decryptPrivateKey } from "../../utils/utils.js";
-import { getAllHolder } from "../../services/apiIssuer.js";
+import { getAllHolder, getIssuerInfo } from "../../services/apiIssuer.js";
 import { signupStudents } from "../../services/apiAuth.js";
 import studentTemplate from "../../assets/dataStudent.example.json";
 import AOS from "aos";
@@ -48,18 +48,19 @@ export default function Students() {
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
-  const changeTab = (e) => {
-    setActiveTab(e);
-    if (e === "tab1") setPage(1); // reset về trang 1 khi quay lại
-  };
-
+  const [totalHolders, setTotalHolders] = useState(0);
   const [students, setStudents] = useState([]);
+  const [schoolCode, setSchoolCode] = useState();
   const [uploadedStudents, setuploadedStudents] = useState([]);
   const [showPasswordPopup, setShowPasswordPopup] = useState(false);
   const [password, setPassword] = useState("");
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showStudentModal, setShowStudentModal] = useState(false);
+
+  const changeTab = (e) => {
+    setActiveTab(e);
+    if (e === "tab1") setPage(1); // reset về trang 1 khi quay lại
+  };
 
   useEffect(() => {
     AOS.init({
@@ -68,11 +69,27 @@ export default function Students() {
     });
   }, []);
 
+  const fetchIssuerInfo = async () => {
+    try {
+      const response = await getIssuerInfo();
+      console.log(response);
+      setSchoolCode(response.data.school_code);
+      // localStorage.setItem("registed_DID", response.data.registed_DID)
+    } catch (error) {
+      return error;
+    }
+  };
+
+  useEffect(() => {
+    fetchIssuerInfo();
+  }, []);
+
   const fetchAllHolder = async () => {
     try {
       const response = await getAllHolder(page);
       setStudents(response.data);
       setTotalPages(response.pagination.totalPages);
+      setTotalHolders(response.pagination.totalHolders);
       console.log(response);
     } catch (error) {
       return error;
@@ -149,7 +166,13 @@ export default function Students() {
         return;
       }
 
-      const response = await signupStudents(uploadedStudents);
+      // Thêm school_code vào từng JSON trong mảng uploadedStudents
+      const studentsWithSchoolCode = uploadedStudents.map((student) => ({
+        ...student,
+        school_code: schoolCode, // Thêm school_code
+      }));
+
+      const response = await signupStudents(studentsWithSchoolCode);
 
       const total = uploadedStudents.length;
       const successCount = response.success.length;
@@ -243,76 +266,79 @@ export default function Students() {
       </div>
       <div className="m-10 rounded-xl shadow-lg space-y-6 ">
         {activeTab === "tab1" ? (
-          <div className="overflow-x-auto bg-gray-100 p-4 rounded-lg">
-            <table className="min-w-full text-[0.72rem] text-center border-separate border-spacing-y-3">
-              <thead className="bg-white shadow-sm rounded-md">
-                <tr>
-                  <th className="px-3 py-2">No.</th>
-                  <th className="px-3 py-2">Student ID</th>
-                  <th className="px-3 py-2">Name</th>
-                  <th className="px-3 py-2">Date of birth</th>
-                  <th className="px-3 py-2">Faculty</th>
-                  <th className="px-3 py-2">Major</th>
-                  <th className="px-3 py-2">Place of birth</th>
-                  <th className="px-3 py-2">Mode of study</th>
-                  <th className="px-3 py-2">Time of training</th>
-                  {/* <th className="px-3 py-2">Date of issue</th>
-                  <th className="px-3 py-2">Serial number</th>
-                  <th className="px-3 py-2">Reference number</th> */}
-                </tr>
-              </thead>
-              <tbody>
-                {students.map((s, index) => (
-                  <tr
-                    key={s.holder_id}
-                    className="bg-white rounded-xl shadow-sm cursor-pointer hover:bg-blue-50"
-                    onClick={() => {
-                      setSelectedStudent(s);
-                      setShowStudentModal(true);
-                    }}
-                  >
-                    <td className="px-3 py-2 rounded-l-xl">{index + 1}</td>
-                    <td className="px-3 py-2">{s.holder_id}</td>
-                    <td className="px-3 py-2">{s.name}</td>
-                    <td className="px-3 py-2">
-                      {formatDateToDDMMYYYY(s.date_of_birth)}
-                    </td>
-                    <td className="px-3 py-2">{s.faculty}</td>
-                    <td className="px-3 py-2">{s.major}</td>
-                    <td className="px-3 py-2">{s.place_of_birth}</td>
-                    <td className="px-3 py-2">{s.mode_of_study}</td>
-                    <td className="px-3 py-2">{s.time_of_training}</td>
-                    {/* <td className="px-3 py-2">
-                      {formatDateToDDMMYYYY(s.date_of_issue)}
-                    </td>
-                    <td className="px-3 py-2">{s.serial_number}</td>
-                    <td className="px-3 py-2 rounded-r-xl">
-                      {s.reference_number}
-                    </td> */}
+          <div>
+            <div className="overflow-x-auto bg-gray-100 p-4 rounded-lg">
+              <table className="min-w-full text-[0.72rem] text-center border-separate border-spacing-y-3">
+                <thead className="bg-white shadow-sm rounded-md">
+                  <tr>
+                    <th className="px-3 py-2">No.</th>
+                    <th className="px-3 py-2">Student ID</th>
+                    <th className="px-3 py-2">Name</th>
+                    <th className="px-3 py-2">Date of birth</th>
+                    <th className="px-3 py-2">Faculty</th>
+                    <th className="px-3 py-2">Major</th>
+                    <th className="px-3 py-2">Place of birth</th>
+                    <th className="px-3 py-2">Mode of study</th>
+                    <th className="px-3 py-2">Time of training</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="flex justify-end gap-4 items-center mt-4">
-              <button
-                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                disabled={page === 1}
-                className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <span className="text-sm text-gray-600">
-                Page {page} of {totalPages}
-              </span>
-              <button
-                onClick={() =>
-                  setPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                disabled={page === totalPages}
-                className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
-              >
-                Next
-              </button>
+                </thead>
+                <tbody>
+                  {students.map((s, index) => (
+                    <tr
+                      key={s.holder_id}
+                      className="bg-white rounded-xl shadow-sm cursor-pointer hover:bg-blue-50"
+                      onClick={() => {
+                        setSelectedStudent(s);
+                        setShowStudentModal(true);
+                      }}
+                    >
+                      <td className="px-3 py-2 rounded-l-xl">{index + 1}</td>
+                      <td className="px-3 py-2">{s.holder_id}</td>
+                      <td className="px-3 py-2">{s.name}</td>
+                      <td className="px-3 py-2">
+                        {formatDateToDDMMYYYY(s.date_of_birth)}
+                      </td>
+                      <td className="px-3 py-2">{s.faculty}</td>
+                      <td className="px-3 py-2">{s.major}</td>
+                      <td className="px-3 py-2">{s.place_of_birth}</td>
+                      <td className="px-3 py-2">{s.mode_of_study}</td>
+                      <td className="px-3 py-2">{s.time_of_training}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {totalHolders === 0 ? (
+                <div className="flex flex-col items-center justify-center h-96 bg-gray-100 rounded-lg">
+                  <p className="text-gray-600 text-lg font-semibold">
+                    No students have been registered yet.
+                  </p>
+                  <p className="text-gray-500 text-sm mt-2">
+                    Please register students to see them here.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex justify-end gap-4 items-center mt-4">
+                  <button
+                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={page === 1}
+                    className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-sm text-gray-600">
+                    Page {page} of {totalPages}
+                  </span>
+                  <button
+                    onClick={() =>
+                      setPage((prev) => Math.min(prev + 1, totalPages))
+                    }
+                    disabled={page === totalPages}
+                    className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         ) : (

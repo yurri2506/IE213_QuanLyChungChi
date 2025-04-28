@@ -64,6 +64,7 @@ export default function ShowDegrees() {
   const [publicKey, setPublicKey] = useState("");
   const [name, setName] = useState("");
   const [symbol, setSymbol] = useState("");
+  const [schoolCode, setSchoolCode] = useState("");
 
   const fetchIssuerInfo = async () => {
     try {
@@ -74,6 +75,7 @@ export default function ShowDegrees() {
       setSymbol(response.data.symbol);
       setName(response.data.name);
       setRegistedDIDStatus(response.data.registed_DID);
+      setSchoolCode(response.data.school_code);
       // localStorage.setItem("registed_DID", response.data.registed_DID)
     } catch (error) {
       return error;
@@ -168,6 +170,8 @@ export default function ShowDegrees() {
         ({ holder_did, faculty, timeOfTraining, ...rest }) => rest
       );
 
+      console.log(sanitizedDegrees);
+      // return;
       const signatures = await getSignature(privateKey, sanitizedDegrees);
 
       const signedDegrees = uploadedDegrees.map((degree, index) => ({
@@ -374,10 +378,7 @@ export default function ShowDegrees() {
               </thead>
               <tbody>
                 {students.map((s, index) => (
-                  <tr
-                    key={s.holder_info.holder_id}
-                    className="bg-white rounded-xl shadow-sm"
-                  >
+                  <tr key={index} className="bg-white rounded-xl shadow-sm">
                     <td className="px-3 py-2 rounded-l-xl">{index + 1}</td>
                     <td className="px-3 py-2">{s.holder_info.holder_id}</td>
                     <td className="px-3 py-2">{s.holder_info.name}</td>
