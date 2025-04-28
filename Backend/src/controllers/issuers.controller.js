@@ -22,6 +22,7 @@ const createDegreeController = async (req, res) => {
     const { sub } = req.user;
     const issuer = await issuerService.getIssuerProfile(sub);
     const issuer_did = issuer.DID;
+    const school_code = issuer.school_code;
 
     const degrees = req.body; // array
 
@@ -65,6 +66,7 @@ const createDegreeController = async (req, res) => {
     }
 
     const result = await issuerService.createDegrees(
+      school_code,
       degrees.map((degree) => ({
         ...degree,
         issuer_did,
@@ -108,8 +110,10 @@ const getAllDegreesController = async (req, res) => {
 const getAllHolderController = async (req, res) => {
   try {
     const { page = 1 } = req.query; // Lấy số trang từ query params, mặc định là 1
-
-    const result = await issuerService.getAllHolder(Number(page));
+    const { sub } = req.user;
+    const issuer = await issuerService.getIssuerProfile(sub);
+    const school_code = issuer.school_code;
+    const result = await issuerService.getAllHolder(school_code, Number(page));
 
     res.status(200).json({
       status: "SUCCESS",

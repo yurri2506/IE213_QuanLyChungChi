@@ -17,7 +17,7 @@ const getIssuerProfile = async (issuer_id) => {
 };
 
 // Tạo chứng chỉ xác nhận
-const createDegrees = async (degreesData) => {
+const createDegrees = async (school_code, degreesData) => {
   const createdDegrees = [];
 
   for (const data of degreesData) {
@@ -36,7 +36,7 @@ const createDegrees = async (degreesData) => {
       signature,
     } = data;
 
-    const holder = await Holder.findOne({ DID: holder_did });
+    const holder = await Holder.findOne({ DID: holder_did, school_code });
     if (!holder) {
       throw new Error(`Holder not found for DID: ${holder_did}`);
     }
@@ -115,14 +115,14 @@ const getAllDegrees = async ({ issuer_did }) => {
   }
 };
 
-const getAllHolder = async (page = 1) => {
+const getAllHolder = async (school_code, page = 1) => {
   try {
     const limit = 20; // Số lượng holder mỗi trang
     const skip = (page - 1) * limit; // Bỏ qua các holder của các trang trước
+    const query = { school_code };
+    const holders = await holdersModel.find(query).skip(skip).limit(limit);
 
-    const holders = await holdersModel.find().skip(skip).limit(limit);
-
-    const totalHolders = await holdersModel.countDocuments(); // Tổng số holder
+    const totalHolders = await holdersModel.countDocuments(query); // Tổng số holder
     const totalPages = Math.ceil(totalHolders / limit); // Tổng số trang
 
     return {
