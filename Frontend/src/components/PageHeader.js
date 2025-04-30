@@ -10,7 +10,12 @@ import {
 import ZuniLogo from "../assets/ZUNI.svg";
 
 const PageHeader = () => {
-  const name = localStorage.getItem("name");
+  const persistRootRaw = sessionStorage.getItem("persist:root");
+  const persistRoot = JSON.parse(persistRootRaw);
+  // const name = localStorage.getItem("name") || "TÊN NÈ";
+  const name = JSON.parse(persistRoot.name) || "TÊN NÈ";
+  
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const handleLogout = async (e) => {
