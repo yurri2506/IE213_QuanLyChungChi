@@ -8,8 +8,11 @@ import BackgroundImage from "../assets/bgImage.jpg";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
 import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
+import { updateUser } from "../redux/slices/userSlice.js";
 
 function Login() {
+  const dispatch = useDispatch();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -27,15 +30,15 @@ function Login() {
         // Lưu Access Token
         if (response.data?.access_token) {
           localStorage.setItem("access_token", response.data.access_token);
-          localStorage.setItem("name", response.data.name);
+          // localStorage.setItem("name", response.data.name);
           if (response.data.role === "ISSUER") {
-            localStorage.setItem(
-              "encrypted_private_key",
-              response.data.encrypted_private_key
-            );
-            localStorage.setItem("salt", response.data.salt);
-            localStorage.setItem("iv", response.data.iv);
-            localStorage.setItem("registed_DID", response.data.registed_DID);
+            // localStorage.setItem(
+            //   "encrypted_private_key",
+            //   response.data.encrypted_private_key
+            // );
+            // localStorage.setItem("salt", response.data.salt);
+            // localStorage.setItem("iv", response.data.iv);
+            // localStorage.setItem("registed_DID", response.data.registed_DID);
 
             window.location.href = "/info-issuer";
           }
@@ -55,6 +58,12 @@ function Login() {
           secure: true,
           sameSite: "Strict",
         });
+
+        dispatch(
+          updateUser({
+            ...response?.data,
+          })
+        );
 
       } else {
         setError(response.message);
