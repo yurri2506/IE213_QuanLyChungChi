@@ -55,7 +55,7 @@ function Login() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/signin"); // Chuyển đến trang signin
+    navigate("/signup"); // Chuyển đến trang signin
   };
 
   useEffect(() => {
