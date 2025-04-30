@@ -41,7 +41,7 @@ const login = async (user_id, password) => {
   const access_token = jwt.sign(
     { sub: user_id, role, did: user.DID },
     process.env.JWT_SECRET,
-    { expiresIn: "1m" } // Hết hạn sau 1 giờ
+    { expiresIn: "1h" } // Hết hạn sau 1 giờ
   );
 
   // Tạo refresh_token
