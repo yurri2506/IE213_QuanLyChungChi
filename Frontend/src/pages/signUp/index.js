@@ -142,7 +142,7 @@ import UIT from "../../assets/UIT.svg";
 import BackgroundImage from "../../assets/bgImage.jpg";
 import axios from "axios";
 
-function SignIn() {
+function SignUp() {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState(""); // Name field
@@ -321,4 +321,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default SignUp;

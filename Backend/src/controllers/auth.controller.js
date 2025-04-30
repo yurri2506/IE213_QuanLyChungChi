@@ -200,7 +200,7 @@ const loginController = async (req, res) => {
 
 const refreshTokenController = async (req, res) => {
   try {
-    const { refresh_token } = req.body;
+    const refresh_token = req.headers['authorization']?.split(' ')[1];
 
     if (!refresh_token) {
       return res.status(400).json({ message: "Missing refresh_token" });

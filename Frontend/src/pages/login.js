@@ -6,8 +6,13 @@ import ZuniLogo from "../assets/ZUNI.svg";
 import UIT from "../assets/UIT.svg";
 import BackgroundImage from "../assets/bgImage.jpg";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
+import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
+import { updateUser } from "../redux/slices/userSlice.js";
 
 function Login() {
+  const dispatch = useDispatch();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -21,27 +26,45 @@ function Login() {
       if (response) {
         // Handle successful login (e.g., redirect to dashboard)
         console.log("Login response:", response);
-        const token = response.data.access_token;
-        localStorage.setItem("access_token", token);
-        localStorage.setItem("refresh_token", response.data.refresh_token);
-        localStorage.setItem("name", response.data.name);
-        if (response.data.role === "ISSUER") {
-          localStorage.setItem(
-            "encrypted_private_key",
-            response.data.encrypted_private_key
-          );
-          localStorage.setItem("salt", response.data.salt);
-          localStorage.setItem("iv", response.data.iv);
-          localStorage.setItem("registed_DID", response.data.registed_DID);
 
-          window.location.href = "/info-issuer";
+        // Lưu Access Token
+        if (response.data?.access_token) {
+          localStorage.setItem("access_token", response.data.access_token);
+          // localStorage.setItem("name", response.data.name);
+          if (response.data.role === "ISSUER") {
+            // localStorage.setItem(
+            //   "encrypted_private_key",
+            //   response.data.encrypted_private_key
+            // );
+            // localStorage.setItem("salt", response.data.salt);
+            // localStorage.setItem("iv", response.data.iv);
+            // localStorage.setItem("registed_DID", response.data.registed_DID);
+
+            window.location.href = "/info-issuer";
+          }
+          if (response.data.role === "HOLDER") {
+            window.location.href = "/info-holder";
+          }
+          if (response.data.role === "VERIFIER") {
+            window.location.href = "/info-verifier";
+          }
         }
-        if (response.data.role === "HOLDER") {
-          window.location.href = "/info-holder";
-        }
-        if (response.data.role === "VERIFIER") {
-          window.location.href = "/info-verifier";
-        }
+
+        // Lưu Refresh Token vào Cookie
+        const decoded = jwtDecode(response.data.refresh_token);
+        const expiryDate = new Date(decoded.expiresIn * 1000);
+        Cookies.set("refresh_token", response.data.refresh_token, {
+          expires: expiryDate,
+          secure: true,
+          sameSite: "Strict",
+        });
+
+        dispatch(
+          updateUser({
+            ...response?.data,
+          })
+        );
+
       } else {
         setError(response.message);
       }
@@ -55,7 +78,7 @@ function Login() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/signin"); // Chuyển đến trang signin
+    navigate("/signup"); // Chuyển đến trang signin
   };
 
   useEffect(() => {
