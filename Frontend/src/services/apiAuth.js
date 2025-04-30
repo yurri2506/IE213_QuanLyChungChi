@@ -3,7 +3,6 @@ import { jwtDecode } from "jwt-decode";
 
 const URL = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
-
 export const login = async (user_id, password) => {
   try {
     const response = await axios.post(`${URL}/auth/login`, {
@@ -37,10 +36,11 @@ export const signupStudents = async (data) => {
 
 export const refreshTokenn = async (refreshToken) => {
   try {
-    const response = await fetch(`${URL}/refresh-token`, {
+    console.log("refreshToken", refreshToken);
+    const response = await fetch(`${URL}/auth/refresh-token`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${refreshToken}`,
+        Authorization: `Bearer ${refreshToken}`,
         "Content-Type": "application/json",
       },
     });
@@ -51,15 +51,14 @@ export const refreshTokenn = async (refreshToken) => {
     }
 
     const data = await response.json();
-    console.log(data);
-    return data.access_token; // Trả về accessToken mới
+    return data.data.access_token; // Trả về accessToken mới
   } catch (error) {
     console.error("Error in refreshToken:", error);
     throw error;
   }
 };
 
-export const ensureValidToken = async (dispatch,resetUser, refreshToken) => {
+export const ensureValidToken = async (dispatch, resetUser, refreshToken) => {
   const accessToken = localStorage.getItem("access_token");
 
   if (!accessToken) {
@@ -72,6 +71,7 @@ export const ensureValidToken = async (dispatch,resetUser, refreshToken) => {
   if (decoded.exp < currentTime) {
     // Access token hết hạn, làm mới token
     const data = await refreshTokenn(refreshToken);
+    console.log("data2", data);
     localStorage.setItem("access_token", data);
     return data;
   }

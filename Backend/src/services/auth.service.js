@@ -41,14 +41,14 @@ const login = async (user_id, password) => {
   const access_token = jwt.sign(
     { sub: user_id, role, did: user.DID },
     process.env.JWT_SECRET,
-    { expiresIn: "5m" } // Hết hạn sau 1 giờ
+    { expiresIn: "1m" } // Hết hạn sau 1 giờ
   );
 
   // Tạo refresh_token
   const refresh_token = jwt.sign(
     { sub: user_id, role },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "7d" } // Hết hạn sau 7 ngày
+    { expiresIn: "5m" } // Hết hạn sau 7 ngày
   );
   if (role === "ISSUER")
     return {
