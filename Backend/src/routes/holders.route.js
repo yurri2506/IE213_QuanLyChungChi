@@ -14,7 +14,7 @@ router.get(
 router.get("/degrees", holderMiddleware, holderController.getDegreesController);
 
 router.post(
-  "/proofs",
+  "/proofs/:degree_id",
   holderMiddleware,
   holderController.createProofController
 );

@@ -88,16 +88,18 @@ const getAllDegreesController = async (req, res) => {
     const { sub } = req.user;
     const issuer = await issuerService.getIssuerProfile(sub);
     const issuer_did = issuer.DID;
+    const page = parseInt(req.query.page) || 1;
 
     if (!issuer_did) {
       return res.status(400).json({ message: "issuer_did là bắt buộc" });
     }
 
-    const degrees = await issuerService.getAllDegrees({ issuer_did });
+    const result = await issuerService.getAllDegrees(issuer_did, page);
 
     res.status(200).json({
       status: "SUCCESS",
-      data: degrees,
+      data: result.degrees,
+      pagination: result.pagination,
     });
   } catch (error) {
     res.status(500).json({
