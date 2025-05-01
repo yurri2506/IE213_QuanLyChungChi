@@ -13,6 +13,7 @@ import InfoVerifier from "../pages/verifier/InfoVerifier.js";
 import Verified from "../pages/verifier/Verified.js";
 import InfoIssuer from "../pages/issuer/InfoIssuer.js";
 import SignUp from "../pages/signUp/index.js";
+import LogoutPage from "../pages/logout.js";
 export const routes = [
   {
     path: "/",
@@ -70,5 +71,9 @@ export const routes = [
   {
     path: "*",
     page: Home, // Redirect to Home
+  },
+  {
+    path: "/logout",
+    page: LogoutPage,
   },
 ];

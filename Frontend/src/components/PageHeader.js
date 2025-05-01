@@ -20,16 +20,17 @@ const PageHeader = () => {
   const dropdownRef = useRef(null);
   const handleLogout = async (e) => {
     setIsDropdownOpen(false);
-    try {
-      e.preventDefault();
-      // localStorage.removeItem("access_token");
-      // localStorage.removeItem("refresh_token");
-      // localStorage.removeItem("name");
-      localStorage.clear();
-      window.location.href = "/login";
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
+    // try {
+    //   e.preventDefault();
+    //   // localStorage.removeItem("access_token");
+    //   // localStorage.removeItem("refresh_token");
+    //   // localStorage.removeItem("name");
+    //   localStorage.clear();
+    //   window.location.href = "/login";
+    // } catch (error) {
+    //   console.error("Error during logout:", error);
+    // }
+    window.location.href = "/logout";
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
