@@ -42,9 +42,15 @@ const handleCopy = (value) => {
 
 export default function Students() {
   const [activeTab, setActiveTab] = useState("tab1");
-  const encryptedData = localStorage.getItem("encrypted_private_key");
-  const saltHex = localStorage.getItem("salt");
-  const ivHex = localStorage.getItem("iv");
+  // const encryptedData = localStorage.getItem("encrypted_private_key");
+  // const saltHex = localStorage.getItem("salt");
+  // const ivHex = localStorage.getItem("iv");
+  const persistRootRaw = sessionStorage.getItem("persist:root");
+  const persistRoot = JSON.parse(persistRootRaw);
+  // const name = localStorage.getItem("name") || "TÊN NÈ";
+  const encryptedData = JSON.parse(persistRoot.encrypted_private_key) || "mã NÈ";
+  const saltHex = JSON.parse(persistRoot.salt) || "mã NÈ";
+  const ivHex = JSON.parse(persistRoot.iv) || "mã NÈ";
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
