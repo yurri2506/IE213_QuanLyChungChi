@@ -56,12 +56,12 @@ const verificationABI = [
 ];
 
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
-const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-const contract = new ethers.Contract(
-  process.env.VERIFICATIONCENTER_ADDRESS,
-  verificationABI,
-  wallet
-);
+// const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+// const contract = new ethers.Contract(
+//   process.env.VERIFICATIONCENTER_ADDRESS,
+//   verificationABI,
+//   wallet
+// );
 
 // Lấy thông tin Verifier
 const getVerifierProfile = async (verifier_id) => {
@@ -101,21 +101,21 @@ const getAllSummittedProofs = async (verifier_did) => {
   return enriched_proofs;
 };
 
-const verifyProof = async (id, issuerDID, proof, major) => {
-  try {
-    const result = await contract.verifyOnEd25519(issuerDID, proof, major);
-    if (result === true) {
-      await submitted_proof.updateOne(
-        { _id: new ObjectId(id) },
-        { $set: { is_verified: true, updated_at: Date.now() } }
-      );
-    }
-    return result;
-  } catch (err) {
-    console.error("Error verifying proof:", err);
-    throw err;
-  }
-};
+// const verifyProof = async (id, issuerDID, proof, major) => {
+//   try {
+//     const result = await contract.verifyOnEd25519(issuerDID, proof, major);
+//     if (result === true) {
+//       await submitted_proof.updateOne(
+//         { _id: new ObjectId(id) },
+//         { $set: { is_verified: true, updated_at: Date.now() } }
+//       );
+//     }
+//     return result;
+//   } catch (err) {
+//     console.error("Error verifying proof:", err);
+//     throw err;
+//   }
+// };
 
 const updateProofVerificationStatus = async (proofId, isVerified) => {
   try {
@@ -151,6 +151,6 @@ module.exports = {
   getVerifierProfile,
   checkVerifier,
   getAllSummittedProofs,
-  verifyProof,
+  // verifyProof,
   updateProofVerificationStatus,
 };
