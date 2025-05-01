@@ -44,7 +44,8 @@ export default function ShowDegrees() {
   const persistRootRaw = sessionStorage.getItem("persist:root");
   const persistRoot = JSON.parse(persistRootRaw);
   // const name = localStorage.getItem("name") || "TÊN NÈ";
-  const encryptedData = JSON.parse(persistRoot.encrypted_private_key) || "mã NÈ";
+  const encryptedData =
+    JSON.parse(persistRoot.encrypted_private_key) || "mã NÈ";
   const saltHex = JSON.parse(persistRoot.salt) || "mã NÈ";
   const ivHex = JSON.parse(persistRoot.iv) || "mã NÈ";
 
@@ -70,7 +71,6 @@ export default function ShowDegrees() {
   const [publicKey, setPublicKey] = useState("");
   const [name, setName] = useState("");
   const [symbol, setSymbol] = useState("");
-  const [schoolCode, setSchoolCode] = useState("");
 
   const fetchIssuerInfo = async () => {
     try {
@@ -81,7 +81,7 @@ export default function ShowDegrees() {
       setSymbol(response.data.symbol);
       setName(response.data.name);
       setRegistedDIDStatus(response.data.registed_DID);
-      setSchoolCode(response.data.school_code);
+      // setSchoolCode(response.data.school_code);
       // localStorage.setItem("registed_DID", response.data.registed_DID)
     } catch (error) {
       return error;
@@ -230,7 +230,7 @@ export default function ShowDegrees() {
         text: "Something went wrong. Please try again.",
       });
     } finally {
-      setIsLoading(false); // Dừng loading
+      setIsLoading(false);
     }
   };
 

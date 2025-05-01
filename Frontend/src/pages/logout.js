@@ -9,7 +9,7 @@ function LogoutPage() {
 
   useEffect(() => {
     // Xóa accessToken và refreshToken từ localStorage
-    localStorage.removeItem("accessToken");
+    localStorage.removeItem("access_token");
 
     // Xóa toàn bộ cookie bằng cách đặt thời gian hết hạn trong quá khứ và không chỉ định domain
     document.cookie.split(";").forEach((cookie) => {

@@ -139,48 +139,48 @@ const getAllHolder = async (school_code, page = 1) => {
   }
 };
 
-const registerDID = async ({ issuer_did, public_key, name, symbol }) => {
-  try {
-    if (!issuer_did || !public_key || !name || !symbol) {
-      throw new Error("Thiếu thông tin bắt buộc để đăng ký DID.");
-    }
-    const contractABI = [
-      "function registerIssuer(string did, tuple(bool isRegistered, bytes pubKey, string signatureAlgorithm, string name, string symbol) issuerInfo) external",
-    ];
+// const registerDID = async ({ issuer_did, public_key, name, symbol }) => {
+//   try {
+//     if (!issuer_did || !public_key || !name || !symbol) {
+//       throw new Error("Thiếu thông tin bắt buộc để đăng ký DID.");
+//     }
+//     const contractABI = [
+//       "function registerIssuer(string did, tuple(bool isRegistered, bytes pubKey, string signatureAlgorithm, string name, string symbol) issuerInfo) external",
+//     ];
 
-    const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
-    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-    const contract = new ethers.Contract(
-      process.env.REGISTRYDID_ADDRESS,
-      contractABI,
-      wallet
-    );
-    const issuerInfo = {
-      isRegistered: true,
-      pubKey: public_key,
-      signatureAlgorithm: "EdDSA",
-      name,
-      symbol: symbol,
-    };
+//     const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+//     const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+//     const contract = new ethers.Contract(
+//       process.env.REGISTRYDID_ADDRESS,
+//       contractABI,
+//       wallet
+//     );
+//     const issuerInfo = {
+//       isRegistered: true,
+//       pubKey: public_key,
+//       signatureAlgorithm: "EdDSA",
+//       name,
+//       symbol: symbol,
+//     };
 
-    const tx = await contract.registerIssuer(issuer_did, issuerInfo);
-    await tx.wait();
+//     const tx = await contract.registerIssuer(issuer_did, issuerInfo);
+//     await tx.wait();
 
-    await Issuer.updateOne({ DID: issuer_did }, { registed_DID: "pending" });
+//     await Issuer.updateOne({ DID: issuer_did }, { registed_DID: "pending" });
 
-    return {
-      success: true,
-      txHash: tx.hash,
-      message: `Đăng ký DID thành công: ${issuer_did}`,
-    };
-  } catch (error) {
-    console.error("Lỗi khi đăng ký DID:", error);
-    return {
-      success: false,
-      message: error.reason || error.message,
-    };
-  }
-};
+//     return {
+//       success: true,
+//       txHash: tx.hash,
+//       message: `Đăng ký DID thành công: ${issuer_did}`,
+//     };
+//   } catch (error) {
+//     console.error("Lỗi khi đăng ký DID:", error);
+//     return {
+//       success: false,
+//       message: error.reason || error.message,
+//     };
+//   }
+// };
 
 const updateRegistrationStatus = async (issuer_did, status, txHash) => {
   try {
@@ -207,6 +207,6 @@ module.exports = {
   createDegrees,
   getAllDegrees,
   getAllHolder,
-  registerDID,
+  // registerDID,
   updateRegistrationStatus,
 };

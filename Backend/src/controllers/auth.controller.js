@@ -10,7 +10,10 @@ const registerIssuerController = async (req, res) => {
   try {
     const { issuer_id, password, name, school_code, symbol } = req.body;
     if (!issuer_id || !password || !name || !school_code || !symbol) {
-      return res.status(400).json({ message: "Missing required fields" });
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Missing required fields",
+      });
     }
 
     const result = await registerIssuer({
@@ -21,11 +24,15 @@ const registerIssuerController = async (req, res) => {
       symbol,
     });
     res.status(201).json({
+      status: "SUCCESS",
       message: "Issuer registered successfully",
       data: result,
     });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({
+      status: "ERROR",
+      message: error.message,
+    });
   }
 };
 
@@ -162,7 +169,10 @@ const registerVerifierController = async (req, res) => {
   try {
     const { verifier_id, password, name, symbol } = req.body;
     if (!verifier_id || !password || !name || !symbol) {
-      return res.status(400).json({ message: "Missing required fields" });
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Missing required fields",
+      });
     }
 
     const result = await registerVerifier({
@@ -172,11 +182,15 @@ const registerVerifierController = async (req, res) => {
       symbol,
     });
     res.status(201).json({
+      status: "SUCCESS",
       message: "Verifier registered successfully",
       data: result,
     });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({
+      status: "ERROR",
+      message: error.message,
+    });
   }
 };
 
@@ -185,34 +199,48 @@ const loginController = async (req, res) => {
     const { user_id, password } = req.body;
 
     if (!user_id || !password) {
-      return res.status(400).json({ message: "Missing user_id or password" });
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Missing user_id or password",
+      });
     }
 
     const result = await login(user_id, password);
     res.status(200).json({
+      status: "SUCCESS",
       message: "Login successful",
       data: result,
     });
   } catch (error) {
-    res.status(401).json({ message: error.message });
+    res.status(401).json({
+      status: "ERROR",
+      message: error.message,
+    });
   }
 };
 
 const refreshTokenController = async (req, res) => {
   try {
-    const refresh_token = req.headers['authorization']?.split(' ')[1];
+    const refresh_token = req.headers["authorization"]?.split(" ")[1];
 
     if (!refresh_token) {
-      return res.status(400).json({ message: "Missing refresh_token" });
+      return res.status(400).json({
+        status: "ERROR",
+        message: "Missing refresh_token",
+      });
     }
 
     const result = await refreshToken(refresh_token);
     res.status(200).json({
+      status: "SUCCESS",
       message: "Token refreshed successfully",
       data: result,
     });
   } catch (error) {
-    res.status(401).json({ message: error.message });
+    res.status(401).json({
+      status: "ERROR",
+      message: error.message,
+    });
   }
 };
 
