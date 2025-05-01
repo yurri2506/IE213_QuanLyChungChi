@@ -33,9 +33,9 @@ export const createDegrees = async (data) => {
   }
 };
 
-export const getAllDegrees = async () => {
+export const getAllDegrees = async (page = 1) => {
   try {
-    const response = await axios.get(`${URL}/issuers/degrees`, {
+    const response = await axios.get(`${URL}/issuers/degrees?page=${page}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },

@@ -3,7 +3,7 @@ const verifierService = require("../services/verifiers.service");
 // Controller lấy thông tin Verifier
 const getVerifierProfileController = async (req, res) => {
   try {
-    const { sub } = req.user; // verifier_id từ JWT
+    const { sub } = req.user;
     const verifier = await verifierService.getVerifierProfile(sub);
     res.status(200).json({
       message: "Verifier profile retrieved successfully",
@@ -19,8 +19,8 @@ const getVerifierProfileController = async (req, res) => {
 
 const checkVerifierController = async (req, res) => {
   try {
-    const { verifier_did } = req.params; // Lấy verifier_did từ URL
-    const verifier = await verifierService.checkVerifier(verifier_did); // Gọi service để kiểm tra Verifier
+    const { verifier_did } = req.params;
+    const verifier = await verifierService.checkVerifier(verifier_did);
 
     res.status(200).json({
       status: "SUCCESS",
@@ -60,29 +60,6 @@ const getAllSummittedProofsController = async (req, res) => {
   }
 };
 
-// const verifyProofController = async (req, res) => {
-//   try {
-//     const { id, issuerDID, proofs, major } = req.body;
-
-//     if (!id || !issuerDID || !proofs || !major) {
-//       return res.status(400).json({ error: "Missing required fields" });
-//     }
-
-//     const result = await verifierService.verifyProof(
-//       id,
-//       issuerDID,
-//       proofs,
-//       major
-//     );
-
-//     res.status(200).json({ verified: result });
-//   } catch (err) {
-//     res
-//       .status(500)
-//       .json({ error: "Verification failed", message: err.message });
-//   }
-// };
-
 const updateProofVerificationStatusController = async (req, res) => {
   try {
     const { proofId, isVerified } = req.body;
@@ -105,6 +82,5 @@ module.exports = {
   getVerifierProfileController,
   checkVerifierController,
   getAllSummittedProofsController,
-  // verifyProofController,
   updateProofVerificationStatusController,
 };

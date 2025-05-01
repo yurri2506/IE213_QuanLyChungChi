@@ -408,7 +408,7 @@ export const registerDID = async ({ issuer_did, public_key, name, symbol }) => {
     const tx = await contract.registerIssuer(issuer_did, issuerInfo);
 
     const receipt = await tx.wait();
-    const response = await axios.post(
+    const response = await axios.put(
       `${URL}/issuers/update-registration-status`,
       {
         issuer_did,

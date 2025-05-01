@@ -33,7 +33,7 @@ router.get(
 //   issuerController.registerDIDController
 // );
 
-router.post(
+router.put(
   "/update-registration-status",
   issuerController.updateRegistrationStatusController
 );

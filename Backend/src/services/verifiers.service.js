@@ -83,9 +83,11 @@ const checkVerifier = async (verifier_did) => {
 };
 
 const getAllSummittedProofs = async (verifier_did) => {
-  const submitted_proofs = await submitted_proof.find({
-    verifier_did: verifier_did,
-  });
+  const submitted_proofs = await submitted_proof
+    .find({
+      verifier_did: verifier_did,
+    })
+    .sort({ created_at: -1 });
 
   const enriched_proofs = await Promise.all(
     submitted_proofs.map(async (proof) => {
@@ -100,22 +102,6 @@ const getAllSummittedProofs = async (verifier_did) => {
 
   return enriched_proofs;
 };
-
-// const verifyProof = async (id, issuerDID, proof, major) => {
-//   try {
-//     const result = await contract.verifyOnEd25519(issuerDID, proof, major);
-//     if (result === true) {
-//       await submitted_proof.updateOne(
-//         { _id: new ObjectId(id) },
-//         { $set: { is_verified: true, updated_at: Date.now() } }
-//       );
-//     }
-//     return result;
-//   } catch (err) {
-//     console.error("Error verifying proof:", err);
-//     throw err;
-//   }
-// };
 
 const updateProofVerificationStatus = async (proofId, isVerified) => {
   try {
