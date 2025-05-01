@@ -18,11 +18,11 @@ router.get(
   verifierController.getAllSummittedProofsController
 );
 
-router.post(
-  "/verify",
-  verifierMiddleware,
-  verifierController.verifyProofController
-);
+// router.post(
+//   "/verify",
+//   verifierMiddleware,
+//   verifierController.verifyProofController
+// );
 
 router.put(
   "/update-proof-status",

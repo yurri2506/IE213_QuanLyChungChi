@@ -60,28 +60,28 @@ const getAllSummittedProofsController = async (req, res) => {
   }
 };
 
-const verifyProofController = async (req, res) => {
-  try {
-    const { id, issuerDID, proofs, major } = req.body;
+// const verifyProofController = async (req, res) => {
+//   try {
+//     const { id, issuerDID, proofs, major } = req.body;
 
-    if (!id || !issuerDID || !proofs || !major) {
-      return res.status(400).json({ error: "Missing required fields" });
-    }
+//     if (!id || !issuerDID || !proofs || !major) {
+//       return res.status(400).json({ error: "Missing required fields" });
+//     }
 
-    const result = await verifierService.verifyProof(
-      id,
-      issuerDID,
-      proofs,
-      major
-    );
+//     const result = await verifierService.verifyProof(
+//       id,
+//       issuerDID,
+//       proofs,
+//       major
+//     );
 
-    res.status(200).json({ verified: result });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ error: "Verification failed", message: err.message });
-  }
-};
+//     res.status(200).json({ verified: result });
+//   } catch (err) {
+//     res
+//       .status(500)
+//       .json({ error: "Verification failed", message: err.message });
+//   }
+// };
 
 const updateProofVerificationStatusController = async (req, res) => {
   try {
@@ -94,20 +94,17 @@ const updateProofVerificationStatusController = async (req, res) => {
 
     res.status(200).json(result);
   } catch (err) {
-    res
-      .status(500)
-      .json({
-        error: "Failed to update proof verification status",
-        message: err.message,
-      });
+    res.status(500).json({
+      error: "Failed to update proof verification status",
+      message: err.message,
+    });
   }
-}
-
+};
 
 module.exports = {
   getVerifierProfileController,
   checkVerifierController,
   getAllSummittedProofsController,
-  verifyProofController,
-  updateProofVerificationStatusController
+  // verifyProofController,
+  updateProofVerificationStatusController,
 };

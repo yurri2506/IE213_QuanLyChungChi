@@ -10,6 +10,7 @@ import Certificate from "../assets/certificate.svg";
 import Employee from "../assets/employee.svg";
 import Protect from "../assets/protect.svg";
 import HomeHeader from "../components/HomeHeader.js";
+import Footer from "../components/Footer.js";
 
 function Home() {
   const navigate = useNavigate();
@@ -201,6 +202,8 @@ function Home() {
           </div>
         ))}
       </section>
+
+      <Footer />
     </div>
   );
 }
