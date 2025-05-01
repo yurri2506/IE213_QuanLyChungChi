@@ -4,27 +4,22 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCircleChevronDown,
-  faKey,
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import ZuniLogo from "../assets/ZUNI.svg";
 
 const PageHeader = () => {
-  const name = localStorage.getItem("name");
+  const persistRootRaw = sessionStorage.getItem("persist:root");
+  const persistRoot = JSON.parse(persistRootRaw);
+  // const name = localStorage.getItem("name") || "TÊN NÈ";
+  const name = JSON.parse(persistRoot.name) || "TÊN NÈ";
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const handleLogout = async (e) => {
     setIsDropdownOpen(false);
-    try {
-      e.preventDefault();
-      // localStorage.removeItem("access_token");
-      // localStorage.removeItem("refresh_token");
-      // localStorage.removeItem("name");
-      localStorage.clear();
-      window.location.href = "/login";
-    } catch (error) {
-      console.error("Error during logout:", error);
-    }
+
+    window.location.href = "/logout";
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -78,20 +73,6 @@ const PageHeader = () => {
                         }
                     `}
       >
-        <li>
-          <Link
-            to="/change-password"
-            className="p-3 text-sm hover:bg-gray-200 block"
-          >
-            <FontAwesomeIcon
-              icon={faKey}
-              style={{ color: "black" }}
-              className="mx-2"
-            />
-            Thay đổi mật khẩu
-          </Link>
-        </li>
-
         <li>
           <button
             className="p-3 text-sm hover:bg-gray-200 block w-full text-left"

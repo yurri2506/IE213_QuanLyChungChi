@@ -48,7 +48,7 @@ const login = async (user_id, password) => {
   const refresh_token = jwt.sign(
     { sub: user_id, role },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "7d" } // Hết hạn sau 7 ngày
+    { expiresIn: "5m" } // Hết hạn sau 7 ngày
   );
   if (role === "ISSUER")
     return {

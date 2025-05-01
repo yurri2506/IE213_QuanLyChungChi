@@ -4,7 +4,6 @@ const Verifier = require("../models/verifiers.model");
 const Issuer = require("../models/issuers.model");
 const Holder_Proofs = require("../models/holder_proofs.model");
 const {
-  convertFromLePartials,
   convertToLePartials,
   getInputFromDegree,
   parseDate,
@@ -32,21 +31,22 @@ const getDegreesByHolder = async (holder_did) => {
   return degrees;
 };
 
-const createProof = async (holder_did, issuer_did, degree_id) => {
-  const issuer = await Issuer.findOne({ DID: issuer_did });
-  if (!issuer) {
-    throw new Error("Issuer not found");
-  }
-
+const createProof = async (holder_did, degree_id) => {
   const degree = await Degree.findOne({
     _id: new ObjectId(degree_id),
     holder_did,
   });
+  console.log(degree);
   if (!degree) {
     console.log(
       `Degree not found for holder_did: ${holder_did}, degree_id: ${degree_id}`
     );
     throw new Error("Degree not found or does not belong to this holder");
+  }
+
+  const issuer = await Issuer.findOne({ DID: degree.issuer_did });
+  if (!issuer) {
+    throw new Error("Issuer not found");
   }
 
   const holder = await Holder.findOne({ DID: holder_did });
@@ -83,7 +83,7 @@ const createProof = async (holder_did, issuer_did, degree_id) => {
   const pubKeyPartials = convertToLePartials(pPubKey);
   const r8Partials = convertToLePartials(r8);
   const sPartials = convertToLePartials(s);
-  const degreeInput = getInputFromDegree(JSON.stringify(degreeInfo)); // bạn cần chuẩn bị hàm này
+  const degreeInput = getInputFromDegree(JSON.stringify(degreeInfo));
 
   const proofObject = {
     pubKeyPartials,
@@ -96,7 +96,7 @@ const createProof = async (holder_did, issuer_did, degree_id) => {
 
   const holderProof = new Holder_Proofs({
     holder_did,
-    issuer_did,
+    issuer_did: degree.issuer_did,
     degree_id,
     proof,
     major,
@@ -104,7 +104,7 @@ const createProof = async (holder_did, issuer_did, degree_id) => {
   await holderProof.save();
 
   return {
-    issuer_did,
+    issuer_did: degree.issuer_did,
     proof,
     major,
   };

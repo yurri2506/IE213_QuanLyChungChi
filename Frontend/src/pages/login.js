@@ -6,47 +6,171 @@ import ZuniLogo from "../assets/ZUNI.svg";
 import UIT from "../assets/UIT.svg";
 import BackgroundImage from "../assets/bgImage.jpg";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
+import { useDispatch } from "react-redux";
+import { updateUser } from "../redux/slices/userSlice.js";
+import Swal from "sweetalert2";
 
 function Login() {
+  const dispatch = useDispatch();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    // Check for existing session
+    const checkSession = () => {
+      const accessToken = localStorage.getItem("access_token");
+      const refreshToken = Cookies.get("refresh_token");
+
+      if (accessToken && refreshToken) {
+        try {
+          // Decode access token to get user info
+          const decodedToken = jwtDecode(accessToken);
+          const userRole = decodedToken.role;
+
+          // Redirect based on role
+          switch (userRole) {
+            case "ISSUER":
+              window.location.href = "/info-issuer";
+              break;
+            case "HOLDER":
+              window.location.href = "/info-holder";
+              break;
+            case "VERIFIER":
+              window.location.href = "/info-verifier";
+              break;
+            default:
+              // If role is not recognized, clear tokens
+              localStorage.removeItem("access_token");
+              Cookies.remove("refresh_token");
+          }
+        } catch (error) {
+          console.error("Error decoding token:", error);
+          // Clear invalid tokens
+          localStorage.removeItem("access_token");
+          Cookies.remove("refresh_token");
+        }
+      }
+    };
+
+    checkSession();
+  }, []);
+
   const handleLogin = async (e) => {
     try {
       e.preventDefault();
       setLoading(true);
-      const response = await login(userId, password);
-      if (response) {
-        // Handle successful login (e.g., redirect to dashboard)
-        console.log("Login response:", response);
-        const token = response.data.access_token;
-        localStorage.setItem("access_token", token);
-        localStorage.setItem("refresh_token", response.data.refresh_token);
-        localStorage.setItem("name", response.data.name);
-        if (response.data.role === "ISSUER") {
-          localStorage.setItem(
-            "encrypted_private_key",
-            response.data.encrypted_private_key
-          );
-          localStorage.setItem("salt", response.data.salt);
-          localStorage.setItem("iv", response.data.iv);
-          localStorage.setItem("registed_DID", response.data.registed_DID);
+      setError(null);
 
-          window.location.href = "/info-issuer";
+      // Validate input
+      if (!userId || !password) {
+        await Swal.fire({
+          title: "Error!",
+          text: "Please enter both user ID and password",
+          icon: "warning",
+          confirmButtonText: "Try Again",
+          confirmButtonColor: "#014AC6",
+        });
+        return;
+      }
+
+      const response = await login(userId, password);
+      console.log("Login response:", response);
+      if (response.status === "SUCCESS") {
+        // Lưu Access Token
+        if (response.data?.access_token) {
+          localStorage.setItem("access_token", response.data.access_token);
+
+          // Hiển thị thông báo thành công
+          // await Swal.fire({
+          //   title: "Success!",
+          //   text: "Login successful!",
+          //   icon: "success",
+          //   confirmButtonText: "Continue",
+          //   confirmButtonColor: "#014AC6",
+          // });
+
+          // Chuyển hướng dựa vào role
+          if (response.data.role === "ISSUER") {
+            window.location.href = "/info-issuer";
+          }
+          if (response.data.role === "HOLDER") {
+            window.location.href = "/info-holder";
+          }
+          if (response.data.role === "VERIFIER") {
+            window.location.href = "/info-verifier";
+          }
         }
-        if (response.data.role === "HOLDER") {
-          window.location.href = "/info-holder";
-        }
-        if (response.data.role === "VERIFIER") {
-          window.location.href = "/info-verifier";
-        }
+
+        // Lưu Refresh Token vào Cookie
+        const decoded = jwtDecode(response.data.refresh_token);
+        const expiryDate = new Date(decoded.exp * 1000);
+        Cookies.set("refresh_token", response.data.refresh_token, {
+          expires: expiryDate,
+          secure: true,
+          sameSite: "Strict",
+        });
+
+        dispatch(
+          updateUser({
+            ...response?.data,
+          })
+        );
       } else {
-        setError(response.message);
+        if (response.status === "ERROR") {
+          const errorMessage = response.message;
+          console.log("Error message:", errorMessage);
+
+          switch (errorMessage) {
+            case "User not found":
+              await Swal.fire({
+                title: "Error!",
+                text: "Account does not exist. Please check your User ID",
+                icon: "error",
+                confirmButtonText: "Try Again",
+                confirmButtonColor: "#014AC6",
+              });
+              break;
+            case "Invalid password":
+              await Swal.fire({
+                title: "Error!",
+                text: "Incorrect password. Please try again",
+                icon: "error",
+                confirmButtonText: "Try Again",
+                confirmButtonColor: "#014AC6",
+              });
+              break;
+            default:
+              await Swal.fire({
+                title: "Error!",
+                text: errorMessage || "An error occurred during login",
+                icon: "error",
+                confirmButtonText: "Try Again",
+                confirmButtonColor: "#014AC6",
+              });
+          }
+        } else {
+          await Swal.fire({
+            title: "Error!",
+            text: "An error occurred during login. Please try again later",
+            icon: "error",
+            confirmButtonText: "Try Again",
+            confirmButtonColor: "#014AC6",
+          });
+        }
       }
     } catch (err) {
-      setError("An error occurred during login. Please try again.");
+      console.error("Login error:", err);
+      await Swal.fire({
+        title: "Error!",
+        text: "An error occurred during login. Please try again later",
+        icon: "error",
+        confirmButtonText: "Try Again",
+        confirmButtonColor: "#014AC6",
+      });
     } finally {
       setLoading(false);
     }
@@ -55,7 +179,7 @@ function Login() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/signin"); // Chuyển đến trang signin
+    navigate("/signup"); // Chuyển đến trang signin
   };
 
   useEffect(() => {

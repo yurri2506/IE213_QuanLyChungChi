@@ -63,39 +63,34 @@ const SendProof = () => {
         });
       }
     } else {
-      alert("Vui lòng nhập DID hợp lệ.");
+      alert("Please enter a valid DID.");
     }
   };
 
   const handleGenerateProof = async () => {
     if (!selectedCert) {
-      alert("Vui lòng chọn một chứng chỉ.");
+      alert("Please select a certificate.");
       return;
     }
 
     setLoading(true);
-    setStatusMessage("Đang tạo proof...");
-
-    const payload = {
-      issuer_did: selectedCert.full.issuer_did,
-      degree_id: selectedCert.full._id,
-    };
+    setStatusMessage("Generating proof...");
 
     try {
-      const response = await generateProof(payload);
+      const response = await generateProof(selectedCert.full._id);
       console.log(response.status);
       if (response.status === "SUCCESS") {
         setProof(response.data.proof);
         setMajor(response.data.major);
         setIssuerDID(response.data.issuer_did);
         setCreated(true);
-        setStatusMessage("✅ Proof đã được tạo thành công!");
+        setStatusMessage("✅ Proof generated successfully!");
       } else {
-        setStatusMessage("❌ Tạo proof thất bại.");
+        setStatusMessage("❌ Failed to generate proof.");
       }
     } catch (error) {
-      console.error("Lỗi khi tạo proof:", error);
-      setStatusMessage("❌ Không thể tạo proof. Hãy thử lại.");
+      console.error("Error generating proof:", error);
+      setStatusMessage("❌ Unable to generate proof. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -105,8 +100,8 @@ const SendProof = () => {
     if (!proof || !issuerDID || !major || !verifier_DID) {
       Swal.fire({
         icon: "error",
-        title: "Thiếu dữ liệu",
-        text: "Vui lòng chắc chắn đã chọn chứng chỉ, tạo proof và có DID của Verifier.",
+        title: "Missing Data",
+        text: "Please ensure you have selected a certificate, generated a proof, and have the Verifier's DID.",
       });
       return;
     }
@@ -124,24 +119,24 @@ const SendProof = () => {
       if (result.status === "SUCCESS") {
         Swal.fire({
           icon: "success",
-          title: "Đã gửi proof!",
-          text: "Proof đã được gửi thành công đến Verifier.",
+          title: "Proof Sent!",
+          text: "Proof has been successfully sent to the Verifier.",
         }).then(() => {
           window.location.reload();
         });
       } else {
         Swal.fire({
           icon: "error",
-          title: "Gửi thất bại",
-          text: result.message || "Có lỗi xảy ra khi gửi proof.",
+          title: "Send Failed",
+          text: result.message || "An error occurred while sending the proof.",
         });
       }
     } catch (error) {
-      console.error("Lỗi khi gửi proof:", error);
+      console.error("Error sending proof:", error);
       Swal.fire({
         icon: "error",
-        title: "Lỗi",
-        text: "Không thể gửi proof. Vui lòng thử lại sau.",
+        title: "Error",
+        text: "Unable to send proof. Please try again later.",
       });
     }
   };
@@ -149,14 +144,14 @@ const SendProof = () => {
   return (
     <NavigationHolder>
       <Helmet>
-        <title>Create proof</title>
+        <title>Send proof</title>
       </Helmet>
-      <h1 className="font-bold text-2xl mt-10 ml-10 ">Create Proof</h1>
+      <h1 className="font-bold text-2xl mt-10 ml-10 ">Send Proof</h1>
       <div className=" m-10 p-10 rounded-xl shadow-lg space-y-6">
-        {/* Nhập DID + nút kiểm tra */}
+        {/* DID input + check button */}
         <div className="flex gap-2 items-center  justify-between">
           <input
-            placeholder="Nhập DID..."
+            placeholder="Enter Verifier's DID..."
             value={verifier_DID}
             onChange={(e) => setVeriferDID(e.target.value)}
             className=" flex-grow p-2 rounded-md border-2 border-gray-400 focus:outline-none focus:border-blue-500 "
@@ -165,14 +160,14 @@ const SendProof = () => {
             onClick={handleVerify}
             className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-white font-semibold"
           >
-            Kiểm tra
+            Verify
           </button>
         </div>
 
-        {/* Hiện danh sách chứng chỉ nếu đã kiểm tra */}
+        {/* Show certificate list if verified */}
         {isVerified && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold">Danh sách chứng chỉ</h2>
+            <h2 className="text-lg font-semibold">Certificate List</h2>
             <div className="space-y-2 ml-4">
               {certificates.map((cert) => (
                 <label
@@ -191,7 +186,7 @@ const SendProof = () => {
               ))}
             </div>
 
-            {/* Nút và trạng thái proof */}
+            {/* Proof button and status */}
             <div className="mt-4 space-y-2">
               {!created ? (
                 <button
@@ -201,7 +196,7 @@ const SendProof = () => {
                     loading ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
-                  {loading ? "Đang tạo..." : "Generate Proofs"}
+                  {loading ? "Generating..." : "Generate Proof"}
                 </button>
               ) : (
                 <>
@@ -209,7 +204,7 @@ const SendProof = () => {
                     onClick={handleSendProof}
                     className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-white font-semibold"
                   >
-                    Gửi Proof
+                    Send Proof
                   </button>
                   <div className="text-green-700 font-medium">
                     {statusMessage}
@@ -217,7 +212,7 @@ const SendProof = () => {
                 </>
               )}
 
-              {/* Hiện message luôn */}
+              {/* Always show message */}
               {!created && statusMessage && (
                 <div className="text-gray-600 italic">{statusMessage}</div>
               )}

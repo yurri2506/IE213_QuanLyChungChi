@@ -27,13 +27,13 @@ router.get(
   issuerController.getAllHolderController
 );
 
-router.post(
-  "/register-did",
-  issuerMiddleware,
-  issuerController.registerDIDController
-);
+// router.post(
+//   "/register-did",
+//   issuerMiddleware,
+//   issuerController.registerDIDController
+// );
 
-router.post(
+router.put(
   "/update-registration-status",
   issuerController.updateRegistrationStatusController
 );

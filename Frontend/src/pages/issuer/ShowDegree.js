@@ -37,10 +37,17 @@ const shortenDID = (did) => {
 
 export default function ShowDegrees() {
   const [activeTab, setActiveTab] = useState("tab1");
-  const encryptedData = localStorage.getItem("encrypted_private_key");
-  const saltHex = localStorage.getItem("salt");
-  const ivHex = localStorage.getItem("iv");
+  // const encryptedData = localStorage.getItem("encrypted_private_key");
+  // const saltHex = localStorage.getItem("salt");
+  // const ivHex = localStorage.getItem("iv");
   const [isLoading, setIsLoading] = useState(false);
+  const persistRootRaw = sessionStorage.getItem("persist:root");
+  const persistRoot = JSON.parse(persistRootRaw);
+  // const name = localStorage.getItem("name") || "TÊN NÈ";
+  const encryptedData =
+    JSON.parse(persistRoot.encrypted_private_key) || "mã NÈ";
+  const saltHex = JSON.parse(persistRoot.salt) || "mã NÈ";
+  const ivHex = JSON.parse(persistRoot.iv) || "mã NÈ";
 
   const changeTab = (e) => {
     setActiveTab(e);
@@ -48,12 +55,15 @@ export default function ShowDegrees() {
 
   useEffect(() => {
     AOS.init({
-      duration: 1000, // Thời gian hiệu ứng (ms)
-      once: true, // Chỉ chạy hiệu ứng một lần
+      duration: 1000,
+      once: true,
     });
   }, []);
 
   const [students, setStudents] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalDegrees, setTotalDegrees] = useState(0);
   const [uploadedDegrees, setUploadedDegrees] = useState([]);
   const [showPasswordPopup, setShowPasswordPopup] = useState(false);
   const [showRegisterDIDPopup, setShowRegisterDIDPopup] = useState(false);
@@ -64,7 +74,6 @@ export default function ShowDegrees() {
   const [publicKey, setPublicKey] = useState("");
   const [name, setName] = useState("");
   const [symbol, setSymbol] = useState("");
-  const [schoolCode, setSchoolCode] = useState("");
 
   const fetchIssuerInfo = async () => {
     try {
@@ -75,8 +84,6 @@ export default function ShowDegrees() {
       setSymbol(response.data.symbol);
       setName(response.data.name);
       setRegistedDIDStatus(response.data.registed_DID);
-      setSchoolCode(response.data.school_code);
-      // localStorage.setItem("registed_DID", response.data.registed_DID)
     } catch (error) {
       return error;
     }
@@ -84,17 +91,21 @@ export default function ShowDegrees() {
 
   const fetchAllDegrees = async () => {
     try {
-      const response = await getAllDegrees();
-      setStudents(response.data);
+      const response = await getAllDegrees(currentPage);
+      if (response.status === "SUCCESS") {
+        setStudents(response.data);
+        setTotalPages(response.pagination.totalPages);
+        setTotalDegrees(response.pagination.totalDegrees);
+      }
     } catch (error) {
-      return error;
+      console.error("Error fetching degrees:", error);
     }
   };
 
   useEffect(() => {
     fetchAllDegrees();
     fetchIssuerInfo();
-  }, []);
+  }, [currentPage]);
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -103,7 +114,7 @@ export default function ShowDegrees() {
       reader.onload = (event) => {
         try {
           const data = JSON.parse(event.target.result);
-          setUploadedDegrees(data); // Cập nhật dữ liệu bằng cấp
+          setUploadedDegrees(data);
         } catch (err) {
           Swal.fire({
             icon: "error",
@@ -127,7 +138,7 @@ export default function ShowDegrees() {
   };
 
   const handleSubmit = () => {
-    setShowPasswordPopup(true); // hiển thị popup
+    setShowPasswordPopup(true);
   };
 
   const handleRegisterDID = () => {
@@ -135,7 +146,7 @@ export default function ShowDegrees() {
   };
 
   const handleDownloadTemplate = () => {
-    const json = JSON.stringify(degreeTemplate, null, 2); // nếu muốn export dạng mảng
+    const json = JSON.stringify(degreeTemplate, null, 2);
     const blob = new Blob([json], { type: "application/json" });
 
     const href = URL.createObjectURL(blob);
@@ -224,7 +235,7 @@ export default function ShowDegrees() {
         text: "Something went wrong. Please try again.",
       });
     } finally {
-      setIsLoading(false); // Dừng loading
+      setIsLoading(false);
     }
   };
 
@@ -244,7 +255,7 @@ export default function ShowDegrees() {
       const signer = await provider.getSigner();
 
       const chainId = await window.ethereum.request({ method: "eth_chainId" });
-      const targetChainId = "0x13882"; // Polygon Amoy Testnet
+      const targetChainId = "0x13882";
 
       if (chainId !== targetChainId) {
         try {
@@ -332,6 +343,10 @@ export default function ShowDegrees() {
     }
   };
 
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
   return (
     <NavigationIssuer>
       <Helmet>
@@ -358,49 +373,81 @@ export default function ShowDegrees() {
       </div>
       <div className="m-10 rounded-xl shadow-lg space-y-6 ">
         {activeTab === "tab1" ? (
-          <div className="overflow-x-auto bg-gray-100 p-4 rounded-lg">
-            <table className="min-w-full text-[0.72rem] text-center border-separate border-spacing-y-3">
-              <thead className="bg-white shadow-sm rounded-md">
-                <tr>
-                  <th className="px-3 py-2">No.</th>
-                  <th className="px-3 py-2">Student ID</th>
-                  <th className="px-3 py-2">Name</th>
-                  <th className="px-3 py-2">Date of birth</th>
-                  <th className="px-3 py-2">Faculty</th>
-                  <th className="px-3 py-2">Major</th>
-                  <th className="px-3 py-2">Degree classification</th>
-                  <th className="px-3 py-2">Mode of study</th>
-                  <th className="px-3 py-2">Year graduation</th>
-                  <th className="px-3 py-2">Date of issue</th>
-                  <th className="px-3 py-2">Serial number</th>
-                  <th className="px-3 py-2">Reference number</th>
-                </tr>
-              </thead>
-              <tbody>
-                {students.map((s, index) => (
-                  <tr key={index} className="bg-white rounded-xl shadow-sm">
-                    <td className="px-3 py-2 rounded-l-xl">{index + 1}</td>
-                    <td className="px-3 py-2">{s.holder_info.holder_id}</td>
-                    <td className="px-3 py-2">{s.holder_info.name}</td>
-                    <td className="px-3 py-2">
-                      {formatDateToDDMMYYYY(s.holder_info.date_of_birth)}
-                    </td>
-                    <td className="px-3 py-2">{s.faculty}</td>
-                    <td className="px-3 py-2">{s.major}</td>
-                    <td className="px-3 py-2">{s.classification}</td>
-                    <td className="px-3 py-2">{s.mode_of_study}</td>
-                    <td className="px-3 py-2">{s.year_graduation}</td>
-                    <td className="px-3 py-2">
-                      {formatDateToDDMMYYYY(s.date_of_issue)}
-                    </td>
-                    <td className="px-3 py-2">{s.serial_number}</td>
-                    <td className="px-3 py-2 rounded-r-xl">
-                      {s.reference_number}
-                    </td>
+          <div>
+            <div className="overflow-x-auto bg-gray-100 p-4 rounded-lg">
+              <table className="min-w-full text-[0.72rem] text-center border-separate border-spacing-y-3">
+                <thead className="bg-white shadow-sm rounded-md">
+                  <tr>
+                    <th className="px-3 py-2">No.</th>
+                    <th className="px-3 py-2">Student ID</th>
+                    <th className="px-3 py-2">Name</th>
+                    <th className="px-3 py-2">Date of birth</th>
+                    <th className="px-3 py-2">Faculty</th>
+                    <th className="px-3 py-2">Major</th>
+                    <th className="px-3 py-2">Degree classification</th>
+                    <th className="px-3 py-2">Mode of study</th>
+                    <th className="px-3 py-2">Year graduation</th>
+                    <th className="px-3 py-2">Date of issue</th>
+                    <th className="px-3 py-2">Serial number</th>
+                    <th className="px-3 py-2">Reference number</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {students.map((s, index) => (
+                    <tr key={index} className="bg-white rounded-xl shadow-sm">
+                      <td className="px-3 py-2 rounded-l-xl">{index + 1}</td>
+                      <td className="px-3 py-2">{s.holder_info.holder_id}</td>
+                      <td className="px-3 py-2">{s.holder_info.name}</td>
+                      <td className="px-3 py-2">
+                        {formatDateToDDMMYYYY(s.holder_info.date_of_birth)}
+                      </td>
+                      <td className="px-3 py-2">{s.faculty}</td>
+                      <td className="px-3 py-2">{s.major}</td>
+                      <td className="px-3 py-2">{s.classification}</td>
+                      <td className="px-3 py-2">{s.mode_of_study}</td>
+                      <td className="px-3 py-2">{s.year_graduation}</td>
+                      <td className="px-3 py-2">
+                        {formatDateToDDMMYYYY(s.date_of_issue)}
+                      </td>
+                      <td className="px-3 py-2">{s.serial_number}</td>
+                      <td className="px-3 py-2 rounded-r-xl">
+                        {s.reference_number}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {totalDegrees === 0 ? (
+                <div className="flex flex-col items-center justify-center h-96 bg-gray-100 rounded-lg">
+                  <p className="text-gray-600 text-lg font-semibold">
+                    No degrees have been issued yet.
+                  </p>
+                  <p className="text-gray-500 text-sm mt-2">
+                    Please issue degrees to see them here.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex justify-end gap-4 items-center mt-4">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-sm text-gray-600">
+                    Page {currentPage} of {totalPages}
+                  </span>
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         ) : (
           <div>

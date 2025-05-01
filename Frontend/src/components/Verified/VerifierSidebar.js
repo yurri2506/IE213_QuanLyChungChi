@@ -1,7 +1,10 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQrcode, faShieldHeart } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleUser,
+  faShieldHalved,
+} from "@fortawesome/free-solid-svg-icons";
 
 const VerifierSidebar = () => {
   const location = useLocation();
@@ -9,13 +12,13 @@ const VerifierSidebar = () => {
 
   const menuItems = [
     {
-      label: "QR",
-      icon: faQrcode,
+      label: "Info",
+      icon: faCircleUser,
       to: "/info-verifier",
     },
     {
       label: "Verified",
-      icon: faShieldHeart,
+      icon: faShieldHalved,
       to: "/submited-proofs",
     },
   ];

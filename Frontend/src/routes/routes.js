@@ -12,7 +12,8 @@ import ChangePassword from "../pages/holder/ChangePassword.js";
 import InfoVerifier from "../pages/verifier/InfoVerifier.js";
 import Verified from "../pages/verifier/Verified.js";
 import InfoIssuer from "../pages/issuer/InfoIssuer.js";
-import SignIn from "../pages/signIn/index.js";
+import SignUp from "../pages/signUp/index.js";
+import LogoutPage from "../pages/logout.js";
 export const routes = [
   {
     path: "/",
@@ -63,12 +64,16 @@ export const routes = [
     page: Verified,
   },
   {
-    path: "/signin",
-    page: SignIn,
+    path: "/signup",
+    page: SignUp,
   },
   // Redirect to Home for any other route
   {
     path: "*",
     page: Home, // Redirect to Home
+  },
+  {
+    path: "/logout",
+    page: LogoutPage,
   },
 ];

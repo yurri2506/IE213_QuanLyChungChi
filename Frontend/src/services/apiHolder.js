@@ -33,17 +33,21 @@ export const getDegreeInfo = async () => {
   }
 };
 
-export const generateProof = async (data) => {
+export const generateProof = async (degree_id) => {
   try {
-    const response = await axios.post(`${URL}/holders/proofs`, data, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-      },
-    });
+    const response = await axios.post(
+      `${URL}/holders/proofs/${degree_id}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     return {
-      message: error.response.data.message,
+      message: error,
       status: "ERROR",
     };
   }
