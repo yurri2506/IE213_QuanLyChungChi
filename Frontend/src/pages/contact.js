@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import BackgroundImage from "../assets/bgImage.jpg";
 import Huyen from "../assets/Huyen.png";
-import EmailImg from "../assets/mail.png";
-import PhoneImg from "../assets/telephone.png";
 import HomeHeader from "../components/HomeHeader.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
 
 function Contact() {
   useEffect(() => {
@@ -13,103 +12,105 @@ function Contact() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white text-white font-sans pt-16 ">
+    <div className="min-h-screen bg-gray-100 text-gray-800 font-sans pt-16">
       <HomeHeader />
 
-      <section className="relative px-4 md:px-28 py-24 md:flex items-center justify-center overflow-hidden h-[100vh]">
-        {/* <img
-          src={BackgroundImage}
-          alt="Background"
-          className="absolute inset-0 w-full h-[100vh] object-cover opacity-75 z-0"
-          data-aos="fade-down"
-        /> */}
-        <div className="absolute inset-0 h-[100vh] bg-black/60 z-0"></div>
+      <section className="relative px-4 md:px-28 py-6 md:flex items-center justify-center overflow-hidden h-[calc(100vh-64px)]">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 z-0"></div>
 
-        <div className="relative z-10 rounded-xl shadow-2xl w-full max-w-6xl h-[90vh] grid grid-cols-1 md:grid-cols-[40%_60%] overflow-hidden ">
-          <div className="flex flex-col items-center text-center justify-between rounded-xl">
+        <div className="relative z-10 rounded-2xl shadow-xl w-full max-w-6xl h-[90%] grid grid-cols-1 md:grid-cols-[45%_55%] overflow-hidden bg-white">
+          <div className="flex flex-col items-center text-center justify-between p-6 border-r-2 border-blue-500">
             <img
               alt="Logo"
               src={Huyen}
-              className=" h-[66vh] object-cover mb-4 rounded-xl"
+              className="h-[45vh] object-cover mb-4 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300"
             />
 
-            <div className="w-full rounded-xl items-center justify-center">
-              <div className="flex space-x-4 bg-gray-100 w-full px-3 rounded-xl items-start mb-4 ">
-                {/* Icon Gmail bên trái */}
-                <div className="text-red-600 text-2xl mt-1">
-                  <img alt="Mail" className="w-12 h-12 p-2" />
+            <div className="w-full space-y-3">
+              <div className="flex space-x-4 bg-white/90 backdrop-blur-sm w-full p-3 rounded-xl items-start shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div className="text-blue-600 text-2xl mt-1">
+                  <FontAwesomeIcon icon={faEnvelope} className="w-7 h-7" />
                 </div>
-
-                {/* Nội dung bên phải */}
-                <div className="">
-                  <p className="text-left text-sm text-gray-600">Email</p>
-                  <p className="font-medium text-gray-800">abc@gmail.com</p>
+                <div>
+                  <p className="text-left text-sm text-gray-500 font-medium">
+                    Email
+                  </p>
+                  <p className="font-semibold text-gray-800 text-sm">
+                    22520827@gm.uit.edu.vn
+                  </p>
                 </div>
               </div>
 
-              <div className="flex space-x-4 bg-gray-100 w-full px-3 rounded-xl items-start ">
-                {/* Icon Phone bên trái */}
-                <div className="text-red-600 text-2xl mt-1">
-                  <img alt="Phone" className="w-11 h-11 p-2" />
+              <div className="flex space-x-4 bg-white/90 backdrop-blur-sm w-full p-3 rounded-xl items-start shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div className="text-blue-600 text-2xl mt-1">
+                  <FontAwesomeIcon icon={faPhone} className="w-7 h-7" />
                 </div>
-
-                {/* Nội dung bên phải */}
-                <div className="  ">
-                  <p className="text-left text-sm text-gray-600">Phone</p>
-                  <p className="font-medium text-gray-800">0987654321</p>
+                <div>
+                  <p className="text-left text-sm text-gray-500 font-medium">
+                    Phone
+                  </p>
+                  <p className="font-semibold text-gray-800 text-sm">
+                    0364997254
+                  </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right side: Contact form */}
-          <div data-aos="fade-left" className="ml-2  rounded-xl bg-white p-10">
-            <h2 className="text-2xl font-bold mb-6 text-black">
-              Liên hệ với chúng tôi
+          <div data-aos="fade-left" className="p-8 bg-white rounded-2xl">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">
+              Contact Us
             </h2>
-            <p className="text-black mb-6 ">
-              Nếu có câu hỏi hay góp ý về trang web của chúng tôi, đừng ngại
-              ngần để lại thông tin dưới đây. Chúng tôi sẽ cố gắng phản hồi
-              trong vòng 24h
+            <p className="text-gray-600 mb-6 leading-relaxed text-sm">
+              If you have any questions or feedback about our website, please
+              don't hesitate to leave your information below. We will try to
+              respond within 24 hours.
             </p>
             <form className="space-y-4">
-              <label
-                htmlFor="name"
-                className="block mb-0 font-medium text-gray-700"
-              >
-                Họ và tên
-              </label>
-              <input
-                type="text"
-                placeholder="Họ và tên"
-                className="w-full border p-1 rounded bg-gray-100"
-              />
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block mb-1 font-medium text-gray-700 text-sm"
+                >
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter your full name"
+                  className="w-full border border-gray-300 p-2 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-sm"
+                />
+              </div>
 
-              <label
-                htmlFor="email"
-                className="block mb-0 font-medium text-gray-700"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                placeholder="Email"
-                className="w-full border p-1 rounded bg-gray-100"
-              />
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block mb-1 font-medium text-gray-700 text-sm"
+                >
+                  Email
+                </label>
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="w-full border border-gray-300 p-2 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-sm"
+                />
+              </div>
 
-              <label
-                htmlFor="message"
-                className="block mb-0 font-medium text-gray-700"
-              >
-                Nội dung
-              </label>
-              <textarea
-                placeholder="Nội dung"
-                className="w-full border p-1 rounded bg-gray-100 h-32"
-              ></textarea>
+              <div>
+                <label
+                  htmlFor="message"
+                  className="block mb-1 font-medium text-gray-700 text-sm"
+                >
+                  Message
+                </label>
+                <textarea
+                  placeholder="Enter your message"
+                  className="w-full border border-gray-300 p-2 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 h-24 resize-none text-sm"
+                ></textarea>
+              </div>
+
               <div className="flex justify-center">
-                <button className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700">
-                  Gửi liên hệ
+                <button className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-sm">
+                  Send Message
                 </button>
               </div>
             </form>

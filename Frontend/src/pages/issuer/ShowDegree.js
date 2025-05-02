@@ -378,39 +378,39 @@ export default function ShowDegrees() {
               <table className="min-w-full text-[0.72rem] text-center border-separate border-spacing-y-3">
                 <thead className="bg-white shadow-sm rounded-md">
                   <tr>
-                    <th className="px-3 py-2">No.</th>
+                    <th className="px-2 py-2">No.</th>
                     <th className="px-3 py-2">Student ID</th>
                     <th className="px-3 py-2">Name</th>
                     <th className="px-3 py-2">Date of birth</th>
-                    <th className="px-3 py-2">Faculty</th>
-                    <th className="px-3 py-2">Major</th>
-                    <th className="px-3 py-2">Degree classification</th>
-                    <th className="px-3 py-2">Mode of study</th>
+                    <th className="px-2 py-2">Faculty</th>
+                    <th className="px-2 py-2">Major</th>
+                    <th className="px-1 py-2">Degree classification</th>
+                    <th className="px-2 py-2">Mode of study</th>
                     <th className="px-3 py-2">Year graduation</th>
                     <th className="px-3 py-2">Date of issue</th>
                     <th className="px-3 py-2">Serial number</th>
-                    <th className="px-3 py-2">Reference number</th>
+                    <th className="px-2 py-2">Reference number</th>
                   </tr>
                 </thead>
                 <tbody>
                   {students.map((s, index) => (
                     <tr key={index} className="bg-white rounded-xl shadow-sm">
-                      <td className="px-3 py-2 rounded-l-xl">{index + 1}</td>
+                      <td className="px-2 py-2 rounded-l-xl">{index + 1}</td>
                       <td className="px-3 py-2">{s.holder_info.holder_id}</td>
                       <td className="px-3 py-2">{s.holder_info.name}</td>
                       <td className="px-3 py-2">
                         {formatDateToDDMMYYYY(s.holder_info.date_of_birth)}
                       </td>
-                      <td className="px-3 py-2">{s.faculty}</td>
-                      <td className="px-3 py-2">{s.major}</td>
-                      <td className="px-3 py-2">{s.classification}</td>
-                      <td className="px-3 py-2">{s.mode_of_study}</td>
+                      <td className="px-2 py-2">{s.faculty}</td>
+                      <td className="px-2 py-2">{s.major}</td>
+                      <td className="px-1 py-2">{s.classification}</td>
+                      <td className="px-2 py-2">{s.mode_of_study}</td>
                       <td className="px-3 py-2">{s.year_graduation}</td>
                       <td className="px-3 py-2">
                         {formatDateToDDMMYYYY(s.date_of_issue)}
                       </td>
                       <td className="px-3 py-2">{s.serial_number}</td>
-                      <td className="px-3 py-2 rounded-r-xl">
+                      <td className="px-2 py-2 rounded-r-xl">
                         {s.reference_number}
                       </td>
                     </tr>
