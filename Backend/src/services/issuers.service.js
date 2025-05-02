@@ -66,7 +66,7 @@ const createDegrees = async (school_code, degreesData) => {
 };
 
 const getAllDegrees = async (issuer_did, page = 1) => {
-  const limit = 20;
+  const limit = 10;
   const skip = (page - 1) * limit;
 
   const degrees = await Degree.aggregate([
@@ -139,7 +139,7 @@ const getAllDegrees = async (issuer_did, page = 1) => {
 
 const getAllHolder = async (school_code, page = 1) => {
   try {
-    const limit = 20; // Số lượng holder mỗi trang
+    const limit = 10; // Số lượng holder mỗi trang
     const skip = (page - 1) * limit; // Bỏ qua các holder của các trang trước
     const query = { school_code };
     const holders = await holdersModel.find(query).skip(skip).limit(limit);

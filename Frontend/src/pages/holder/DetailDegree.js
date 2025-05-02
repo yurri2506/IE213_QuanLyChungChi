@@ -11,15 +11,28 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import diacritics from "diacritics"; // Thư viện để xử lý dấu tiếng Việt
 
 function mapToVietnamese(field) {
   switch (field) {
     case "Very good":
       return "Xuất sắc";
+    case "Excellent":
+      return "Giỏi";
+    case "Good":
+      return "Khá";
+    case "Average good":
+      return "Trung bình khá";
+    case "Ordinary":
+      return "Trung bình";
     case "Full-time":
       return "Chính quy";
+    case "Part-time":
+      return "Không chính quy";
     case "Information Technology":
       return "Công nghệ thông tin";
+    case "Data Science":
+      return "Khoa học dữ liệu";
     default:
       return field; // Trả về giá trị gốc nếu không tìm thấy
   }
@@ -143,7 +156,8 @@ const DegreeDetail = () => {
                       <p>
                         Upon:{" "}
                         <span className="font-semibold text-base ml-4">
-                          {studentInfo.name}
+                          {diacritics.remove(studentInfo.name)}{" "}
+                          {/* Xóa dấu tiếng Việt */}
                         </span>
                       </p>
                       <p>
