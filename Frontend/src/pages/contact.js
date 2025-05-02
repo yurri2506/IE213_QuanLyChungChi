@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Huyen from "../assets/Huyen.png";
@@ -7,9 +7,40 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
 
 function Contact() {
+  const [formData, setFormData] = useState({
+    name: "",
+    message: "",
+  });
+
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
   }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted!");
+    console.log("Form data:", formData);
+
+    const { name, message } = formData;
+    const subject = `Contact from ${name}`;
+    const body = `Name: ${name}\n\nMessage:\n${message}`;
+
+    // Tạo URL cho Gmail Compose (không dùng trường Cc)
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=22520827@gm.uit.edu.vn&su=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+
+    console.log("Generated Gmail URL:", gmailUrl);
+    window.open(gmailUrl, "_blank");
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800 font-sans pt-16">
@@ -66,7 +97,7 @@ function Contact() {
               don't hesitate to leave your information below. We will try to
               respond within 24 hours.
             </p>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <label
                   htmlFor="name"
@@ -76,21 +107,10 @@ function Contact() {
                 </label>
                 <input
                   type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
                   placeholder="Enter your full name"
-                  className="w-full border border-gray-300 p-2 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-sm"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-1 font-medium text-gray-700 text-sm"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  placeholder="Enter your email"
                   className="w-full border border-gray-300 p-2 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-sm"
                 />
               </div>
@@ -103,14 +123,20 @@ function Contact() {
                   Message
                 </label>
                 <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
                   placeholder="Enter your message"
                   className="w-full border border-gray-300 p-2 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 h-24 resize-none text-sm"
                 ></textarea>
               </div>
 
               <div className="flex justify-center">
-                <button className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-sm">
-                  Send Message
+                <button
+                  type="submit"
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
+                >
+                  Go to Gmail
                 </button>
               </div>
             </form>
