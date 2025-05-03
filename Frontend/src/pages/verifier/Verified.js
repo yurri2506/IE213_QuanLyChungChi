@@ -85,33 +85,6 @@ const Verified = () => {
     fetchProofs();
   }, []);
 
-  // const handleVerifyProof = async (row) => {
-  //   const payload = {
-  //     id: row._id,
-  //     issuerDID: row.issuer_did,
-  //     proofs: row.proof,
-  //     major: row.major,
-  //   };
-
-  //   const result = await verifyProof(payload);
-  //   console.log(result);
-
-  //   if (result.verified === true) {
-  //     Swal.fire({
-  //       icon: "success",
-  //       title: "Success",
-  //       text: "Verification successful!",
-  //     });
-  //     fetchProofs();
-  //   } else {
-  //     Swal.fire({
-  //       icon: "error",
-  //       title: "Error",
-  //       text: "Verification failed",
-  //     });
-  //   }
-  // };
-
   const handleVerifyProof = async (proofId, issuer_did, proof, major) => {
     try {
       if (!window.ethereum) {
@@ -157,15 +130,6 @@ const Verified = () => {
           }
         }
       }
-
-      // const balance = await provider.getBalance(await signer.getAddress());
-      // if (balance >= 0n) {
-      //   return Swal.fire({
-      //     icon: "error",
-      //     title: "Error",
-      //     text: "Tài khoản không đủ token để thực hiện giao dịch",
-      //   });
-      // }
 
       const response = await verifyProof({
         proofId,
@@ -247,40 +211,32 @@ const Verified = () => {
                     />
                   </td>
                   <td className="px-2 py-3">{row.holder_name}</td>
-                  <td className="px-2 py-3">
-                    {hexToString(row.major) || (
-                      <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
-                        NOT YET VERIFIED
-                      </span>
-                    )}
-                  </td>
-
-                  {row.is_verified === true ? (
-                    <td className="p-2 flex items-center justify-center gap-2 rounded shadow my-2">
-                      <>
+                  {row.is_verified === false ? (
+                    <>
+                      <td className="px-2 py-3">
+                        <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
+                          NOT YET VERIFIED
+                        </span>
+                      </td>
+                      <td className="px-2 py-3">
+                        <span className="px-2 py-1 bg-green-100 text-blue-800 rounded text-xs shadow-none m-0">
+                          NOT YET VERIFIED
+                        </span>
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td className="px-2 py-3">{hexToString(row.major)}</td>
+                      <td className="p-2 flex items-center justify-center gap-2 rounded shadow my-2">
                         {shortenDID(row.issuer_did)}
                         <FontAwesomeIcon
                           icon={faCopy}
                           className="text-gray-500 hover:text-gray-700 cursor-pointer "
                         />
-                      </>
-                    </td>
-                  ) : (
-                    <span className="px-2 py-1 bg-green-100 text-blue-800 rounded text-xs shadow-none m-0">
-                      NOT YET VERIFIED
-                    </span>
+                      </td>
+                    </>
                   )}
-
-                  <td className="px-2 py-3">
-                    {row.is_verified === false ? (
-                      <span className="px-2 py-1 bg-green-100 text-blue-800 rounded text-xs shadow-none m-0">
-                        NOT YET VERIFIED
-                      </span>
-                    ) : (
-                      row.issuer_name
-                    )}
-                  </td>
-
+                  <td className="px-2 py-3">{row.issuer_name}</td>
                   <td className="px-2 py-3">
                     {row.is_verified === true ? (
                       <span className="text-blue-600 font-medium flex items-center justify-center gap-1 text-sm">

@@ -62,11 +62,13 @@ const getAllSummittedProofsController = async (req, res) => {
 
 const updateProofVerificationStatusController = async (req, res) => {
   try {
-    const { proofId, isVerified } = req.body;
+    const { proofId, isVerified, issuerName, issuerSymbol } = req.body;
 
     const result = await verifierService.updateProofVerificationStatus(
       proofId,
-      isVerified
+      isVerified,
+      issuerName,
+      issuerSymbol
     );
 
     res.status(200).json(result);

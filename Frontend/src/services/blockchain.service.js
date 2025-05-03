@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import axios from "axios";
 const URL = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
-const contractABI = [
+const contractRegistryDIDABI = [
   {
     inputs: [],
     stateMutability: "nonpayable",
@@ -395,7 +395,11 @@ export const registerDID = async ({ issuer_did, public_key, name, symbol }) => {
       throw new Error("Địa chỉ contract không hợp lệ");
     }
 
-    const contract = new ethers.Contract(contractAddress, contractABI, signer);
+    const contract = new ethers.Contract(
+      contractAddress,
+      contractRegistryDIDABI,
+      signer
+    );
 
     const issuerInfo = {
       isRegistered: true,
@@ -416,15 +420,7 @@ export const registerDID = async ({ issuer_did, public_key, name, symbol }) => {
         txHash: receipt.hash,
       }
     );
-    // // Nếu giao dịch thành công, cập nhật backend
-    // const response = await fetch(`${URL}/issuers/update-registration-status`, {
-    //   method: "POST",
-    //   body: JSON.stringify({
-    //     issuer_did,
-    //     status: "pending",
-    //     txHash: receipt.hash,
-    //   }),
-    // });
+
     console.log(response);
     if (!response.data.success) {
       throw new Error("Không thể cập nhật trạng thái đăng ký lên server");
@@ -466,7 +462,9 @@ export const verifyProof = async ({ proofId, issuer_did, proof, major }) => {
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     const contractAddress = process.env.REACT_APP_VERIFYCATIONCENTER_ADDRESS;
-    console.log(contractAddress);
+    const contractRegistryDIDAddress =
+      process.env.REACT_APP_REGISTRYDID_ADDRESS;
+
     if (!contractAddress) {
       throw new Error("Địa chỉ contract không hợp lệ");
     }
@@ -476,27 +474,36 @@ export const verifyProof = async ({ proofId, issuer_did, proof, major }) => {
       signer
     );
     console.log(contract);
-    console.log("HEHE");
 
     const tx = await contract.verifyOnEd25519(issuer_did, proof, major);
     console.log(tx);
-    const response = await axios.put(
-      `${URL}/verifiers/update-proof-status`,
-      {
-        proofId: proofId,
-        isVerified: tx,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+    if (tx) {
+      const contractDID = new ethers.Contract(
+        contractRegistryDIDAddress,
+        contractRegistryDIDABI,
+        signer
+      );
+      const txDID = await contractDID.getIssuer(issuer_did);
+      console.log(txDID);
+      const response = await axios.put(
+        `${URL}/verifiers/update-proof-status`,
+        {
+          proofId: proofId,
+          isVerified: tx,
+          issuerName: txDID[3],
+          issuerSymbol: txDID[4],
         },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+      console.log(response);
+      if (!response.data.success) {
+        throw new Error("Không thể cập nhật trạng thái đăng ký lên server");
       }
-    );
-    console.log(response);
-
-    if (!response.data.success) {
-      throw new Error("Không thể cập nhật trạng thái đăng ký lên server");
     }
 
     if (tx) {

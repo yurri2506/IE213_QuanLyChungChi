@@ -368,7 +368,7 @@ export default function ShowDegrees() {
           }`}
           onClick={() => changeTab("tab2")}
         >
-          <p>Update degree</p>
+          <p>Upload degree</p>
         </div>
       </div>
       <div className="m-10 rounded-xl shadow-lg space-y-6 ">

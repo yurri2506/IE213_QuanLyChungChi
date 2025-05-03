@@ -103,7 +103,12 @@ const getAllSummittedProofs = async (verifier_did) => {
   return enriched_proofs;
 };
 
-const updateProofVerificationStatus = async (proofId, isVerified) => {
+const updateProofVerificationStatus = async (
+  proofId,
+  isVerified,
+  issuerName,
+  issuerSymbol
+) => {
   try {
     const proof = await submitted_proof.findById(proofId);
 
@@ -112,6 +117,8 @@ const updateProofVerificationStatus = async (proofId, isVerified) => {
     }
 
     proof.is_verified = isVerified;
+    proof.issuer_name = issuerName;
+    proof.issuer_symbol = issuerSymbol;
     proof.updated_at = new Date();
 
     await proof.save();
