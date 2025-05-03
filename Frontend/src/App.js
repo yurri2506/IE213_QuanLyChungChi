@@ -57,7 +57,7 @@ function App() {
     // Thiết lập lại kiểm tra mỗi 5 phút
     const interval = setInterval(() => {
       loadUserDetails();
-    }, 5 * 60 * 1000); // Kiểm tra và làm mới mỗi 1 phút
+    }, 60 * 60 * 1000); // Kiểm tra và làm mới mỗi 1 phút
   
     // Cleanup interval khi component unmount
     return () => clearInterval(interval);
