@@ -36,7 +36,7 @@ const InfoCard = ({ label, value, isDID, icon }) => {
       <div className="relative">
         <div className="bg-white shadow-md rounded-lg p-3 text-base border border-gray-100 hover:border-blue-200 transition-colors duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-gray-700 break-all">
+            <span className="text-gray-700 truncate max-w-[98%]">
               {isDID ? shortenDID(value) : value}
             </span>
             {isDID && (
