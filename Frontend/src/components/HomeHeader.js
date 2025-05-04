@@ -24,6 +24,12 @@ const HomeHeader = () => {
 
       <nav className="hidden md:flex gap-8 text-white text-lg font-medium">
         <a
+          onClick={() => navigate("/")}
+          className="hover:text-[#0178c6] transition cursor-pointer"
+        >
+          Home
+        </a>
+        <a
           onClick={() => navigate("/features")}
           className="hover:text-[#0178c6] transition cursor-pointer"
         >
