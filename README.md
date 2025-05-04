@@ -1,4 +1,4 @@
-# [IE213.P21.Group100] - ĐỒ ÁN XÂY DỰNG HỆ THỐNG XÁC THỰC VĂN BẰNG CHỨNG CHỈ ÁP DỤNG CÔNG NGHỆ BLOCKCHAIN
+![image](https://github.com/user-attachments/assets/fad6ef71-b070-4377-b171-f6c09752ed77)# [IE213.P21.Group100] - ĐỒ ÁN XÂY DỰNG HỆ THỐNG XÁC THỰC VĂN BẰNG CHỨNG CHỈ ÁP DỤNG CÔNG NGHỆ BLOCKCHAIN
 
 * Trường Đại học Công nghệ Thông tin, Đại học Quốc gia Thành phố Hồ Chí Minh (ĐHQG-HCM)
 * Khoa: Khoa học và Kỹ thuật Thông tin (KH&KTTT)
@@ -21,6 +21,11 @@
 * [MongoDB Compass] - Cung cấp giao diện xem cơ sở dữ liệu MongoDB
 * [MongoDB] - Hệ quản trị cơ sở dữ liệu phi quan hệ sử dụng để lưu trữ dữ liệu cho trang web
 * [HTML-CSS-JS] - Bộ ba công nghệ web, hiện thức hóa giao diện, dùng thêm bản mở rộng SCSS
+* [zk-SNARK] - Tạo proof
 
-  
+## Mô hình kiến trúc hệ thống
+![image](https://github.com/user-attachments/assets/38466cad-ff99-4427-b35e-0bf46cab8bac)
+### Các thành phần hệ thống
+
+
 ## Hướng dẫn cài đặt
