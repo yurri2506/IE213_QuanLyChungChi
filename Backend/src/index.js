@@ -12,7 +12,7 @@ mongoose.plugin(slug);
 
 app.use(
   cors({
-    origin: "*", // cho phép mọi domain
+    origin: "https://ie-213-quan-ly-chung-chi.vercel.app/info-holder", // cho phép mọi domain
     methods: ["GET", "POST", "PUT", "DELETE"], // tuỳ ý thêm nếu cần
     allowedHeaders: ["Content-Type", "Authorization"], // tuỳ ý thêm nếu cần
     credentials: true, // nếu cần gửi cookie
