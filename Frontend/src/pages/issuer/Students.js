@@ -250,7 +250,7 @@ export default function Students() {
         <title>Student Management</title>
       </Helmet>
       {/* Navigation tab */}
-      <div className="bg-gray-200 w-1/4 m-10 p-1 rounded-xl grid grid-cols-2 gap-1">
+      <div className="bg-gray-200 lg:w-1/3 w-1/2  m-10 p-1 rounded-xl grid grid-cols-2 gap-1">
         <div
           className={`flex justify-center rounded-xl cursor-pointer transition-colors duration-500 ${
             activeTab === "tab1" ? "bg-white" : "bg-gray-200"

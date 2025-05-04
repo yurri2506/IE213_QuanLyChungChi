@@ -118,10 +118,10 @@ const DegreeDetail = () => {
       <Helmet>
         <title>Chi tiết văn bằng</title>
       </Helmet>
-      <div className="flex justify-center items-center w-full h-full bg-gray-100">
+      <div className="flex flex-col md:flex-col items-center lg:flex-row justify-center w-full h-full bg-gray-100 py-6">
         <div
-          id={"degree-content"}
-          className="bg-white border-2 border-blue-600 p-3 shadow-lg"
+          id="degree-content"
+          className="hidden md:block bg-white border-2 border-blue-600 p-3 shadow-lg"
           data-aos="slide-right"
         >
           <div className="bg-white border-2 border-blue-500 py-12 px-16 shadow-lg">
@@ -263,7 +263,7 @@ const DegreeDetail = () => {
         </div>
 
         <div
-          className="mx-8 p-8 bg-white rounded-lg shadow-lg"
+          className="w-full max-w-[350px] sm:mt-10 md:w-auto mx-8 p-6 bg-white rounded-lg shadow-lg"
           data-aos="slide-left"
         >
           <h2 className="text-xl font-bold mb-4 text-center uppercase">

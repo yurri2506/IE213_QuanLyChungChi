@@ -353,23 +353,23 @@ export default function ShowDegrees() {
         <title>Degree Management</title>
       </Helmet>
       {/* Navigation tab */}
-      <div className="bg-gray-200 w-1/4 m-10 p-1 rounded-xl grid grid-cols-2 gap-1">
-        <div
+      <div className="bg-gray-200 lg:1/5 w-1/2  m-10 p-1 rounded-xl grid grid-cols-2 gap-1">
+        <button
           className={`flex justify-center rounded-xl cursor-pointer transition-colors duration-500 ${
             activeTab === "tab1" ? "bg-white" : "bg-gray-200"
           }`}
           onClick={() => changeTab("tab1")}
         >
           <p>Show degree</p>
-        </div>
-        <div
+        </button>
+        <button
           className={`flex justify-center rounded-xl cursor-pointer transition-colors duration-500 ${
             activeTab === "tab2" ? "bg-white" : "bg-gray-200"
           }`}
           onClick={() => changeTab("tab2")}
         >
           <p>Upload degree</p>
-        </div>
+        </button>
       </div>
       <div className="m-10 rounded-xl shadow-lg space-y-6 ">
         {activeTab === "tab1" ? (

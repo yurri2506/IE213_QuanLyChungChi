@@ -146,33 +146,30 @@ const SendProof = () => {
       <Helmet>
         <title>Send proof</title>
       </Helmet>
-      <h1 className="font-bold text-2xl mt-10 ml-10 ">Send Proof</h1>
-      <div className=" m-10 p-10 rounded-xl shadow-lg space-y-6">
-        {/* DID input + check button */}
-        <div className="flex gap-2 items-center  justify-between">
+      <div className="m-4 sm:m-6 md:m-10 p-4 sm:p-6 md:p-10 rounded-xl shadow-lg space-y-6 bg-white">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-2 items-stretch sm:items-center">
           <input
             placeholder="Enter Verifier's DID..."
             value={verifier_DID}
             onChange={(e) => setVeriferDID(e.target.value)}
-            className=" flex-grow p-2 rounded-md border-2 border-gray-400 focus:outline-none focus:border-blue-500 "
+            className="flex-grow p-2 rounded-md border-2 border-gray-400 focus:outline-none focus:border-blue-500"
           />
           <button
             onClick={handleVerify}
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-white font-semibold"
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-white font-semibold"
           >
             Check
           </button>
         </div>
 
-        {/* Show certificate list if verified */}
         {isVerified && (
           <div className="space-y-4">
             <h2 className="text-lg font-semibold">Certificate List</h2>
-            <div className="space-y-2 ml-4">
+            <div className="space-y-2 ml-1 sm:ml-4">
               {certificates.map((cert) => (
                 <label
                   key={cert.id}
-                  className="flex items-center space-x-2 cursor-pointer"
+                  className="flex items-center space-x-2 text-sm sm:text-base"
                 >
                   <input
                     type="radio"
@@ -186,13 +183,12 @@ const SendProof = () => {
               ))}
             </div>
 
-            {/* Proof button and status */}
             <div className="mt-4 space-y-2">
               {!created ? (
                 <button
                   onClick={handleGenerateProof}
                   disabled={loading}
-                  className={`bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-white font-semibold ${
+                  className={`w-full sm:w-auto bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-white font-semibold ${
                     loading ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
@@ -202,17 +198,14 @@ const SendProof = () => {
                 <>
                   <button
                     onClick={handleSendProof}
-                    className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-white font-semibold"
+                    className="w-full sm:w-auto bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-white font-semibold"
                   >
                     Send Proof
                   </button>
-                  <div className="text-green-700 font-medium">
-                    {statusMessage}
-                  </div>
+                  <div className="text-green-700 font-medium">{statusMessage}</div>
                 </>
               )}
 
-              {/* Always show message */}
               {!created && statusMessage && (
                 <div className="text-gray-600 italic">{statusMessage}</div>
               )}
@@ -220,6 +213,7 @@ const SendProof = () => {
           </div>
         )}
       </div>
+
     </NavigationHolder>
   );
 };
