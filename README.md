@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/fad6ef71-b070-4377-b171-f6c09752ed77)# [IE213.P21.Group100] - ĐỒ ÁN XÂY DỰNG HỆ THỐNG XÁC THỰC VĂN BẰNG CHỨNG CHỈ ÁP DỤNG CÔNG NGHỆ BLOCKCHAIN
+# [IE213.P21.Group100] - ĐỒ ÁN XÂY DỰNG HỆ THỐNG XÁC THỰC VĂN BẰNG CHỨNG CHỈ ÁP DỤNG CÔNG NGHỆ BLOCKCHAIN
 
 * Trường Đại học Công nghệ Thông tin, Đại học Quốc gia Thành phố Hồ Chí Minh (ĐHQG-HCM)
 * Khoa: Khoa học và Kỹ thuật Thông tin (KH&KTTT)
@@ -26,6 +26,6 @@
 ## Mô hình kiến trúc hệ thống
 ![image](https://github.com/user-attachments/assets/38466cad-ff99-4427-b35e-0bf46cab8bac)
 ### Các thành phần hệ thống
-
+tạm thời chưa viết
 
 ## Hướng dẫn cài đặt
