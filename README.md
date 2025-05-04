@@ -27,7 +27,8 @@
 
 ## Mô hình kiến trúc hệ thống
 
-![image](https://github.com/user-attachments/assets/67bd460f-e246-4eeb-979a-d009cef9df8f)
+![image](https://github.com/user-attachments/assets/6bfc0d84-d1f0-4282-9a29-46fbb0bd5a61)
+
 
 ### Các thành phần hệ thống
 
