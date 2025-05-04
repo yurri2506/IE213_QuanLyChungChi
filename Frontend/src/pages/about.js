@@ -81,30 +81,24 @@ function About() {
         </div>
 
         <div
-          className="flex flex-col md:flex-row items-center gap-10"
+          className="flex flex-col md:flex-row items-stretch gap-10"
           data-aos="fade-up"
         >
-          <div className="md:w-1/2 bg-white shadow-lg rounded-xl p-6 hover:shadow-2xl transition duration-300">
+          <div className="md:w-1/2 bg-white shadow-lg rounded-xl p-6 h-full flex flex-col justify-between">
             <h3 className="text-xl md:text-2xl font-bold mb-4 text-[#014AC6]">
               Transparency and Trust
             </h3>
             <p className="text-base md:text-lg leading-relaxed">
-              Zuni creates a decentralized, tamper-proof ledger of verified
-              credentials, ensuring that all information is authentic and easily
-              accessible for both students and employers. We aim to eliminate
-              fraud and make the credential verification process more efficient
-              and trustworthy.
+              Zuni creates a decentralized, tamper-proof ledger of verified credentials, ensuring that all information is authentic and easily accessible for both students and employers. We aim to eliminate fraud and make the credential verification process more efficient and trustworthy.
             </p>
           </div>
-          <div className="md:w-1/2 bg-white shadow-lg rounded-xl p-6 hover:shadow-2xl transition duration-300">
+          
+          <div className="md:w-1/2 bg-white shadow-lg rounded-xl p-6 h-full flex flex-col justify-between">
             <h3 className="text-xl md:text-2xl font-bold mb-4 text-[#014AC6]">
               Privacy and Security
             </h3>
             <p className="text-base md:text-lg leading-relaxed">
-              We prioritize the security and privacy of our users.
-              Zero-Knowledge Proofs ensure that personal data is never shared
-              unless necessary. Zuni empowers students to maintain control over
-              their credentials while protecting their sensitive information.
+              We prioritize the security and privacy of our users. Zero-Knowledge Proofs ensure that personal data is never shared unless necessary. Zuni empowers students to maintain control over their credentials while protecting their sensitive information.
             </p>
           </div>
         </div>

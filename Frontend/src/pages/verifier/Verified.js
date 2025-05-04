@@ -159,28 +159,29 @@ const Verified = () => {
 
   return (
     <NavigationVerifier>
-      <div className="mx-10 mt-10">
-        <div className="flex flex-row justify-between mb-4">
-          <h1 className="font-bold text-2xl">Verified Degrees</h1>
-          <div className="flex flex-row items-center gap-2">
-            <div className="flex rounded-lg px-4 py-1 w-80 border-2  focus:border-blue-700 border-blue-600 text-sm">
-              <input
-                type="text"
-                placeholder="Input DID to search"
-                className="px-2 py-1 w-80 text-sm focus:outline-none"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-              <button className="ml-1 text-gray-500">
-                <FontAwesomeIcon icon={faSearch} />
-              </button>
-            </div>
-            <button className="text-gray-600 hover:text-gray-900 text-lg">
-              <FontAwesomeIcon icon={faSyncAlt} />
+     <div className="mx-10 mt-10">
+      <div className="flex flex-col md:flex-row justify-between mb-4">
+        <h1 className="font-bold text-xl md:text-2xl mb-4 md:mb-0">Verified Degrees</h1>
+        <div className="flex flex-row items-center gap-2">
+          <div className="flex rounded-lg px-4 py-1 w-full md:w-80 border-2 focus:border-blue-700 border-blue-600 text-sm">
+            <input
+              type="text"
+              placeholder="Input DID to search"
+              className="px-2 py-1 w-full text-sm focus:outline-none"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <button className="ml-1 text-gray-500">
+              <FontAwesomeIcon icon={faSearch} />
             </button>
           </div>
+          <button className="text-gray-600 hover:text-gray-900 text-lg">
+            <FontAwesomeIcon icon={faSyncAlt} />
+          </button>
         </div>
+      </div>
 
+      <div className="overflow-x-auto">
         <table className="w-full text-sm table-auto border-collapse shadow rounded bg-gray-200">
           <thead className=" text-gray-700 font-semibold text-sm">
             <tr>
@@ -198,10 +199,7 @@ const Verified = () => {
             {proofs
               .filter((row) => row.holder_did.includes(search))
               .map((row, index) => (
-                <tr
-                  key={row.holder_did}
-                  className="text-center bg-white rounded-3xl  "
-                >
+                <tr key={row.holder_did} className="text-center bg-white rounded-3xl">
                   <td className="p-2">{index + 1}</td>
                   <td className="p-2 flex items-center justify-center gap-3 rounded shadow my-2">
                     <span>{shortenDID(row.holder_did)}</span>
@@ -271,6 +269,8 @@ const Verified = () => {
           </tbody>
         </table>
       </div>
+    </div>
+
     </NavigationVerifier>
   );
 };

@@ -3,6 +3,8 @@ import HomeHeader from "../components/HomeHeader.js";
 import ZuniLogo from "../assets/ZUNI.svg";
 import { CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Footer from "../components/Footer.js";
+
 export default function Features() {
   const navigate = useNavigate();
   const features = [
@@ -118,6 +120,8 @@ export default function Features() {
           </div>
         </div>
       </div>
+
+      <Footer/>
     </div>
   );
 }
