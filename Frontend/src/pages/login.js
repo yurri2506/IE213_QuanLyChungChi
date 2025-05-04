@@ -233,12 +233,6 @@ function Login() {
               <button
                 type="button"
                 className="text-sm text-[#014AC6] hover:underline transition duration-300"
-              >
-                Forgot password?
-              </button>
-              <button
-                type="button"
-                className="text-sm text-[#014AC6] hover:underline transition duration-300"
                 onClick={handleClick}
               >
                 Register for an account
