@@ -14,15 +14,14 @@ This is the backend for the DID Registry application, which interacts with a Reg
    ```
    PORT=5000
    PRIVATE_KEY=your_private_key_here
-   RPC_URL=https://sepolia.infura.io/v3/your_infura_project_id
+   RPC_URL=
    CONTRACT_ADDRESS=your_deployed_contract_address
-   CORS_ORIGIN=http://localhost:3000
+   CORS_ORIGIN=
    ```
 
    Replace:
 
    - `your_private_key_here` with the private key of the account that deployed the contract
-   - `your_infura_project_id` with your Infura project ID
    - `your_deployed_contract_address` with the address of your deployed contract
 
 4. Start the server:
