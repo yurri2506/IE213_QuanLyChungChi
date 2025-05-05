@@ -76,23 +76,23 @@ npm install
 
 ```
 PORT = 3001
-MONGO_DB = 
-JWT_SECRET=
-REFRESH_TOKEN_SECRET=
-RPC_URL = 
-REGISTRYDID_ADDRESS = 
-VERIFICATIONCENTER_ADDRESS = 
+MONGO_DB = # Chuỗi kết nối đến cơ sở dữ liệu MongoDB
+JWT_SECRET= # Khóa bí mật dùng để ký JWT (JSON Web Token)
+REFRESH_TOKEN_SECRET= # Khóa bí mật dùng để tạo refresh token
+RPC_URL = # URL của node blockchain để tương tác với smart contract
+REGISTRYDID_ADDRESS = # Địa chỉ smart contract của Registry DID
+VERIFICATIONCENTER_ADDRESS = # Địa chỉ smart contract của Verification Center
 ```
 
 - Tạo file `.env` trong thư mục Frontend với các biến môi trường cần thiết:
 
 ```
-REACT_APP_API_URL = http://localhost:3001/api
-REACT_APP_REGISTRYDID_ADDRESS = 
-REACT_APP_VERIFYCATIONCENTER_ADDRESS = 
-REACT_APP_NETWORK_NAME=
-REACT_APP_RPC_URL=
-REACT_APP_BLOCK_EXPLORER=
+REACT_APP_API_URL = # URL của API backend
+REACT_APP_REGISTRYDID_ADDRESS =  # Địa chỉ smart contract của Registry DID
+REACT_APP_VERIFYCATIONCENTER_ADDRESS = # Địa chỉ smart contract của Verification Center
+REACT_APP_NETWORK_NAME= # Tên mạng blockchain đang sử dụng
+REACT_APP_RPC_URL= # URL của node RPC để tương tác với blockchain
+REACT_APP_BLOCK_EXPLORER= # URL của block explorer để xem giao dịch
 ```
 
 5. **Khởi chạy ứng dụng**

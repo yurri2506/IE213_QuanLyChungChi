@@ -36,7 +36,7 @@ const InfoCard = ({ label, value, isDID, icon }) => {
       <div className="relative">
         <div className="bg-white shadow-md rounded-lg p-3 text-base border border-gray-100 hover:border-blue-200 transition-colors duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-gray-700 truncate max-w-[98%]">
+            <span className="text-gray-700 truncate max-w-[98%] overflow-hidden whitespace-nowrap text-ellipsis">
               {isDID ? shortenDID(value) : value}
             </span>
             {isDID && (
@@ -51,6 +51,7 @@ const InfoCard = ({ label, value, isDID, icon }) => {
           </div>
         </div>
       </div>
+
     </div>
   );
 };
@@ -128,15 +129,13 @@ const Info = () => {
       <div className="min-h-screen  bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center mb-4">
-            <h1 className="text-3xl font-bold text-gray-900 mb-12">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-12">
               General Information
             </h1>
           </div>
 
           <div className="bg-white rounded-2xl shadow-xl p-8">
-            {/* <h2 className="text-2xl font-bold text-gray-800 mb-8 pb-4 border-b border-gray-100">
-              General Information
-            </h2> */}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {infoFields.map((item, index) => (
                 <InfoCard
