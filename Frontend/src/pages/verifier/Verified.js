@@ -159,118 +159,125 @@ const Verified = () => {
 
   return (
     <NavigationVerifier>
-     <div className="mx-10 mt-10">
-      <div className="flex flex-col md:flex-row justify-between mb-4">
-        <h1 className="font-bold text-xl md:text-2xl mb-4 md:mb-0">Verified Degrees</h1>
-        <div className="flex flex-row items-center gap-2">
-          <div className="flex rounded-lg px-4 py-1 w-full md:w-80 border-2 focus:border-blue-700 border-blue-600 text-sm">
-            <input
-              type="text"
-              placeholder="Input DID to search"
-              className="px-2 py-1 w-full text-sm focus:outline-none"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <button className="ml-1 text-gray-500">
-              <FontAwesomeIcon icon={faSearch} />
+      <div className="mx-10 mt-10">
+        <div className="flex flex-col md:flex-row justify-between mb-4">
+          <h1 className="font-bold text-xl md:text-2xl mb-4 md:mb-0">
+            Verified Degrees
+          </h1>
+          <div className="flex flex-row items-center gap-2">
+            <div className="flex rounded-lg px-4 py-1 w-full md:w-80 border-2 focus:border-blue-700 border-blue-600 text-sm">
+              <input
+                type="text"
+                placeholder="Input DID to search"
+                className="px-2 py-1 w-full text-sm focus:outline-none"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <button className="ml-1 text-gray-500">
+                <FontAwesomeIcon icon={faSearch} />
+              </button>
+            </div>
+            <button className="text-gray-600 hover:text-gray-900 text-lg">
+              <FontAwesomeIcon icon={faSyncAlt} />
             </button>
           </div>
-          <button className="text-gray-600 hover:text-gray-900 text-lg">
-            <FontAwesomeIcon icon={faSyncAlt} />
-          </button>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm table-auto border-collapse shadow rounded bg-gray-200">
+            <thead className=" text-gray-700 font-semibold text-sm">
+              <tr>
+                <th className="px-3 py-2 my-1">No</th>
+                <th className="px-3 py-2 my-1">Holder DID</th>
+                <th className="px-3 py-2 my-1">Holder Name</th>
+                <th className="px-3 py-2 my-1">Major</th>
+                <th className="px-3 py-2 my-1">Issuer DID</th>
+                <th className="px-3 py-2 my-1">Issuer Name</th>
+                <th className="px-3 py-2 my-1">Issuer Symbol</th>
+                <th className="px-3 py-2 my-1">Status</th>
+                <th className="px-3 py-2 my-1">Verified Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {proofs
+                .filter((row) => row.holder_did.includes(search))
+                .map((row, index) => (
+                  <tr
+                    key={row.holder_did}
+                    className="text-center bg-white rounded-3xl"
+                  >
+                    <td className="p-2">{index + 1}</td>
+                    <td className="p-2 flex items-center justify-center gap-3 rounded shadow my-2">
+                      <span>{shortenDID(row.holder_did)}</span>
+                      <FontAwesomeIcon
+                        icon={faCopy}
+                        className="text-gray-500 hover:text-gray-700 cursor-pointer"
+                      />
+                    </td>
+                    <td className="px-2 py-3">{row.holder_name}</td>
+                    {row.is_verified === false ? (
+                      <>
+                        <td className="px-2 py-3">
+                          <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
+                            NOT YET VERIFIED
+                          </span>
+                        </td>
+                        <td className="px-2 py-3">
+                          <span className="px-2 py-1 bg-green-100 text-blue-800 rounded text-xs shadow-none m-0">
+                            NOT YET VERIFIED
+                          </span>
+                        </td>
+                      </>
+                    ) : (
+                      <>
+                        <td className="px-2 py-3">{hexToString(row.major)}</td>
+                        <td className="p-2 flex items-center justify-center gap-2 rounded shadow my-2">
+                          {shortenDID(row.issuer_did)}
+                          <FontAwesomeIcon
+                            icon={faCopy}
+                            className="text-gray-500 hover:text-gray-700 cursor-pointer "
+                          />
+                        </td>
+                      </>
+                    )}
+                    <td className="px-2 py-3">{row.issuer_name}</td>
+                    <td className="px-2 py-3">{row.issuer_symbol}</td>
+                    <td className="px-2 py-3">
+                      {row.is_verified === true ? (
+                        <span className="text-blue-600 font-medium flex items-center justify-center gap-1 text-sm">
+                          <FontAwesomeIcon icon={faCheckCircle} /> Valid
+                        </span>
+                      ) : (
+                        <span className="text-yellow-500 font-medium flex items-center justify-center gap-2 text-sm">
+                          <FontAwesomeIcon icon={faExclamationTriangle} />{" "}
+                          Pending
+                          <button
+                            onClick={() =>
+                              handleVerifyProof(
+                                row._id,
+                                row.issuer_did,
+                                row.proof,
+                                row.major
+                              )
+                            }
+                            className="px-2 py-1 rounded border border-purple-500 text-purple-600 hover:bg-purple-100 text-xs"
+                          >
+                            VERIFY
+                          </button>
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-2 py-3">
+                      {row.is_verified === true
+                        ? formatUTCToVNTime(row.updated_at)
+                        : "N/A"}
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
         </div>
       </div>
-
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm table-auto border-collapse shadow rounded bg-gray-200">
-          <thead className=" text-gray-700 font-semibold text-sm">
-            <tr>
-              <th className="px-3 py-2 my-1">No</th>
-              <th className="px-3 py-2 my-1">Holder DID</th>
-              <th className="px-3 py-2 my-1">Holder Name</th>
-              <th className="px-3 py-2 my-1">Major</th>
-              <th className="px-3 py-2 my-1">Issuer DID</th>
-              <th className="px-3 py-2 my-1">Issuer Name</th>
-              <th className="px-3 py-2 my-1">Status</th>
-              <th className="px-3 py-2 my-1">Verified Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {proofs
-              .filter((row) => row.holder_did.includes(search))
-              .map((row, index) => (
-                <tr key={row.holder_did} className="text-center bg-white rounded-3xl">
-                  <td className="p-2">{index + 1}</td>
-                  <td className="p-2 flex items-center justify-center gap-3 rounded shadow my-2">
-                    <span>{shortenDID(row.holder_did)}</span>
-                    <FontAwesomeIcon
-                      icon={faCopy}
-                      className="text-gray-500 hover:text-gray-700 cursor-pointer"
-                    />
-                  </td>
-                  <td className="px-2 py-3">{row.holder_name}</td>
-                  {row.is_verified === false ? (
-                    <>
-                      <td className="px-2 py-3">
-                        <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
-                          NOT YET VERIFIED
-                        </span>
-                      </td>
-                      <td className="px-2 py-3">
-                        <span className="px-2 py-1 bg-green-100 text-blue-800 rounded text-xs shadow-none m-0">
-                          NOT YET VERIFIED
-                        </span>
-                      </td>
-                    </>
-                  ) : (
-                    <>
-                      <td className="px-2 py-3">{hexToString(row.major)}</td>
-                      <td className="p-2 flex items-center justify-center gap-2 rounded shadow my-2">
-                        {shortenDID(row.issuer_did)}
-                        <FontAwesomeIcon
-                          icon={faCopy}
-                          className="text-gray-500 hover:text-gray-700 cursor-pointer "
-                        />
-                      </td>
-                    </>
-                  )}
-                  <td className="px-2 py-3">{row.issuer_name}</td>
-                  <td className="px-2 py-3">
-                    {row.is_verified === true ? (
-                      <span className="text-blue-600 font-medium flex items-center justify-center gap-1 text-sm">
-                        <FontAwesomeIcon icon={faCheckCircle} /> Valid
-                      </span>
-                    ) : (
-                      <span className="text-yellow-500 font-medium flex items-center justify-center gap-2 text-sm">
-                        <FontAwesomeIcon icon={faExclamationTriangle} /> Pending
-                        <button
-                          onClick={() =>
-                            handleVerifyProof(
-                              row._id,
-                              row.issuer_did,
-                              row.proof,
-                              row.major
-                            )
-                          }
-                          className="px-2 py-1 rounded border border-purple-500 text-purple-600 hover:bg-purple-100 text-xs"
-                        >
-                          VERIFY
-                        </button>
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-2 py-3">
-                    {row.is_verified === true
-                      ? formatUTCToVNTime(row.updated_at)
-                      : "N/A"}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-
     </NavigationVerifier>
   );
 };

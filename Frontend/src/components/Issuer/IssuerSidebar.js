@@ -13,8 +13,8 @@ const IssuerSidebar = ({ isOpen, setIsOpen }) => {
 
   const menuItems = [
     { label: "Info", icon: faCircleUser, to: "/info-issuer" },
-    { label: "Degree", icon: faGraduationCap, to: "/degrees-issuer" },
     { label: "Students", icon: faUsersLine, to: "/students" },
+    { label: "Degree", icon: faGraduationCap, to: "/degrees-issuer" },
   ];
 
   return (
