@@ -2,7 +2,7 @@
 pragma solidity ^0.8.7;
 
 interface IRegistryDID {
-    struct IssuerInfo {
+struct IssuerInfo {
         bool isRegistered;
         bytes pubKey;
         string signatureAlgorithm;
@@ -25,7 +25,7 @@ interface IRegistryDID {
 
     function removeIssuer(string calldata did, string calldata reason) external;
 
-    function getIssuer(
-        string calldata did
-    ) external view returns (IssuerInfo memory);
+    function getIssuer(string calldata did) external view returns (IssuerInfo memory);
+
+    function getWaitingDIDs() external view returns (string[] memory);
 }
