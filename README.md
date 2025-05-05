@@ -24,11 +24,11 @@
 - [MongoDB] - Hệ quản trị cơ sở dữ liệu phi quan hệ sử dụng để lưu trữ dữ liệu cho trang web
 - [HTML-CSS-JS] - Bộ ba công nghệ web, hiện thức hóa giao diện, dùng thêm bản mở rộng SCSS
 - [zk-SNARK] - Tạo proof
+- [Docker] - Containerization platform
 
 ## Mô hình kiến trúc hệ thống
 
 ![image](https://github.com/user-attachments/assets/6bfc0d84-d1f0-4282-9a29-46fbb0bd5a61)
-
 
 ### Các thành phần hệ thống
 
@@ -38,7 +38,6 @@
 -	Hợp đồng thông minh đăng ký DID (DIDRegistry): Đây là hợp đồng được sử dụng để đăng ký danh tính phi tập trung (DID) cho từng cá nhân. Nhằm đảm bảo tính chính xác và minh bạch của dữ liệu chứng chỉ.
 -	Hợp đồng thông minh xác minh tuyên bố (VerificationCenter): Hợp đồng này có nhiệm vụ kiểm tra tính hợp lệ của các tuyên bố do người sở hữu tạo ra, dựa trên bằng chứng không tiết lộ (ZKP).
 
-
 ## Hướng dẫn cài đặt
 
 ### Yêu cầu hệ thống
@@ -46,8 +45,9 @@
 - Node.js (phiên bản 16 trở lên)
 - MongoDB
 - npm hoặc yarn
+- Docker (cho phương pháp cài đặt Docker)
 
-### Các bước cài đặt
+### Phương pháp 1: Cài đặt thông thường
 
 1. **Clone repository**
 
@@ -98,20 +98,43 @@ REACT_APP_BLOCK_EXPLORER=
 5. **Khởi chạy ứng dụng**
 
 - **Backend**:
-
 ```bash
 cd Backend
 npm run dev
 ```
 
 - **Frontend** (trong terminal mới):
-
 ```bash
 cd Frontend
 npm start
 ```
 
-6. **Truy cập ứng dụng**
+### Phương pháp 2: Cài đặt với Docker
+
+1. **Clone repository**
+```bash
+git clone https://github.com/yurri2506/IE213_QuanLyChungChi.git
+cd IE213_QuanLyChungChi
+```
+
+2. **Cấu hình môi trường**
+- Tạo các file `.env` như hướng dẫn ở trên
+
+3. **Build và chạy Backend với Docker**
+```bash
+cd Backend
+docker build -t backend .
+docker run -p 3001:3001 --env-file .env backend
+```
+
+4. **Cài đặt và chạy Frontend**
+```bash
+cd ../Frontend
+npm install
+npm start
+```
+
+### Truy cập ứng dụng
 
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:3001
@@ -121,3 +144,24 @@ npm start
 - Đảm bảo MongoDB đã được cài đặt và chạy trên máy local
 - Các biến môi trường cần được cấu hình đúng trước khi chạy ứng dụng
 - Để sử dụng các tính năng blockchain, cần cài đặt và cấu hình thêm các công cụ liên quan đến zk-SNARK
+- Khi sử dụng Docker, đảm bảo Docker Desktop đã được cài đặt và đang chạy
+- Không được có khoảng trắng xung quanh dấu '=' trong file .env
+
+### Các lệnh Docker hữu ích
+
+```bash
+# Xem container đang chạy
+docker ps
+
+# Dừng container
+docker stop <container_id>
+
+# Xem logs
+docker logs <container_id>
+
+# Xóa container
+docker rm <container_id>
+
+# Xóa image
+docker rmi backend
+```
